@@ -4,10 +4,22 @@ import type { DiagramElement } from '../types';
 import { ElementIcon } from './ElementIcon';
 import { calculateHorizontalFOV } from '../utils/camera';
 import { kelvinToRGB } from '../utils/color';
+import {
+  RotateCcw,
+} from 'lucide-react';
 
 interface Point {
   x: number;
   y: number;
+}
+
+interface HandlePosition {
+  x: number;
+  y: number;
+  cursor: string;
+  type: 'resize' | 'rotate';
+  position: 'nw' | 'ne' | 'sw' | 'se' | 'n' | 's' | 'e' | 'w' | 'rotate';
+  handleType?: 'resize' | 'rotate';
 }
 
 export const Canvas: React.FC = () => {
@@ -17,6 +29,15 @@ export const Canvas: React.FC = () => {
   const [isDrawingCAD, setIsDrawingCAD] = useState(false);
   const [cadStart, setCadStart] = useState<Point | null>(null);
   const [cadPreview, setCadPreview] = useState<Point | null>(null);
+  const [isResizing, setIsResizing] = useState(false);
+  const [resizeHandle, setResizeHandle] = useState<HandlePosition | null>(null);
+  const [resizeStart, setResizeStart] = useState<Point | null>(null);
+  const [elementStart, setElementStart] = useState<DiagramElement | null>(null);
+  const [rotateStartAngle, setRotateStartAngle] = useState(0);
+  const [elementCenter, setElementCenter] = useState<Point | null>(null);
+  const [showTextInput, setShowTextInput] = useState<string | null>(null);
+  const [textInputValue, setTextInputValue] = useState('');
+  const textInputRef = useRef<HTMLInputElement>(null);
 
   const {
     getCurrentScene,
@@ -33,9 +54,20 @@ export const Canvas: React.FC = () => {
     darkMode,
     canvasBackground,
     canvasBackgroundImage,
+    copyElement,
+    pasteElement,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
+    setDrawingMode,
+    deleteElement,
   } = useDiagramStore();
 
   const scene = getCurrentScene();
+
+  const isMac = typeof navigator !== 'undefined' && navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+  const modifierKey = isMac ? 'metaKey' : 'ctrlKey';
 
   const snapToGridFn = (value: number) => {
     if (!snapToGrid) return value;
@@ -92,6 +124,27 @@ export const Canvas: React.FC = () => {
 
     const coords = getCanvasCoords(e);
 
+    if (drawingMode === 'text') {
+      // Create new text element
+      const store = useDiagramStore.getState();
+      store.addElement({
+        type: 'text',
+        x: snapToGridFn(coords.x),
+        y: snapToGridFn(coords.y),
+        rotation: 0,
+        scale: 1,
+        label: 'Double-click to edit',
+        color: '#1E40AF',
+        fontFamily: 'Inter',
+        fontSize: 16,
+        fontWeight: 'normal',
+        fontStyle: 'normal',
+        textAlign: 'left',
+      });
+      setDrawingMode('select');
+      return;
+    }
+
     if (drawingMode === 'cad-rectangle' || drawingMode === 'cad-line' || drawingMode === 'measurement') {
       setIsDrawingCAD(true);
       const clampedX = Math.min(Math.max(coords.x, 0), canvasWidth);
@@ -116,11 +169,91 @@ export const Canvas: React.FC = () => {
       const constrained = constrainPosition(rawX, rawY, elWidth, elHeight);
 
       updateElement(selectedElementId, { x: constrained.x, y: constrained.y });
+    } else if (isResizing && resizeHandle && elementStart && resizeStart) {
+      const coords = getCanvasCoords(e);
+      const dx = coords.x - resizeStart.x;
+      const dy = coords.y - resizeStart.y;
+
+      let newX = elementStart.x;
+      let newY = elementStart.y;
+      let newWidth = elementStart.width || 60;
+      let newHeight = elementStart.height || 60;
+      let newRotation = elementStart.rotation;
+
+      const angleRad = (elementStart.rotation * Math.PI) / 180;
+      const cos = Math.cos(angleRad);
+      const sin = Math.sin(angleRad);
+
+      // Rotate delta to element's local space
+      const localDx = dx * cos + dy * sin;
+      const localDy = -dx * sin + dy * cos;
+
+      if (resizeHandle.type === 'resize') {
+        switch (resizeHandle.position) {
+          case 'se':
+            newWidth = Math.max(20, elementStart.width! + localDx);
+            newHeight = Math.max(20, elementStart.height! + localDy);
+            break;
+          case 'sw':
+            newWidth = Math.max(20, elementStart.width! - localDx);
+            newHeight = Math.max(20, elementStart.height! + localDy);
+            newX = elementStart.x + localDx * cos - localDy * sin;
+            newY = elementStart.y + localDx * sin + localDy * cos;
+            break;
+          case 'ne':
+            newWidth = Math.max(20, elementStart.width! + localDx);
+            newHeight = Math.max(20, elementStart.height! - localDy);
+            newX = elementStart.x - localDy * sin;
+            newY = elementStart.y + localDy * cos;
+            break;
+          case 'nw':
+            newWidth = Math.max(20, elementStart.width! - localDx);
+            newHeight = Math.max(20, elementStart.height! - localDy);
+            newX = elementStart.x + localDx * cos - localDy * sin;
+            newY = elementStart.y + localDx * sin + localDy * cos;
+            break;
+          case 'e':
+            newWidth = Math.max(20, elementStart.width! + localDx);
+            break;
+          case 'w':
+            newWidth = Math.max(20, elementStart.width! - localDx);
+            newX = elementStart.x + localDx * cos - localDy * sin;
+            newY = elementStart.y + localDx * sin + localDy * cos;
+            break;
+          case 's':
+            newHeight = Math.max(20, elementStart.height! + localDy);
+            break;
+          case 'n':
+            newHeight = Math.max(20, elementStart.height! - localDy);
+            newX = elementStart.x - localDy * sin;
+            newY = elementStart.y + localDy * cos;
+            break;
+        }
+
+        const constrained = constrainPosition(newX, newY, newWidth, newHeight);
+        updateElement(elementStart.id, {
+          x: constrained.x,
+          y: constrained.y,
+          width: newWidth,
+          height: newHeight
+        });
+      } else if (resizeHandle.type === 'rotate') {
+        const centerX = elementCenter?.x || elementStart.x + (elementStart.width || 60) / 2;
+        const centerY = elementCenter?.y || elementStart.y + (elementStart.height || 60) / 2;
+        const angle = Math.atan2(coords.y - centerY, coords.x - centerX) * (180 / Math.PI);
+        newRotation = Math.round((angle - rotateStartAngle) / 15) * 15;
+        updateElement(elementStart.id, { rotation: newRotation });
+      }
     } else if (isDrawingCAD && cadStart) {
       const coords = getCanvasCoords(e);
       const clampedX = Math.min(Math.max(coords.x, 0), canvasWidth);
       const clampedY = Math.min(Math.max(coords.y, 0), canvasHeight);
-      setCadPreview({ x: snapToGridFn(clampedX), y: snapToGridFn(clampedY) });
+      // Check if Shift is held for grid snapping
+      const shiftHeld = e.shiftKey;
+      setCadPreview({
+        x: shiftHeld ? snapToGridFn(clampedX) : clampedX,
+        y: shiftHeld ? snapToGridFn(clampedY) : clampedY
+      });
     }
   };
 
@@ -185,6 +318,12 @@ export const Canvas: React.FC = () => {
     }
 
     setIsDragging(false);
+    setIsResizing(false);
+    setResizeHandle(null);
+    setResizeStart(null);
+    setElementStart(null);
+    setRotateStartAngle(0);
+    setElementCenter(null);
   };
 
   const handleCanvasClick = (e: React.MouseEvent) => {
@@ -193,13 +332,84 @@ export const Canvas: React.FC = () => {
     }
   };
 
+  const handleDoubleClick = (e: React.MouseEvent) => {
+    if (selectedElementId && e.target !== canvasRef.current) {
+      const element = scene?.elements.find((el) => el.id === selectedElementId);
+      if (element?.type === 'text') {
+        setShowTextInput(selectedElementId);
+        setTextInputValue(element.label);
+        setTimeout(() => textInputRef.current?.focus(), 0);
+      }
+    }
+  };
+
+  const handleTextInputBlur = () => {
+    if (showTextInput) {
+      updateElement(showTextInput, { label: textInputValue });
+      setShowTextInput(null);
+    }
+  };
+
+  const handleTextInputKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleTextInputBlur();
+    } else if (e.key === 'Escape') {
+      setShowTextInput(null);
+    }
+  };
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't handle shortcuts if typing in an input
+      const target = e.target as HTMLElement;
+      if (
+        target.tagName === 'INPUT' ||
+        target.tagName === 'TEXTAREA' ||
+        target.isContentEditable ||
+        showTextInput
+      ) {
+        return;
+      }
+
+      const isModifierPressed = e[modifierKey as keyof KeyboardEvent];
+      const isShiftPressed = e.shiftKey;
+
+      // Copy: Ctrl/Cmd + C
+      if (isModifierPressed && e.key.toLowerCase() === 'c' && selectedElementId) {
+        e.preventDefault();
+        copyElement(selectedElementId);
+        return;
+      }
+
+      // Paste: Ctrl/Cmd + V
+      if (isModifierPressed && e.key.toLowerCase() === 'v') {
+        e.preventDefault();
+        pasteElement();
+        return;
+      }
+
+      // Undo: Ctrl/Cmd + Z
+      if (isModifierPressed && e.key.toLowerCase() === 'z' && !isShiftPressed) {
+        e.preventDefault();
+        if (canUndo) undo();
+        return;
+      }
+
+      // Redo: Ctrl/Cmd + Shift + Z or Ctrl/Cmd + Y
+      if ((isModifierPressed && isShiftPressed && e.key.toLowerCase() === 'z') ||
+          (isModifierPressed && e.key.toLowerCase() === 'y')) {
+        e.preventDefault();
+        if (canRedo) redo();
+        return;
+      }
+
+      // Element-specific shortcuts
       if (selectedElementId) {
         const element = scene?.elements.find((el) => el.id === selectedElementId);
         if (!element) return;
 
-        const step = e.shiftKey ? gridSize : 1;
+        const step = isShiftPressed ? gridSize : 1;
         let newX = element.x;
         let newY = element.y;
 
@@ -221,15 +431,34 @@ export const Canvas: React.FC = () => {
             newY = element.y + step;
             break;
           case 'Delete':
+            // Only delete on Delete key (not Backspace) to avoid text input issues
+            if (!isModifierPressed) {
+              e.preventDefault();
+              deleteElement(selectedElementId);
+              return;
+            }
+            break;
           case 'Backspace':
-            e.preventDefault();
-            useDiagramStore.getState().deleteElement(selectedElementId);
-            return;
+            // Only delete with modifier on Mac (Cmd+Backspace) or with Ctrl on Windows
+            if (isModifierPressed) {
+              e.preventDefault();
+              deleteElement(selectedElementId);
+              return;
+            }
+            break;
           case 'Escape':
             e.preventDefault();
             selectElement(null);
             useDiagramStore.getState().setDrawingMode('select');
             return;
+          case 'd':
+            // Duplicate: Ctrl/Cmd + D
+            if (isModifierPressed) {
+              e.preventDefault();
+              useDiagramStore.getState().duplicateElement(selectedElementId);
+              return;
+            }
+            break;
         }
 
         const elWidth = element.width || 60;
@@ -247,7 +476,26 @@ export const Canvas: React.FC = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedElementId, scene, gridSize, canvasWidth, canvasHeight, updateElement, selectElement, constrainPosition]);
+  }, [
+    selectedElementId,
+    scene,
+    gridSize,
+    canvasWidth,
+    canvasHeight,
+    modifierKey,
+    updateElement,
+    selectElement,
+    constrainPosition,
+    copyElement,
+    pasteElement,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
+    setDrawingMode,
+    deleteElement,
+    showTextInput,
+  ]);
 
   if (!scene) {
     return (
@@ -268,7 +516,7 @@ export const Canvas: React.FC = () => {
   const renderFOVCone = (element: DiagramElement) => {
     if (element.type !== 'camera' || !element.cameraSettings?.showFOV) return null;
 
-    const { sensorSize, focalLength, fovOpacity } = element.cameraSettings;
+    const { sensorSize, focalLength, fovOpacity = 0.4 } = element.cameraSettings;
     const fovAngle = calculateHorizontalFOV(sensorSize, focalLength);
     const coneLength = 300;
 
@@ -450,6 +698,168 @@ export const Canvas: React.FC = () => {
     return null;
   };
 
+  const renderTextElement = (element: DiagramElement) => {
+    const isSelected = selectedElementId === element.id;
+    const fontFamily = element.fontFamily || 'Inter';
+    const fontSize = element.fontSize || 16;
+    const fontWeight = element.fontWeight || 'normal';
+    const fontStyle = element.fontStyle || 'normal';
+    const textAlign = element.textAlign || 'left';
+
+    const textStyle: React.CSSProperties = {
+      position: 'absolute',
+      left: element.x,
+      top: element.y,
+      transform: `rotate(${element.rotation}deg)`,
+      transformOrigin: 'left top',
+      fontFamily,
+      fontSize: `${fontSize}px`,
+      fontWeight,
+      fontStyle,
+      textAlign,
+      color: element.color,
+      whiteSpace: 'pre-wrap',
+      width: element.width || 'auto',
+      maxWidth: element.width || 'none',
+      cursor: isSelected ? 'text' : 'default',
+      pointerEvents: 'auto',
+      userSelect: isSelected ? 'text' : 'none',
+      zIndex: 2,
+      outline: isSelected ? '2px solid #3B82F6' : 'none',
+      outlineOffset: '4px',
+      padding: isSelected ? '4px' : '0',
+      backgroundColor: isSelected ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
+      borderRadius: '2px',
+    };
+
+    if (showTextInput === element.id) {
+      return (
+        <div
+          key={element.id}
+          style={{
+            position: 'absolute',
+            left: element.x,
+            top: element.y,
+            transform: `rotate(${element.rotation}deg)`,
+            transformOrigin: 'left top',
+            zIndex: 10,
+          }}
+        >
+          <input
+            ref={textInputRef}
+            type="text"
+            value={textInputValue}
+            onChange={(e) => setTextInputValue(e.target.value)}
+            onBlur={handleTextInputBlur}
+            onKeyDown={handleTextInputKeyDown}
+            style={{
+              fontFamily,
+              fontSize: `${fontSize}px`,
+              fontWeight,
+              fontStyle,
+              textAlign,
+              color: element.color,
+              backgroundColor: darkMode ? '#1f2937' : 'white',
+              border: '2px solid #3B82F6',
+              borderRadius: '4px',
+              padding: '4px 8px',
+              outline: 'none',
+              minWidth: '100px',
+              width: element.width || 'auto',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            }}
+            autoFocus
+          />
+        </div>
+      );
+    }
+
+    return (
+      <div
+        key={element.id}
+        style={textStyle}
+        onMouseDown={(e) => handleElementMouseDown(e, element)}
+        onDoubleClick={handleDoubleClick}
+      >
+        {element.label}
+      </div>
+    );
+  };
+
+  const getResizeHandles = (element: DiagramElement): HandlePosition[] => {
+    if (!element.width || !element.height) return [];
+
+    const w = element.width;
+    const h = element.height;
+    const angleRad = (element.rotation * Math.PI) / 180;
+    const cos = Math.cos(angleRad);
+    const sin = Math.sin(angleRad);
+
+    const rotate = (x: number, y: number) => ({
+      x: element.x + x * cos - y * sin,
+      y: element.y + x * sin + y * cos,
+    });
+
+    const corners = [
+      { x: -8, y: -8, pos: 'nw' as const, cursor: 'nwse-resize' },
+      { x: w + 8, y: -8, pos: 'ne' as const, cursor: 'nesw-resize' },
+      { x: -8, y: h + 8, pos: 'sw' as const, cursor: 'nesw-resize' },
+      { x: w + 8, y: h + 8, pos: 'se' as const, cursor: 'nwse-resize' },
+      { x: w / 2, y: -8, pos: 'n' as const, cursor: 'ns-resize' },
+      { x: w / 2, y: h + 8, pos: 's' as const, cursor: 'ns-resize' },
+      { x: -8, y: h / 2, pos: 'w' as const, cursor: 'ew-resize' },
+      { x: w + 8, y: h / 2, pos: 'e' as const, cursor: 'ew-resize' },
+    ];
+
+    const handles: HandlePosition[] = corners.map(c => {
+      const rotated = rotate(c.x, c.y);
+      return {
+        x: rotated.x,
+        y: rotated.y,
+        cursor: c.cursor,
+        type: 'resize' as const,
+        position: c.pos,
+      };
+    });
+
+    // Rotation handle - above the element
+    const rotateHandle = rotate(w / 2, -35);
+    handles.push({
+      x: rotateHandle.x,
+      y: rotateHandle.y,
+      cursor: 'crosshair',
+      type: 'rotate',
+      position: 'rotate',
+      handleType: 'rotate',
+    });
+
+    return handles;
+  };
+
+  const handleHandleMouseDown = (e: React.MouseEvent, handle: HandlePosition, element: DiagramElement) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    const coords = getCanvasCoords(e);
+
+    if (handle.type === 'resize') {
+      setIsResizing(true);
+      setResizeHandle(handle);
+      setResizeStart(coords);
+      setElementStart(element);
+    } else if (handle.type === 'rotate') {
+      const centerX = element.x + (element.width || 60) / 2;
+      const centerY = element.y + (element.height || 60) / 2;
+      const angle = Math.atan2(coords.y - centerY, coords.x - centerX) * (180 / Math.PI);
+
+      setResizeHandle(handle);
+      setResizeStart(coords);
+      setElementStart(element);
+      setElementCenter({ x: centerX, y: centerY });
+      setRotateStartAngle(angle - element.rotation);
+    }
+  };
+
   const gridLineColor = darkMode ? '#374151' : '#BFDBFE';
 
   // Canvas background style
@@ -498,7 +908,47 @@ export const Canvas: React.FC = () => {
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
       onClick={handleCanvasClick}
+      onDoubleClick={handleDoubleClick}
     >
+      {/* Keyboard shortcuts hint */}
+      <div className="absolute top-2 right-2 z-10 flex gap-1 opacity-50 hover:opacity-100 transition-opacity pointer-events-none">
+        <div className="bg-gray-900/80 dark:bg-gray-100/80 text-white dark:text-gray-900 px-2 py-1 rounded text-xs font-mono flex items-center gap-1">
+          <kbd className="px-1.5 py-0.5 bg-gray-700 dark:bg-gray-300 rounded">⌘</kbd>
+          <kbd className="px-1.5 py-0.5 bg-gray-700 dark:bg-gray-300 rounded">Z</kbd>
+          <span>Undo</span>
+        </div>
+        <div className="bg-gray-900/80 dark:bg-gray-100/80 text-white dark:text-gray-900 px-2 py-1 rounded text-xs font-mono flex items-center gap-1">
+          <kbd className="px-1.5 py-0.5 bg-gray-700 dark:bg-gray-300 rounded">⌘</kbd>
+          <kbd className="px-1.5 py-0.5 bg-gray-700 dark:bg-gray-300 rounded">⇧</kbd>
+          <kbd className="px-1.5 py-0.5 bg-gray-700 dark:bg-gray-300 rounded">Z</kbd>
+          <span>Redo</span>
+        </div>
+        <div className="bg-gray-900/80 dark:bg-gray-100/80 text-white dark:text-gray-900 px-2 py-1 rounded text-xs font-mono flex items-center gap-1">
+          <kbd className="px-1.5 py-0.5 bg-gray-700 dark:bg-gray-300 rounded">⌘</kbd>
+          <kbd className="px-1.5 py-0.5 bg-gray-700 dark:bg-gray-300 rounded">C</kbd>
+          <span>Copy</span>
+        </div>
+        <div className="bg-gray-900/80 dark:bg-gray-100/80 text-white dark:text-gray-900 px-2 py-1 rounded text-xs font-mono flex items-center gap-1">
+          <kbd className="px-1.5 py-0.5 bg-gray-700 dark:bg-gray-300 rounded">⌘</kbd>
+          <kbd className="px-1.5 py-0.5 bg-gray-700 dark:bg-gray-300 rounded">V</kbd>
+          <span>Paste</span>
+        </div>
+        <div className="bg-gray-900/80 dark:bg-gray-100/80 text-white dark:text-gray-900 px-2 py-1 rounded text-xs font-mono flex items-center gap-1">
+          <kbd className="px-1.5 py-0.5 bg-gray-700 dark:bg-gray-300 rounded">⌘</kbd>
+          <kbd className="px-1.5 py-0.5 bg-gray-700 dark:bg-gray-300 rounded">D</kbd>
+          <span>Duplicate</span>
+        </div>
+        <div className="bg-gray-900/80 dark:bg-gray-100/80 text-white dark:text-gray-900 px-2 py-1 rounded text-xs font-mono flex items-center gap-1">
+          <kbd className="px-1.5 py-0.5 bg-gray-700 dark:bg-gray-300 rounded">Del</kbd>
+          <span>Delete</span>
+        </div>
+        <div className="bg-gray-900/80 dark:bg-gray-100/80 text-white dark:text-gray-900 px-2 py-1 rounded text-xs font-mono flex items-center gap-1">
+          <kbd className="px-1.5 py-0.5 bg-gray-700 dark:bg-gray-300 rounded">⌘</kbd>
+          <kbd className="px-1.5 py-0.5 bg-gray-700 dark:bg-gray-300 rounded">Del</kbd>
+          <span>Force Delete</span>
+        </div>
+      </div>
+
       {/* FOV Cones (behind elements) */}
       {scene.elements.map((element) => renderFOVCone(element))}
 
@@ -515,19 +965,28 @@ export const Canvas: React.FC = () => {
         return null;
       })}
 
+      {/* Text Elements */}
+      {scene.elements.map((element) => {
+        if (element.type === 'text') {
+          return renderTextElement(element);
+        }
+        return null;
+      })}
+
       {/* Regular Elements */}
       {scene.elements.map((element) => {
-        if (element.type === 'cad-rectangle' || element.type === 'cad-line' || element.type === 'measurement') {
+        if (element.type === 'cad-rectangle' || element.type === 'cad-line' || element.type === 'measurement' || element.type === 'text') {
           return null;
         }
+
+        const isSelected = selectedElementId === element.id;
+        const handles = isSelected && drawingMode === 'select' ? getResizeHandles(element) : [];
 
         return (
           <div
             key={element.id}
             className={`absolute cursor-move select-none ${
-              selectedElementId === element.id
-                ? 'ring-2 ring-blue-600 dark:ring-blue-400 ring-offset-2'
-                : ''
+              isSelected ? 'ring-2 ring-blue-600 dark:ring-blue-400 ring-offset-2' : ''
             }`}
             style={{
               left: element.x,
@@ -550,6 +1009,26 @@ export const Canvas: React.FC = () => {
                 {element.label}
               </div>
             )}
+
+            {/* Resize/Rotate Handles */}
+            {handles.map((handle) => (
+              <div
+                key={handle.position}
+                className="absolute w-4 h-4 bg-blue-600 border-2 border-white dark:border-gray-900 rounded pointer-events-auto"
+                style={{
+                  left: handle.x - 2,
+                  top: handle.y - 2,
+                  cursor: handle.cursor,
+                  zIndex: 10,
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                }}
+                onMouseDown={(e) => handleHandleMouseDown(e, handle, element)}
+              >
+                {handle.position === 'rotate' && (
+                  <RotateCcw size={12} className="text-white -ml-0.5 -mt-0.5" />
+                )}
+              </div>
+            ))}
           </div>
         );
       })}
@@ -590,6 +1069,18 @@ export const Canvas: React.FC = () => {
                 strokeWidth="2"
                 strokeDasharray="5,5"
               />
+              {/* Shift hint */}
+              <text
+                x={(cadStart.x + cadPreview.x) / 2}
+                y={(cadStart.y + cadPreview.y) / 2 - 15}
+                fill="#3B82F6"
+                fontSize="11"
+                fontWeight="bold"
+                textAnchor="middle"
+                style={{ pointerEvents: 'none', fontFamily: 'monospace' }}
+              >
+                Hold Shift to snap
+              </text>
             </svg>
           )}
         </>

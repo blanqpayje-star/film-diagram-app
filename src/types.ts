@@ -15,7 +15,8 @@ export type ElementType =
   | 'custom'
   | 'cad-rectangle'
   | 'cad-line'
-  | 'measurement';
+  | 'measurement'
+  | 'text';
 
 export type LightModifier = 'softbox' | 'umbrella' | 'fresnel' | 'led-panel' | 'kino' | 'practical';
 
@@ -72,6 +73,13 @@ export interface DiagramElement {
 
   // Measurement-specific
   measurementUnit?: 'ft' | 'm' | 'in';
+
+  // Text-specific
+  fontFamily?: string;
+  fontSize?: number;
+  fontWeight?: string;
+  fontStyle?: string;
+  textAlign?: 'left' | 'center' | 'right';
 }
 
 export interface Scene {
@@ -92,7 +100,7 @@ export interface AppState {
   gridSize: number;
   canvasWidth: number;
   canvasHeight: number;
-  drawingMode: 'select' | 'cad-rectangle' | 'cad-line' | 'measurement';
+  drawingMode: 'select' | 'cad-rectangle' | 'cad-line' | 'measurement' | 'text';
   measurementUnit: 'ft' | 'm' | 'in';
   darkMode: boolean;
   canvasBackground: string; // color or 'none'

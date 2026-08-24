@@ -14,6 +14,7 @@ import {
   MousePointer,
   RectangleHorizontal,
   Minus,
+  Type,
 } from 'lucide-react';
 
 const elementTypes: {
@@ -35,10 +36,11 @@ const elementTypes: {
   { type: 'door', label: 'Door', icon: <DoorOpen size={20} />, category: 'set' },
   { type: 'window', label: 'Window', icon: <Maximize size={20} />, category: 'set' },
   { type: 'furniture', label: 'Furniture', icon: <Armchair size={20} />, category: 'set' },
+  { type: 'text', label: 'Text', icon: <Type size={20} />, category: 'tools' },
 ];
 
 const drawingTools: {
-  mode: 'select' | 'cad-rectangle' | 'cad-line' | 'measurement';
+  mode: 'select' | 'cad-rectangle' | 'cad-line' | 'measurement' | 'text';
   label: string;
   icon: React.ReactNode;
 }[] = [
@@ -46,6 +48,7 @@ const drawingTools: {
   { mode: 'cad-rectangle', label: 'Draw CAD Box', icon: <RectangleHorizontal size={20} /> },
   { mode: 'cad-line', label: 'Draw CAD Wall', icon: <Minus size={20} /> },
   { mode: 'measurement', label: 'Measure Line', icon: <Ruler size={20} /> },
+  { mode: 'text', label: 'Add Text', icon: <Type size={20} /> },
 ];
 
 export const Toolbar: React.FC = () => {
@@ -59,14 +62,20 @@ export const Toolbar: React.FC = () => {
       y: canvasHeight / 2 - 30,
       rotation: 0,
       scale: 1,
-      label: '',
+      label: type === 'text' ? 'Double-click to edit' : '',
       color: getDefaultColor(type),
+      width: type === 'text' ? 200 : undefined,
+      fontFamily: type === 'text' ? 'Inter' : undefined,
+      fontSize: type === 'text' ? 16 : undefined,
+      fontWeight: type === 'text' ? 'normal' : undefined,
+      fontStyle: type === 'text' ? 'normal' : undefined,
+      textAlign: type === 'text' ? 'left' : undefined,
       ...(type === 'camera' && {
         cameraSettings: {
           sensorSize: 'full-frame',
           focalLength: 50,
-          showFOV: false,
-          fovOpacity: 0.3,
+          showFOV: true,
+          fovOpacity: 0.4,
         },
       }),
       ...(type.startsWith('light-') && {
@@ -110,6 +119,8 @@ export const Toolbar: React.FC = () => {
       case 'window':
         return '#3B82F6';
       case 'furniture':
+        return '#1E40AF';
+      case 'text':
         return '#1E40AF';
       default:
         return '#3B82F6';

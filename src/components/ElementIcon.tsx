@@ -7,6 +7,13 @@ interface IconProps {
   color?: string;
   rotation?: number;
   customIcon?: string;
+  // Text element properties
+  label?: string;
+  fontFamily?: string;
+  fontSize?: number;
+  fontWeight?: string;
+  fontStyle?: string;
+  textAlign?: 'left' | 'center' | 'right';
 }
 
 export const ElementIcon: React.FC<IconProps> = ({
@@ -15,6 +22,11 @@ export const ElementIcon: React.FC<IconProps> = ({
   color = '#000000',
   rotation = 0,
   customIcon,
+  label,
+  fontFamily,
+  fontSize,
+  fontWeight,
+  fontStyle,
 }) => {
   const style = {
     width: size,
@@ -236,6 +248,25 @@ export const ElementIcon: React.FC<IconProps> = ({
             <line x1="80" y1="45" x2="80" y2="55" stroke="#f59e0b" strokeWidth="2" />
             <polygon points="25,50 20,47 20,53" fill="#f59e0b" />
             <polygon points="75,50 80,47 80,53" fill="#f59e0b" />
+          </svg>
+        );
+
+      case 'text':
+        return (
+          <svg viewBox="0 0 100 100" style={style}>
+            <text
+              x="50"
+              y="55"
+              textAnchor="middle"
+              dominantBaseline="middle"
+              fill={color}
+              fontFamily={fontFamily || 'Inter'}
+              fontSize={fontSize || 16}
+              fontWeight={fontWeight || 'normal'}
+              fontStyle={fontStyle || 'normal'}
+            >
+              {label || 'Text'}
+            </text>
           </svg>
         );
 

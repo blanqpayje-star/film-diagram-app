@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { DiagramElement, Scene, AppState } from './types';
 
+const MAX_HISTORY = 50;
+
 interface DiagramStore extends AppState {
   // Scene management
   addScene: (name: string) => void;
@@ -17,12 +19,27 @@ interface DiagramStore extends AppState {
   selectElement: (id: string | null) => void;
   duplicateElement: (id: string) => void;
 
+  // Copy/Paste
+  copyElement: (id: string) => void;
+  pasteElement: () => void;
+  copiedElement: DiagramElement | null;
+  setCopiedElement: (element: DiagramElement | null) => void;
+
+  // Undo/Redo
+  undo: () => void;
+  redo: () => void;
+  canUndo: boolean;
+  canRedo: boolean;
+  history: { scenes: Scene[]; currentSceneId: string | null; selectedElementId: string | null }[];
+  historyIndex: number;
+  saveToHistory: () => void;
+
   // Canvas settings
   toggleGrid: () => void;
   toggleSnapToGrid: () => void;
   setGridSize: (size: number) => void;
   setCanvasSize: (width: number, height: number) => void;
-  setDrawingMode: (mode: 'select' | 'cad-rectangle' | 'cad-line' | 'measurement') => void;
+  setDrawingMode: (mode: 'select' | 'cad-rectangle' | 'cad-line' | 'measurement' | 'text') => void;
   setMeasurementUnit: (unit: 'ft' | 'm' | 'in') => void;
   toggleDarkMode: () => void;
   setCanvasBackground: (color: string) => void;
@@ -43,6 +60,12 @@ const createDefaultScene = (): Scene => ({
   updatedAt: Date.now(),
 });
 
+const cloneState = (state: DiagramStore) => ({
+  scenes: JSON.parse(JSON.stringify(state.scenes)),
+  currentSceneId: state.currentSceneId,
+  selectedElementId: state.selectedElementId,
+});
+
 export const useDiagramStore = create<DiagramStore>()(
   persist(
     (set, get) => ({
@@ -61,8 +84,18 @@ export const useDiagramStore = create<DiagramStore>()(
       canvasBackground: '#ffffff',
       canvasBackgroundImage: undefined,
 
+      // Copy/Paste
+      copiedElement: null,
+
+      // Undo/Redo
+      history: [],
+      historyIndex: -1,
+      canUndo: false,
+      canRedo: false,
+
       // Scene management
       addScene: (name: string) => {
+        get().saveToHistory();
         const newScene: Scene = {
           id: crypto.randomUUID(),
           name,
@@ -78,6 +111,7 @@ export const useDiagramStore = create<DiagramStore>()(
       },
 
       deleteScene: (id: string) => {
+        get().saveToHistory();
         set((state) => {
           const filtered = state.scenes.filter((s) => s.id !== id);
           const newCurrentId =
@@ -92,6 +126,7 @@ export const useDiagramStore = create<DiagramStore>()(
       },
 
       updateScene: (id: string, updates: Partial<Scene>) => {
+        get().saveToHistory();
         set((state) => ({
           scenes: state.scenes.map((s) =>
             s.id === id ? { ...s, ...updates, updatedAt: Date.now() } : s
@@ -104,6 +139,7 @@ export const useDiagramStore = create<DiagramStore>()(
       },
 
       duplicateScene: (id: string) => {
+        get().saveToHistory();
         const scene = get().scenes.find((s) => s.id === id);
         if (!scene) return;
 
@@ -127,6 +163,7 @@ export const useDiagramStore = create<DiagramStore>()(
 
       // Element management
       addElement: (element: Omit<DiagramElement, 'id'>) => {
+        get().saveToHistory();
         const currentSceneId = get().currentSceneId;
         if (!currentSceneId) return;
 
@@ -169,6 +206,7 @@ export const useDiagramStore = create<DiagramStore>()(
       },
 
       deleteElement: (id: string) => {
+        get().saveToHistory();
         const currentSceneId = get().currentSceneId;
         if (!currentSceneId) return;
 
@@ -192,6 +230,7 @@ export const useDiagramStore = create<DiagramStore>()(
       },
 
       duplicateElement: (id: string) => {
+        get().saveToHistory();
         const currentSceneId = get().currentSceneId;
         if (!currentSceneId) return;
 
@@ -220,28 +259,121 @@ export const useDiagramStore = create<DiagramStore>()(
         }));
       },
 
+      // Copy/Paste
+      copyElement: (id: string) => {
+        const scene = get().getCurrentScene();
+        const element = scene?.elements.find((el) => el.id === id);
+        if (element) {
+          set({ copiedElement: { ...element, id: crypto.randomUUID() } });
+        }
+      },
+
+      pasteElement: () => {
+        const { copiedElement, currentSceneId } = get();
+        if (!copiedElement || !currentSceneId) return;
+
+        get().saveToHistory();
+
+        const newElement: DiagramElement = {
+          ...copiedElement,
+          id: crypto.randomUUID(),
+          x: copiedElement.x + 20,
+          y: copiedElement.y + 20,
+        };
+
+        set((state) => ({
+          scenes: state.scenes.map((s) =>
+            s.id === currentSceneId
+              ? {
+                  ...s,
+                  elements: [...s.elements, newElement],
+                  updatedAt: Date.now(),
+                }
+              : s
+          ),
+          selectedElementId: newElement.id,
+        }));
+      },
+
+      setCopiedElement: (element: DiagramElement | null) => {
+        set({ copiedElement: element });
+      },
+
+      // Undo/Redo
+      saveToHistory: () => {
+        const { scenes, currentSceneId, selectedElementId, history, historyIndex } = get();
+        const newHistory = history.slice(0, historyIndex + 1);
+        newHistory.push(cloneState({ scenes, currentSceneId, selectedElementId } as DiagramStore));
+        if (newHistory.length > MAX_HISTORY) {
+          newHistory.shift();
+        }
+        set({
+          history: newHistory,
+          historyIndex: newHistory.length - 1,
+          canUndo: newHistory.length > 1,
+          canRedo: false,
+        });
+      },
+
+      undo: () => {
+        const { history, historyIndex } = get();
+        if (historyIndex <= 0) return;
+
+        const newIndex = historyIndex - 1;
+        const prevState = history[newIndex];
+        set({
+          scenes: prevState.scenes,
+          currentSceneId: prevState.currentSceneId,
+          selectedElementId: prevState.selectedElementId,
+          historyIndex: newIndex,
+          canUndo: newIndex > 0,
+          canRedo: true,
+        });
+      },
+
+      redo: () => {
+        const { history, historyIndex } = get();
+        if (historyIndex >= history.length - 1) return;
+
+        const newIndex = historyIndex + 1;
+        const nextState = history[newIndex];
+        set({
+          scenes: nextState.scenes,
+          currentSceneId: nextState.currentSceneId,
+          selectedElementId: nextState.selectedElementId,
+          historyIndex: newIndex,
+          canUndo: true,
+          canRedo: newIndex < history.length - 1,
+        });
+      },
+
       // Canvas settings
       toggleGrid: () => {
+        get().saveToHistory();
         set((state) => ({ gridEnabled: !state.gridEnabled }));
       },
 
       toggleSnapToGrid: () => {
+        get().saveToHistory();
         set((state) => ({ snapToGrid: !state.snapToGrid }));
       },
 
       setGridSize: (size: number) => {
+        get().saveToHistory();
         set({ gridSize: size });
       },
 
       setCanvasSize: (width: number, height: number) => {
+        get().saveToHistory();
         set({ canvasWidth: width, canvasHeight: height });
       },
 
-      setDrawingMode: (mode: 'select' | 'cad-rectangle' | 'cad-line' | 'measurement') => {
+      setDrawingMode: (mode: 'select' | 'cad-rectangle' | 'cad-line' | 'measurement' | 'text') => {
         set({ drawingMode: mode, selectedElementId: null });
       },
 
       setMeasurementUnit: (unit: 'ft' | 'm' | 'in') => {
+        get().saveToHistory();
         set({ measurementUnit: unit });
       },
 
@@ -250,10 +382,12 @@ export const useDiagramStore = create<DiagramStore>()(
       },
 
       setCanvasBackground: (color: string) => {
+        get().saveToHistory();
         set({ canvasBackground: color });
       },
 
       setCanvasBackgroundImage: (image: string | undefined) => {
+        get().saveToHistory();
         set({ canvasBackgroundImage: image });
       },
 
@@ -272,6 +406,7 @@ export const useDiagramStore = create<DiagramStore>()(
       },
 
       importScene: (data: string) => {
+        get().saveToHistory();
         try {
           const scene: Scene = JSON.parse(data);
           scene.id = crypto.randomUUID();
@@ -290,6 +425,23 @@ export const useDiagramStore = create<DiagramStore>()(
     }),
     {
       name: 'film-diagram-storage',
+      // Don't persist history to localStorage
+      partialize: (state) => ({
+        scenes: state.scenes,
+        currentSceneId: state.currentSceneId,
+        selectedElementId: state.selectedElementId,
+        gridEnabled: state.gridEnabled,
+        snapToGrid: state.snapToGrid,
+        gridSize: state.gridSize,
+        canvasWidth: state.canvasWidth,
+        canvasHeight: state.canvasHeight,
+        drawingMode: state.drawingMode,
+        measurementUnit: state.measurementUnit,
+        darkMode: state.darkMode,
+        canvasBackground: state.canvasBackground,
+        canvasBackgroundImage: state.canvasBackgroundImage,
+        copiedElement: state.copiedElement,
+      }),
     }
   )
 );
