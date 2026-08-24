@@ -45,6 +45,12 @@ interface DiagramStore extends AppState {
   setCanvasBackground: (color: string) => void;
   setCanvasBackgroundImage: (image: string | undefined) => void;
 
+  // Panel settings
+  toggleLeftPanel: () => void;
+  toggleRightPanel: () => void;
+  leftPanelCollapsed: boolean;
+  rightPanelCollapsed: boolean;
+
   // Utility
   getCurrentScene: () => Scene | null;
   exportScene: () => string;
@@ -83,6 +89,10 @@ export const useDiagramStore = create<DiagramStore>()(
       darkMode: false,
       canvasBackground: '#ffffff',
       canvasBackgroundImage: undefined,
+
+      // Panel state
+      leftPanelCollapsed: false,
+      rightPanelCollapsed: false,
 
       // Copy/Paste
       copiedElement: null,
@@ -389,6 +399,15 @@ export const useDiagramStore = create<DiagramStore>()(
       setCanvasBackgroundImage: (image: string | undefined) => {
         get().saveToHistory();
         set({ canvasBackgroundImage: image });
+      },
+
+      // Panel settings
+      toggleLeftPanel: () => {
+        set((state) => ({ leftPanelCollapsed: !state.leftPanelCollapsed }));
+      },
+
+      toggleRightPanel: () => {
+        set((state) => ({ rightPanelCollapsed: !state.rightPanelCollapsed }));
       },
 
       // Utility

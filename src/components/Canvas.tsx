@@ -188,6 +188,14 @@ export const Canvas: React.FC = () => {
       const localDx = dx * cos + dy * sin;
       const localDy = -dx * sin + dy * cos;
 
+      // Check if Shift is held to temporarily disable grid snapping during resize/rotate
+      const shiftHeld = e.shiftKey;
+      const shouldSnap = snapToGrid && !shiftHeld;
+
+      // Apply grid snapping if enabled (and Shift not held)
+      const snapX = shouldSnap ? snapToGridFn(newX + localDx) : newX + localDx;
+      const snapY = shouldSnap ? snapToGridFn(newY + localDy) : newY + localDy;
+
       if (resizeHandle.type === 'resize') {
         switch (resizeHandle.position) {
           case 'se':
@@ -197,36 +205,36 @@ export const Canvas: React.FC = () => {
           case 'sw':
             newWidth = Math.max(20, elementStart.width! - localDx);
             newHeight = Math.max(20, elementStart.height! + localDy);
-            newX = elementStart.x + localDx * cos - localDy * sin;
-            newY = elementStart.y + localDx * sin + localDy * cos;
+            newX = snapX - elementStart.x * cos + elementStart.y * sin;
+            newY = snapY - elementStart.x * sin - elementStart.y * cos;
             break;
           case 'ne':
             newWidth = Math.max(20, elementStart.width! + localDx);
             newHeight = Math.max(20, elementStart.height! - localDy);
-            newX = elementStart.x - localDy * sin;
-            newY = elementStart.y + localDy * cos;
+            newX = snapX + localDy * sin;
+            newY = snapY - localDy * cos;
             break;
           case 'nw':
             newWidth = Math.max(20, elementStart.width! - localDx);
             newHeight = Math.max(20, elementStart.height! - localDy);
-            newX = elementStart.x + localDx * cos - localDy * sin;
-            newY = elementStart.y + localDx * sin + localDy * cos;
+            newX = snapX - localDx * cos + localDy * sin;
+            newY = snapY + localDx * sin + localDy * cos;
             break;
           case 'e':
             newWidth = Math.max(20, elementStart.width! + localDx);
             break;
           case 'w':
             newWidth = Math.max(20, elementStart.width! - localDx);
-            newX = elementStart.x + localDx * cos - localDy * sin;
-            newY = elementStart.y + localDx * sin + localDy * cos;
+            newX = snapX - elementStart.x * cos + elementStart.y * sin;
+            newY = snapY - elementStart.x * sin - elementStart.y * cos;
             break;
           case 's':
             newHeight = Math.max(20, elementStart.height! + localDy);
             break;
           case 'n':
             newHeight = Math.max(20, elementStart.height! - localDy);
-            newX = elementStart.x - localDy * sin;
-            newY = elementStart.y + localDy * cos;
+            newX = snapX + localDy * sin;
+            newY = snapY - localDy * cos;
             break;
         }
 

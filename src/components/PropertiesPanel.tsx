@@ -16,11 +16,30 @@ import {
   Lightbulb,
   Sun,
   Palette,
+  ChevronRight,
 } from 'lucide-react';
 import { SENSOR_SIZES, calculateHorizontalFOV } from '../utils/camera';
 import { kelvinToRGB, KELVIN_PRESETS, getKelvinName } from '../utils/color';
 
-export const PropertiesPanel: React.FC = () => {
+interface PropertiesPanelProps {
+  collapsed?: boolean;
+}
+
+const ToggleButton = ({ onClick, icon, title }: { onClick: () => void; icon: React.ReactNode; title: string }) => (
+  <div className="relative group mb-4">
+    <button
+      onClick={onClick}
+      className="w-full flex items-center justify-center px-3 py-2 text-sm font-medium rounded-lg transition-colors border shadow-sm bg-blue-50 dark:bg-gray-800 text-blue-900 dark:text-gray-200 border-blue-200 dark:border-gray-700 hover:bg-blue-100 dark:hover:bg-gray-700"
+    >
+      <div className="text-blue-600 dark:text-blue-400">{icon}</div>
+    </button>
+    <div className="absolute left-full top-0 ml-2 px-2 py-1 text-xs font-medium bg-gray-900 text-white rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-10">
+      {title}
+    </div>
+  </div>
+);
+
+export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = false }) => {
   const {
     getCurrentScene,
     selectedElementId,
@@ -28,6 +47,8 @@ export const PropertiesPanel: React.FC = () => {
     deleteElement,
     duplicateElement,
     darkMode,
+    toggleRightPanel,
+    rightPanelCollapsed,
   } = useDiagramStore();
 
   const customIconInputRef = useRef<HTMLInputElement>(null);
@@ -120,9 +141,18 @@ export const PropertiesPanel: React.FC = () => {
     <div className={`p-4 border-l h-full overflow-y-auto ${
       darkMode ? 'bg-gray-900 border-gray-800 text-white' : 'bg-blue-50 border-blue-100 text-gray-900'
     }`}>
-      <h3 className={`text-xs font-bold mb-4 uppercase tracking-wider ${darkMode ? 'text-blue-300' : 'text-blue-900'}`}>
-        Properties
-      </h3>
+      {collapsed && (
+        <ToggleButton
+          onClick={toggleRightPanel}
+          icon={<ChevronRight size={20} />}
+          title={rightPanelCollapsed ? 'Expand Properties' : 'Collapse Properties'}
+        />
+      )}
+      {!collapsed && (
+        <h3 className={`text-xs font-bold mb-4 uppercase tracking-wider ${darkMode ? 'text-blue-300' : 'text-blue-900'}`}>
+          Properties
+        </h3>
+      )}
 
       {/* Custom Icon Upload - For all element types */}
       <div className="mb-4 p-3 bg-blue-100 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg">

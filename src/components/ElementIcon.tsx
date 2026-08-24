@@ -224,6 +224,59 @@ export const ElementIcon: React.FC<IconProps> = ({
           </svg>
         );
 
+      case 'stairs':
+        return (
+          <svg viewBox="0 0 100 100" style={style}>
+            <polygon points="15,80 85,80 85,20 15,20" fill={color} stroke="#333" strokeWidth="2" />
+            <line x1="15" y1="70" x2="85" y2="70" stroke="#333" strokeWidth="1" />
+            <line x1="15" y1="60" x2="85" y2="60" stroke="#333" strokeWidth="1" />
+            <line x1="15" y1="50" x2="85" y2="50" stroke="#333" strokeWidth="1" />
+            <line x1="15" y1="40" x2="85" y2="40" stroke="#333" strokeWidth="1" />
+            <line x1="15" y1="30" x2="85" y2="30" stroke="#333" strokeWidth="1" />
+          </svg>
+        );
+
+      case 'column':
+        return (
+          <svg viewBox="0 0 100 100" style={style}>
+            <ellipse cx="50" cy="25" rx="20" ry="8" fill={color} stroke="#333" strokeWidth="2" />
+            <rect x="30" y="25" width="40" height="50" fill={color} stroke="#333" strokeWidth="2" />
+            <ellipse cx="50" cy="75" rx="20" ry="8" fill={color} stroke="#333" strokeWidth="2" />
+            <ellipse cx="50" cy="33" rx="15" ry="6" fill="none" stroke="#333" strokeWidth="1" opacity="0.4" />
+            <ellipse cx="50" cy="50" rx="15" ry="6" fill="none" stroke="#333" strokeWidth="1" opacity="0.4" />
+            <ellipse cx="50" cy="67" rx="15" ry="6" fill="none" stroke="#333" strokeWidth="1" opacity="0.4" />
+          </svg>
+        );
+
+      case 'archway':
+        return (
+          <svg viewBox="0 0 100 100" style={style}>
+            <path
+              d="M20 80 L20 40 Q50 15 80 40 L80 80 Z"
+              fill={color}
+              stroke="#333"
+              strokeWidth="2"
+            />
+            <path
+              d="M30 80 L30 45 Q50 25 70 45 L70 80 Z"
+              fill="none"
+              stroke="#333"
+              strokeWidth="1.5"
+            />
+          </svg>
+        );
+
+      case 'platform':
+        return (
+          <svg viewBox="0 0 100 100" style={style}>
+            <rect x="10" y="50" width="80" height="30" rx="3" fill={color} stroke="#333" strokeWidth="2" />
+            <line x1="30" y1="50" x2="30" y2="80" stroke="#333" strokeWidth="1" />
+            <line x1="50" y1="50" x2="50" y2="80" stroke="#333" strokeWidth="1" />
+            <line x1="70" y1="50" x2="70" y2="80" stroke="#333" strokeWidth="1" />
+            <line x1="10" y1="65" x2="90" y2="65" stroke="#333" strokeWidth="1" />
+          </svg>
+        );
+
       case 'cad-rectangle':
         return (
           <svg viewBox="0 0 100 100" style={style}>

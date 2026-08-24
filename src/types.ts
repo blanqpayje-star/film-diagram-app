@@ -11,6 +11,10 @@ export type ElementType =
   | 'wall'
   | 'door'
   | 'window'
+  | 'stairs'
+  | 'column'
+  | 'archway'
+  | 'platform'
   | 'furniture'
   | 'custom'
   | 'cad-rectangle'
@@ -105,4 +109,6 @@ export interface AppState {
   darkMode: boolean;
   canvasBackground: string; // color or 'none'
   canvasBackgroundImage?: string; // base64 image data
+  leftPanelCollapsed: boolean;
+  rightPanelCollapsed: boolean;
 }

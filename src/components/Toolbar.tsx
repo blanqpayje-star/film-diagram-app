@@ -15,6 +15,9 @@ import {
   RectangleHorizontal,
   Minus,
   Type,
+  Columns,
+  LayoutDashboard,
+  ChevronLeft,
 } from 'lucide-react';
 
 const elementTypes: {
@@ -35,6 +38,10 @@ const elementTypes: {
   { type: 'wall', label: 'Wall', icon: <Square size={20} />, category: 'set' },
   { type: 'door', label: 'Door', icon: <DoorOpen size={20} />, category: 'set' },
   { type: 'window', label: 'Window', icon: <Maximize size={20} />, category: 'set' },
+  { type: 'stairs', label: 'Stairs', icon: <LayoutDashboard size={20} />, category: 'set' },
+  { type: 'column', label: 'Column', icon: <Columns size={20} />, category: 'set' },
+  { type: 'archway', label: 'Archway', icon: <DoorOpen size={20} />, category: 'set' },
+  { type: 'platform', label: 'Platform', icon: <LayoutDashboard size={20} />, category: 'set' },
   { type: 'furniture', label: 'Furniture', icon: <Armchair size={20} />, category: 'set' },
   { type: 'text', label: 'Text', icon: <Type size={20} />, category: 'tools' },
 ];
@@ -51,8 +58,26 @@ const drawingTools: {
   { mode: 'text', label: 'Add Text', icon: <Type size={20} /> },
 ];
 
-export const Toolbar: React.FC = () => {
-  const { addElement, canvasWidth, canvasHeight, drawingMode, setDrawingMode, darkMode } = useDiagramStore();
+const ToggleButton = ({ onClick, icon, title }: { onClick: () => void; icon: React.ReactNode; title: string }) => (
+  <div className="relative group mb-4">
+    <button
+      onClick={onClick}
+      className="w-full flex items-center justify-center px-3 py-2 text-sm font-medium rounded-lg transition-colors border shadow-sm bg-blue-50 dark:bg-gray-800 text-blue-900 dark:text-gray-200 border-blue-200 dark:border-gray-700 hover:bg-blue-100 dark:hover:bg-gray-700"
+    >
+      <div className="text-blue-600 dark:text-blue-400">{icon}</div>
+    </button>
+    <div className="absolute left-full top-0 ml-2 px-2 py-1 text-xs font-medium bg-gray-900 text-white rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-10">
+      {title}
+    </div>
+  </div>
+);
+
+interface ToolbarProps {
+  collapsed?: boolean;
+}
+
+export const Toolbar: React.FC<ToolbarProps> = ({ collapsed = false }) => {
+  const { addElement, canvasWidth, canvasHeight, drawingMode, setDrawingMode, darkMode, toggleLeftPanel, leftPanelCollapsed } = useDiagramStore();
 
   const handleAddElement = (type: ElementType) => {
     setDrawingMode('select');
@@ -127,83 +152,118 @@ export const Toolbar: React.FC = () => {
     }
   };
 
+  const renderButton = ({ label, icon, isActive, onClick }: { label: string; icon: React.ReactNode; isActive: boolean; onClick: () => void }) => {
+    if (collapsed) {
+      return (
+        <div className="relative group">
+          <button
+            onClick={onClick}
+            className={`w-full flex items-center justify-center px-3 py-2.5 text-sm font-semibold rounded-lg transition-colors border shadow-sm ${
+              isActive
+                ? 'bg-blue-900 text-white border-blue-900'
+                : darkMode
+                ? 'bg-gray-800 text-gray-200 border-gray-700 hover:bg-gray-700'
+                : 'bg-white text-blue-900 border-blue-200 hover:bg-blue-50'
+            }`}
+          >
+            <div className="text-blue-600 dark:text-blue-400">{icon}</div>
+          </button>
+          <div className="absolute left-full top-0 ml-2 px-2 py-1 text-xs font-medium bg-gray-900 text-white rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-10">
+            {label}
+          </div>
+        </div>
+      );
+    }
+    return (
+      <button
+        onClick={onClick}
+        className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm font-semibold rounded-lg transition-colors border shadow-sm ${
+          isActive
+            ? 'bg-blue-900 text-white border-blue-900'
+            : darkMode
+            ? 'bg-gray-800 text-gray-200 border-gray-700 hover:bg-gray-700'
+            : 'bg-white text-blue-900 border-blue-200 hover:bg-blue-50'
+        }`}
+      >
+        <div className="flex-shrink-0 text-blue-600 dark:text-blue-400">{icon}</div>
+        <span className="flex-1 text-left">{label}</span>
+      </button>
+    );
+  };
+
+  const renderElementButton = ({ type, label, icon }: { type: string; label: string; icon: React.ReactNode }) => {
+    if (collapsed) {
+      return (
+        <div className="relative group">
+          <button
+            onClick={() => handleAddElement(type as ElementType)}
+            className={`w-full flex items-center justify-center px-3 py-2 text-sm font-medium rounded-lg transition-colors border shadow-sm ${
+              darkMode
+                ? 'bg-gray-800 text-gray-200 border-gray-700 hover:bg-gray-700 hover:text-white'
+                : 'bg-white text-gray-800 border-blue-200 hover:bg-blue-50'
+            }`}
+          >
+            <div className="flex-shrink-0 text-blue-600 dark:text-blue-400">{icon}</div>
+          </button>
+          <div className="absolute left-full top-0 ml-2 px-2 py-1 text-xs font-medium bg-gray-900 text-white rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-10">
+            {label}
+          </div>
+        </div>
+      );
+    }
+    return (
+      <button
+        onClick={() => handleAddElement(type as ElementType)}
+        className={`w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors border shadow-sm ${
+          darkMode
+            ? 'bg-gray-800 text-gray-200 border-gray-700 hover:bg-gray-700 hover:text-white'
+            : 'bg-white text-gray-800 border-blue-200 hover:bg-blue-50'
+        }`}
+      >
+        <div className="flex-shrink-0 text-blue-600 dark:text-blue-400">{icon}</div>
+        <span className="flex-1 text-left">{label}</span>
+      </button>
+    );
+  };
+
   return (
-    <div className={`p-4 border-r overflow-y-auto h-full ${
+    <div className={`p-4 border-r overflow-y-auto h-full transition-all duration-300 ${
       darkMode ? 'bg-gray-900 border-gray-800 text-gray-100' : 'bg-blue-50 border-blue-100 text-gray-900'
     }`}>
+      <ToggleButton onClick={toggleLeftPanel} icon={<ChevronLeft size={20} />} title={leftPanelCollapsed ? 'Expand Toolbar' : 'Collapse Toolbar'} />
+
       {/* Drawing Tools */}
-      <div className="mb-6">
-        <h3 className={`text-xs font-bold mb-3 uppercase tracking-wider ${darkMode ? 'text-blue-300' : 'text-blue-900'}`}>
-          Interactive Tools
-        </h3>
-        <div className="space-y-2">
-          {drawingTools.map(({ mode, label, icon }) => (
-            <button
-              key={mode}
-              onClick={() => setDrawingMode(mode)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm font-semibold rounded-lg transition-colors border shadow-sm ${
-                drawingMode === mode
-                  ? 'bg-blue-900 text-white border-blue-900'
-                  : darkMode
-                  ? 'bg-gray-800 text-gray-200 border-gray-700 hover:bg-gray-700'
-                  : 'bg-white text-blue-900 border-blue-200 hover:bg-blue-50'
-              }`}
-            >
-              <div className="flex-shrink-0 text-blue-600 dark:text-blue-400">{icon}</div>
-              <span className="flex-1 text-left">{label}</span>
-            </button>
-          ))}
-        </div>
+      {!collapsed && <h3 className={`text-xs font-bold mb-3 uppercase tracking-wider ${darkMode ? 'text-blue-300' : 'text-blue-900'}`}>Interactive Tools</h3>}
+      <div className="space-y-2">
+        {drawingTools.map(({ mode, label, icon }) => (
+          <div key={mode}>
+            {renderButton({ label, icon, isActive: drawingMode === mode, onClick: () => setDrawingMode(mode) })}
+          </div>
+        ))}
       </div>
 
       {/* Equipment */}
-      <div className="mb-6">
-        <h3 className={`text-xs font-bold mb-3 uppercase tracking-wider ${darkMode ? 'text-blue-300' : 'text-blue-900'}`}>
-          Equipment
-        </h3>
-        <div className="space-y-2">
-          {elementTypes
-            .filter((el) => el.category === 'equipment')
-            .map(({ type, label, icon }) => (
-              <button
-                key={type}
-                onClick={() => handleAddElement(type)}
-                className={`w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors border shadow-sm ${
-                  darkMode
-                    ? 'bg-gray-800 text-gray-200 border-gray-700 hover:bg-gray-700 hover:text-white'
-                    : 'bg-white text-gray-800 border-blue-200 hover:bg-blue-50'
-                }`}
-              >
-                <div className="flex-shrink-0 text-blue-600 dark:text-blue-400">{icon}</div>
-                <span className="flex-1 text-left">{label}</span>
-              </button>
-            ))}
-        </div>
+      {!collapsed && <h3 className={`text-xs font-bold mb-3 uppercase tracking-wider ${darkMode ? 'text-blue-300' : 'text-blue-900'}`} style={{marginTop: '1.5rem'}}>Equipment</h3>}
+      <div className="space-y-2">
+        {elementTypes
+          .filter((el) => el.category === 'equipment')
+          .map(({ type, label, icon }) => (
+            <div key={type}>
+              {renderElementButton({ type, label, icon })}
+            </div>
+          ))}
       </div>
 
       {/* Set Elements */}
-      <div className="mb-6">
-        <h3 className={`text-xs font-bold mb-3 uppercase tracking-wider ${darkMode ? 'text-blue-300' : 'text-blue-900'}`}>
-          Set & Props
-        </h3>
-        <div className="space-y-2">
-          {elementTypes
-            .filter((el) => el.category === 'set')
-            .map(({ type, label, icon }) => (
-              <button
-                key={type}
-                onClick={() => handleAddElement(type)}
-                className={`w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors border shadow-sm ${
-                  darkMode
-                    ? 'bg-gray-800 text-gray-200 border-gray-700 hover:bg-gray-700 hover:text-white'
-                    : 'bg-white text-gray-800 border-blue-200 hover:bg-blue-50'
-                }`}
-              >
-                <div className="flex-shrink-0 text-blue-600 dark:text-blue-400">{icon}</div>
-                <span className="flex-1 text-left">{label}</span>
-              </button>
-            ))}
-        </div>
+      {!collapsed && <h3 className={`text-xs font-bold mb-3 uppercase tracking-wider ${darkMode ? 'text-blue-300' : 'text-blue-900'}`} style={{marginTop: '1.5rem'}}>Set & Props</h3>}
+      <div className="space-y-2">
+        {elementTypes
+          .filter((el) => el.category === 'set')
+          .map(({ type, label, icon }) => (
+            <div key={type}>
+              {renderElementButton({ type, label, icon })}
+            </div>
+          ))}
       </div>
     </div>
   );

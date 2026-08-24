@@ -7,7 +7,7 @@ import { PropertiesPanel } from './components/PropertiesPanel';
 import './index.css';
 
 function App() {
-  const { scenes, currentSceneId, setCurrentScene, darkMode } = useDiagramStore();
+  const { scenes, currentSceneId, setCurrentScene, darkMode, leftPanelCollapsed, rightPanelCollapsed } = useDiagramStore();
 
   // Set initial scene on mount
   useEffect(() => {
@@ -31,8 +31,10 @@ function App() {
 
       <div className="flex-1 flex overflow-hidden min-h-0">
         {/* Left Toolbar */}
-        <div className="w-64 flex-shrink-0 overflow-y-auto">
-          <Toolbar />
+        <div className={`flex-shrink-0 overflow-y-auto transition-all duration-300 ${
+          leftPanelCollapsed ? 'w-16' : 'w-64'
+        }`}>
+          <Toolbar collapsed={leftPanelCollapsed} />
         </div>
 
         {/* Main Canvas - Scrollable */}
@@ -43,8 +45,10 @@ function App() {
         </div>
 
         {/* Right Properties Panel */}
-        <div className="w-80 flex-shrink-0 overflow-y-auto">
-          <PropertiesPanel />
+        <div className={`flex-shrink-0 overflow-y-auto transition-all duration-300 ${
+          rightPanelCollapsed ? 'w-16' : 'w-80'
+        }`}>
+          <PropertiesPanel collapsed={rightPanelCollapsed} />
         </div>
       </div>
 
