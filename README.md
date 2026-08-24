@@ -192,4 +192,4 @@ Inspired by tools like Cadrage and Shot Designer, built to be completely free an
 
 ---
 
-**Built with ❤️ for filmmakers, by filmmakers**
+**Built with ❤️ for filmmakers, by filmmakers** **- KYLE MAGANDA**
