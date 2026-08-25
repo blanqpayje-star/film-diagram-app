@@ -154,14 +154,14 @@ export const Header: React.FC = () => {
         {/* Scene Selector */}
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
-            <label className="text-sm font-semibold text-[var(--ink-muted)]">Scene:</label>
+            <label className="text-sm font-semibold text-[var(--on-binder-muted)]">Scene:</label>
             <select
               value={currentSceneId || ''}
               onChange={(e) => setCurrentScene(e.target.value)}
               className="px-3 py-1.5 bg-[var(--binder)] text-[var(--ink-strong)] font-medium border border-[var(--line)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
             >
               {scenes.map((scene) => (
-                <option key={scene.id} value={scene.id} className="bg-[var(--binder)] text-[var(--ink-strong)]">
+                <option key={scene.id} value={scene.id} className="bg-[var(--control)] text-[var(--ink-strong)]">
                   {scene.name}
                 </option>
               ))}
@@ -190,7 +190,7 @@ export const Header: React.FC = () => {
                   setShowNewSceneInput(false);
                   setNewSceneName('');
                 }}
-                className="px-3 py-1.5 bg-[var(--binder)] text-[var(--ink-strong)] rounded-lg hover:bg-[var(--binder)] text-sm font-semibold"
+                className="px-3 py-1.5 bg-[var(--binder)] text-[var(--on-binder)] rounded-lg hover:bg-[var(--control-hover)] hover:text-[var(--ink-strong)] text-sm font-semibold"
               >
                 Cancel
               </button>
@@ -225,7 +225,7 @@ export const Header: React.FC = () => {
                       deleteScene(currentSceneId);
                     }
                   }}
-                  className="p-2 bg-red-800 text-[var(--ink-strong)] rounded-lg hover:bg-red-700 transition-colors"
+                  className="p-2 bg-red-800 text-[#fff7ec] rounded-lg hover:bg-red-700 transition-colors"
                   title="Delete Scene"
                 >
                   <Trash2 size={16} />
@@ -240,20 +240,20 @@ export const Header: React.FC = () => {
           {/* Dark Mode Toggle */}
           <button
             onClick={toggleDarkMode}
-            className="p-2 bg-[var(--binder)] text-[var(--ink-muted)] rounded-lg hover:bg-[var(--binder)] transition-colors"
-            title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              className="p-2 bg-[var(--binder)] text-[var(--on-binder-muted)] rounded-lg hover:bg-[var(--control-hover)] hover:text-[var(--ink-strong)] transition-colors"
+              title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
           >
             {darkMode ? <Sun size={18} /> : <Moon size={18} />}
           </button>
 
-          <div className="h-6 w-px bg-[var(--binder)] mx-1" />
+          <div className="h-6 w-px bg-[var(--line)] mx-1" />
 
           <button
             onClick={toggleGrid}
             className={`p-2 rounded-lg font-bold transition-colors ${
               gridEnabled
                 ? 'bg-[var(--accent)] text-[var(--accent-ink)]'
-                : 'bg-[var(--binder)] text-[var(--ink-muted)] hover:bg-[var(--binder)]'
+                : 'bg-[var(--binder)] text-[var(--on-binder-muted)] hover:bg-[var(--control-hover)]'
             }`}
             title="Toggle Grid"
           >
@@ -265,14 +265,14 @@ export const Header: React.FC = () => {
             className={`p-2 rounded-lg font-bold transition-colors ${
               snapToGrid
                 ? 'bg-[var(--accent)] text-[var(--accent-ink)]'
-                : 'bg-[var(--binder)] text-[var(--ink-muted)] hover:bg-[var(--binder)]'
+                : 'bg-[var(--binder)] text-[var(--on-binder-muted)] hover:bg-[var(--control-hover)]'
             }`}
             title="Snap to Grid"
           >
             <Magnet size={18} />
           </button>
 
-          <div className="h-6 w-px bg-[var(--binder)] mx-1" />
+          <div className="h-6 w-px bg-[var(--line)] mx-1" />
 
           {/* Canvas Background */}
           <div className="relative group">
@@ -284,11 +284,11 @@ export const Header: React.FC = () => {
               <Image size={18} />
             </button>
             <div className="absolute right-0 mt-1 w-64 bg-[var(--binder)] border border-[var(--line)] rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 p-3">
-              <h4 className="text-xs font-bold text-[var(--ink-muted)] mb-2 uppercase tracking-wider">Canvas Background</h4>
+              <h4 className="text-xs font-bold text-[var(--on-binder-muted)] mb-2 uppercase tracking-wider">Canvas Background</h4>
               
               {/* Background Color */}
               <div className="mb-3">
-                <label className="block text-xs font-semibold text-[var(--ink-muted)] mb-1">Solid Color</label>
+                <label className="block text-xs font-semibold text-[var(--on-binder-muted)] mb-1">Solid Color</label>
                 <input
                   type="color"
                   value={canvasBackground}
@@ -299,12 +299,12 @@ export const Header: React.FC = () => {
 
               {/* Background Image */}
               <div className="mb-3">
-                <label className="block text-xs font-semibold text-[var(--ink-muted)] mb-1">Texture / Image</label>
+                <label className="block text-xs font-semibold text-[var(--on-binder-muted)] mb-1">Texture / Image</label>
                 <input
                   type="file"
                   accept="image/*"
                   onChange={handleBackgroundImageUpload}
-                  className="w-full text-xs text-[var(--ink-muted)]"
+                  className="w-full text-xs text-[var(--on-binder-muted)]"
                 />
                 {canvasBackgroundImage && (
                   <button
@@ -318,7 +318,7 @@ export const Header: React.FC = () => {
 
               {/* Quick Presets */}
               <div>
-                <label className="block text-xs font-semibold text-[var(--ink-muted)] mb-1">Quick Colors</label>
+                <label className="block text-xs font-semibold text-[var(--on-binder-muted)] mb-1">Quick Colors</label>
                 <div className="flex flex-wrap gap-1">
                   {['#FFFFFF', '#F8FAFC', '#E0E7FF', '#DBEAFE', '#BFDBFE', '#93C5FD', '#60A5FA', '#3B82F6', '#2563EB', '#1D4ED8', '#1E40AF', '#1E3A8A', '#000000'].map((color) => (
                     <button
@@ -336,7 +336,7 @@ export const Header: React.FC = () => {
             </div>
           </div>
 
-          <div className="h-6 w-px bg-[var(--binder)] mx-1" />
+          <div className="h-6 w-px bg-[var(--line)] mx-1" />
 
           {/* Export Menu */}
           <div className="relative group">
@@ -351,7 +351,7 @@ export const Header: React.FC = () => {
               <button
                 onClick={handleExportPNG}
                 disabled={isExporting}
-                className="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-[var(--ink-strong)] hover:bg-[var(--binder)] rounded-t-lg transition-colors"
+                className="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-[var(--on-binder)] hover:bg-[var(--control-hover)] hover:text-[var(--ink-strong)] rounded-t-lg transition-colors"
               >
                 <FileImage size={16} />
                 Export as PNG
@@ -359,14 +359,14 @@ export const Header: React.FC = () => {
               <button
                 onClick={handleExportPDF}
                 disabled={isExporting}
-                className="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-[var(--ink-strong)] hover:bg-[var(--binder)] transition-colors"
+                className="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-[var(--on-binder)] hover:bg-[var(--control-hover)] hover:text-[var(--ink-strong)] transition-colors"
               >
                 <FileText size={16} />
                 Export as PDF
               </button>
               <button
                 onClick={handleExportJSON}
-                className="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-[var(--ink-strong)] hover:bg-[var(--binder)] rounded-b-lg transition-colors"
+                className="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-[var(--on-binder)] hover:bg-[var(--control-hover)] hover:text-[var(--ink-strong)] rounded-b-lg transition-colors"
               >
                 <Download size={16} />
                 Export as JSON
@@ -397,10 +397,10 @@ export const Header: React.FC = () => {
 
       {/* Settings Panel */}
       {showSettings && (
-        <div className="border-t border-[var(--line)] px-4 py-3 bg-[var(--binder)] text-[var(--ink-muted)]">
+        <div className="border-t border-[var(--line)] px-4 py-3 bg-[var(--binder)] text-[var(--on-binder-muted)]">
           <div className="flex items-center gap-6 flex-wrap">
             <div className="flex items-center gap-3">
-              <label className="text-sm font-semibold text-[var(--ink-muted)]">Canvas Size:</label>
+              <label className="text-sm font-semibold text-[var(--on-binder-muted)]">Canvas Size:</label>
               <input
                 type="number"
                 value={useDiagramStore.getState().canvasWidth}
@@ -415,7 +415,7 @@ export const Header: React.FC = () => {
                 className="w-20 px-2 py-1 bg-[var(--binder)] border border-[var(--line)] rounded text-sm text-[var(--ink-strong)] font-medium focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                 placeholder="Width"
               />
-              <span className="text-[var(--ink-muted)] font-bold">×</span>
+              <span className="text-[var(--on-binder-muted)] font-bold">×</span>
               <input
                 type="number"
                 value={useDiagramStore.getState().canvasHeight}
@@ -433,7 +433,7 @@ export const Header: React.FC = () => {
             </div>
 
             <div className="flex items-center gap-3">
-              <label className="text-sm font-semibold text-[var(--ink-muted)]">Grid Size:</label>
+              <label className="text-sm font-semibold text-[var(--on-binder-muted)]">Grid Size:</label>
               <input
                 type="number"
                 value={useDiagramStore.getState().gridSize}
@@ -447,7 +447,7 @@ export const Header: React.FC = () => {
             </div>
 
             <div className="flex items-center gap-3">
-              <label className="text-sm font-semibold text-[var(--ink-muted)]">Measurement Unit:</label>
+              <label className="text-sm font-semibold text-[var(--on-binder-muted)]">Measurement Unit:</label>
               <select
                 value={measurementUnit}
                 onChange={(e) => setMeasurementUnit(e.target.value as 'ft' | 'm' | 'in')}
@@ -471,7 +471,7 @@ export const Header: React.FC = () => {
 
       {/* Canvas Background Quick Panel */}
       {showCanvasBackground && (
-        <div className="border-t border-[var(--line)] px-4 py-2 bg-[var(--binder)] text-[var(--ink-muted)]">
+        <div className="border-t border-[var(--line)] px-4 py-2 bg-[var(--binder)] text-[var(--on-binder-muted)]">
           <div className="flex items-center gap-4 flex-wrap">
             <input
               type="color"
@@ -483,7 +483,7 @@ export const Header: React.FC = () => {
               type="file"
               accept="image/*"
               onChange={handleBackgroundImageUpload}
-              className="text-xs text-[var(--ink-muted)]"
+              className="text-xs text-[var(--on-binder-muted)]"
             />
             {canvasBackgroundImage && (
               <button
@@ -495,7 +495,7 @@ export const Header: React.FC = () => {
             )}
             <button
               onClick={() => setShowCanvasBackground(false)}
-              className="ml-auto px-3 py-1 bg-[var(--binder)] text-[var(--ink-strong)] rounded hover:bg-[var(--binder)] text-sm transition-colors"
+              className="ml-auto px-3 py-1 bg-[var(--binder)] text-[var(--on-binder)] rounded hover:bg-[var(--control-hover)] hover:text-[var(--ink-strong)] text-sm transition-colors"
             >
               Done
             </button>

@@ -623,7 +623,7 @@ export const Canvas: React.FC = () => {
             </div>
           )}
           {element.label && (
-            <div className="absolute top-1 left-1 text-xs font-semibold text-[var(--ink-strong)] bg-[var(--binder)] px-2 py-0.5 rounded shadow-sm border-[var(--line)]">
+            <div className="absolute top-1 left-1 text-xs font-semibold text-[var(--on-binder)] bg-[var(--binder)] px-2 py-0.5 rounded shadow-sm border-[var(--line)]">
               {element.label}
             </div>
           )}
@@ -999,7 +999,7 @@ export const Canvas: React.FC = () => {
               />
             </div>
             {element.label && (
-              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 text-xs font-semibold text-[var(--ink-strong)] bg-[var(--binder)] px-2 py-0.5 rounded shadow border-[var(--line)] whitespace-nowrap">
+              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 text-xs font-semibold text-[var(--on-binder)] bg-[var(--binder)] px-2 py-0.5 rounded shadow border-[var(--line)] whitespace-nowrap">
                 {element.label}
               </div>
             )}

@@ -75,7 +75,7 @@ const ToggleButton = ({ onClick, icon, title }: { onClick: () => void; icon: Rea
     >
       <div className="text-[var(--accent)]">{icon}</div>
     </button>
-    <div className="absolute left-full top-0 ml-2 px-2 py-1 text-xs font-medium bg-[var(--binder)] text-[var(--ink-strong)] rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-10">
+    <div className="absolute left-full top-0 ml-2 px-2 py-1 text-xs font-medium bg-[var(--control)] text-[var(--ink-strong)] border border-[var(--line)] rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-10">
       {title}
     </div>
   </div>
@@ -195,17 +195,16 @@ export const Toolbar: React.FC<ToolbarProps> = ({ collapsed = false }) => {
         <div className="relative group">
           <button
             onClick={onClick}
+            data-active={isActive ? 'true' : undefined}
             className={`w-full flex items-center justify-center px-3 py-2.5 text-sm font-semibold rounded-lg transition-colors border shadow-sm ${
               isActive
-                ? 'bg-[var(--binder)] text-[var(--ink-strong)] border-[var(--line)]'
-                : darkMode
-                ? 'bg-[var(--control)] text-[var(--ink-strong)] border-[var(--line)] hover:bg-[var(--control-hover)]'
+                ? 'bg-[var(--accent)] text-[var(--accent-ink)] border-[var(--accent)]'
                 : 'bg-[var(--control)] text-[var(--ink-strong)] border-[var(--line)] hover:bg-[var(--control-hover)]'
             }`}
           >
-            <div className="text-[var(--accent)]">{icon}</div>
+            <div className={isActive ? 'text-[var(--accent-ink)]' : 'text-[var(--accent)]'}>{icon}</div>
           </button>
-          <div className="absolute left-full top-0 ml-2 px-2 py-1 text-xs font-medium bg-[var(--binder)] text-[var(--ink-strong)] rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-10">
+          <div className="absolute left-full top-0 ml-2 px-2 py-1 text-xs font-medium bg-[var(--control)] text-[var(--ink-strong)] border border-[var(--line)] rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-10">
             {label}
           </div>
         </div>
@@ -214,15 +213,14 @@ export const Toolbar: React.FC<ToolbarProps> = ({ collapsed = false }) => {
     return (
       <button
         onClick={onClick}
+        data-active={isActive ? 'true' : undefined}
         className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm font-semibold rounded-lg transition-colors border shadow-sm ${
           isActive
-            ? 'bg-[var(--binder)] text-[var(--ink-strong)] border-[var(--line)]'
-            : darkMode
-            ? 'bg-[var(--control)] text-[var(--ink-strong)] border-[var(--line)] hover:bg-[var(--control-hover)]'
+            ? 'bg-[var(--accent)] text-[var(--accent-ink)] border-[var(--accent)]'
             : 'bg-[var(--control)] text-[var(--ink-strong)] border-[var(--line)] hover:bg-[var(--control-hover)]'
         }`}
       >
-        <div className="flex-shrink-0 text-[var(--accent)]">{icon}</div>
+        <div className={`flex-shrink-0 ${isActive ? 'text-[var(--accent-ink)]' : 'text-[var(--accent)]'}`}>{icon}</div>
         <span className="flex-1 text-left">{label}</span>
       </button>
     );
@@ -234,15 +232,11 @@ export const Toolbar: React.FC<ToolbarProps> = ({ collapsed = false }) => {
         <div className="relative group">
           <button
             onClick={() => handleAddElement(type as ElementType)}
-            className={`w-full flex items-center justify-center px-3 py-2 text-sm font-medium rounded-lg transition-colors border shadow-sm ${
-              darkMode
-                ? 'bg-[var(--control)] text-[var(--ink-strong)] border-[var(--line)] hover:bg-[var(--control-hover)] hover:text-[var(--ink-strong)]'
-                : 'bg-[var(--control)] text-[var(--ink-strong)] border-[var(--line)] hover:bg-[var(--control-hover)]'
-            }`}
+            className="w-full flex items-center justify-center px-3 py-2 text-sm font-medium rounded-lg transition-colors border shadow-sm bg-[var(--control)] text-[var(--ink-strong)] border-[var(--line)] hover:bg-[var(--control-hover)]"
           >
             <div className="flex-shrink-0 text-[var(--accent)]">{icon}</div>
           </button>
-          <div className="absolute left-full top-0 ml-2 px-2 py-1 text-xs font-medium bg-[var(--binder)] text-[var(--ink-strong)] rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-10">
+          <div className="absolute left-full top-0 ml-2 px-2 py-1 text-xs font-medium bg-[var(--control)] text-[var(--ink-strong)] border border-[var(--line)] rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-10">
             {label}
           </div>
         </div>
@@ -251,11 +245,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({ collapsed = false }) => {
     return (
       <button
         onClick={() => handleAddElement(type as ElementType)}
-        className={`w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors border shadow-sm ${
-          darkMode
-                ? 'bg-[var(--control)] text-[var(--ink-strong)] border-[var(--line)] hover:bg-[var(--control-hover)] hover:text-[var(--ink-strong)]'
-                : 'bg-[var(--control)] text-[var(--ink-strong)] border-[var(--line)] hover:bg-[var(--control-hover)]'
-        }`}
+        className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors border shadow-sm bg-[var(--control)] text-[var(--ink-strong)] border-[var(--line)] hover:bg-[var(--control-hover)]"
       >
         <div className="flex-shrink-0 text-[var(--accent)]">{icon}</div>
         <span className="flex-1 text-left">{label}</span>

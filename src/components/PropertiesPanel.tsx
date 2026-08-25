@@ -183,7 +183,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
           {selectedElement.customIcon && (
             <button
               onClick={() => updateElement(selectedElement.id, { customIcon: undefined })}
-              className="py-1.5 px-3 text-xs font-bold bg-[var(--danger)] text-[var(--ink-strong)] rounded hover:bg-[var(--danger)]/90 transition-colors"
+              className="py-1.5 px-3 text-xs font-bold bg-[var(--danger)] text-[#fff7ec] rounded hover:bg-[var(--danger)]/90 transition-colors"
             >
               Remove
             </button>
@@ -205,10 +205,10 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
             updateElement(selectedElement.id, { label: e.target.value })
           }
           placeholder="Add label..."
-          className={`w-full px-3 py-2 text-sm font-medium border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 ${
+          className={`w-full px-3 py-2 text-sm font-medium border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent)] ${
             darkMode
-              ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)] placeholder-[var(--ink-strong)]'
-              : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)] placeholder-[var(--ink-strong)]'
+              ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)] placeholder-[var(--ink-muted)]'
+              : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)] placeholder-[var(--ink-muted)]'
           }`}
         />
       </div>
@@ -237,7 +237,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
             {selectedElement.cadIcon && (
               <button
                 onClick={() => updateElement(selectedElement.id, { cadIcon: undefined })}
-                className="py-1.5 px-3 text-xs font-bold bg-[var(--danger)] text-[var(--ink-strong)] rounded hover:bg-[var(--danger)]/90 transition-colors"
+                className="py-1.5 px-3 text-xs font-bold bg-[var(--danger)] text-[#fff7ec] rounded hover:bg-[var(--danger)]/90 transition-colors"
               >
                 Remove
               </button>
@@ -290,7 +290,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                     },
                   })
                 }
-                className={`w-full px-2 py-1.5 text-xs font-medium border rounded focus:outline-none focus:ring-2 focus:ring-blue-600 ${
+                className={`w-full px-2 py-1.5 text-xs font-medium border rounded focus:outline-none focus:ring-2 focus:ring-[var(--accent)] ${
                   darkMode
                     ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
                     : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
@@ -414,9 +414,9 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
 
       {/* Light-specific controls */}
       {isLight && lightSettings && (
-        <div className="mb-4 p-3 bg-amber-100 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-lg">
+        <div className="mb-4 p-3 bg-[var(--control)] border border-[var(--line)] rounded-lg">
           <div className="flex items-center justify-between mb-3">
-            <h4 className="text-xs font-bold text-amber-900 dark:text-amber-200 flex items-center gap-2">
+            <h4 className="text-xs font-bold text-[var(--ink-strong)] flex items-center gap-2">
               <Lightbulb size={16} />
               Light Settings
             </h4>
@@ -526,7 +526,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                   }
                   className={`flex-1 px-3 py-2 text-xs font-bold rounded border ${
                     lightSettings.colorMode === 'kelvin'
-                      ? 'bg-amber-600 text-white border-amber-600'
+                      ? 'bg-[var(--amber)] text-white border-[var(--amber)]'
                       : darkMode
                       ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-muted)] hover:bg-[var(--control-hover)]'
                       : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)] hover:bg-[var(--control-hover)]'
@@ -594,7 +594,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                       }
                       className={`px-2 py-1 text-xs font-bold rounded border ${
                         lightSettings.kelvin === preset.value
-                          ? 'bg-amber-600 text-white border-amber-600'
+                          ? 'bg-[var(--amber)] text-white border-[var(--amber)]'
                           : darkMode
                           ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-muted)] hover:bg-[var(--control-hover)]'
                           : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)] hover:bg-[var(--control-hover)]'
@@ -654,7 +654,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                         },
                       })
                     }
-                    className={`w-full px-3 py-2 text-xs font-mono font-bold border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 ${
+                    className={`w-full px-3 py-2 text-xs font-mono font-bold border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent)] ${
                       darkMode
                         ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
                         : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
@@ -687,7 +687,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
               onChange={(e) =>
                 updateElement(selectedElement.id, { color: e.target.value })
               }
-              className={`w-full px-3 py-2 text-xs font-mono font-bold border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 ${
+              className={`w-full px-3 py-2 text-xs font-mono font-bold border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent)] ${
                 darkMode
                   ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
                   : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
@@ -699,8 +699,8 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
 
       {/* Text Customization - for text elements */}
       {selectedElement.type === 'text' && (
-        <div className="mb-4 p-3 bg-purple-100 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-800 rounded-lg">
-          <h4 className="text-xs font-bold text-purple-900 dark:text-purple-200 mb-3 flex items-center gap-2">
+        <div className="mb-4 p-3 bg-[var(--control)] border border-[var(--line)] rounded-lg">
+          <h4 className="text-xs font-bold text-[var(--ink-strong)] mb-3 flex items-center gap-2">
             <Type size={16} />
             Text Formatting
           </h4>
@@ -716,7 +716,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
               onChange={(e) =>
                 updateElement(selectedElement.id, { fontFamily: e.target.value })
               }
-              className={`w-full px-3 py-2 text-sm font-medium border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 ${
+              className={`w-full px-3 py-2 text-sm font-medium border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent)] ${
                 darkMode
                   ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
                   : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
@@ -762,7 +762,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                   }
                   className={`px-2 py-1.5 text-xs font-bold rounded border transition-colors ${
                     selectedElement.fontWeight === weight.value
-                      ? 'bg-purple-600 text-white border-purple-600'
+                      ? 'bg-[var(--accent)] text-[var(--accent-ink)] border-[var(--accent)]'
                       : darkMode
                       ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-muted)] hover:bg-[var(--control-hover)]'
                       : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)] hover:bg-[var(--control-hover)]'
@@ -792,7 +792,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                   }
                   className={`flex-1 px-3 py-2 text-xs font-bold rounded border transition-colors flex items-center justify-center gap-1 ${
                     selectedElement.fontStyle === style.value
-                      ? 'bg-purple-600 text-white border-purple-600'
+                      ? 'bg-[var(--accent)] text-[var(--accent-ink)] border-[var(--accent)]'
                       : darkMode
                       ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-muted)] hover:bg-[var(--control-hover)]'
                       : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)] hover:bg-[var(--control-hover)]'
@@ -823,7 +823,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                   }
                   className={`flex-1 px-3 py-2 text-xs font-bold rounded border transition-colors flex items-center justify-center gap-1 ${
                     selectedElement.textAlign === align.value
-                      ? 'bg-purple-600 text-white border-purple-600'
+                      ? 'bg-[var(--accent)] text-[var(--accent-ink)] border-[var(--accent)]'
                       : darkMode
                       ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-muted)] hover:bg-[var(--control-hover)]'
                       : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)] hover:bg-[var(--control-hover)]'
@@ -880,8 +880,8 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
 
       {/* Light Modifiers - for light elements */}
       {isLight && (
-        <div className="mb-4 p-3 bg-purple-100 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-800 rounded-lg">
-          <h4 className="text-xs font-bold text-purple-900 dark:text-purple-200 mb-3 flex items-center gap-2">
+        <div className="mb-4 p-3 bg-[var(--control)] border border-[var(--line)] rounded-lg">
+          <h4 className="text-xs font-bold text-[var(--ink-strong)] mb-3 flex items-center gap-2">
             <Filter size={14} />
             Light Modifiers
           </h4>
@@ -909,7 +909,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                   },
                 })
               }
-              className={`w-full px-3 py-2 text-sm font-medium border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 ${
+              className={`w-full px-3 py-2 text-sm font-medium border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent)] ${
                 darkMode
                   ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
                   : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
@@ -1187,7 +1187,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                   x: parseInt(e.target.value) || 0,
                 })
               }
-              className={`w-full px-2 py-1 text-xs font-bold border rounded focus:outline-none focus:ring-2 focus:ring-blue-600 ${
+              className={`w-full px-2 py-1 text-xs font-bold border rounded focus:outline-none focus:ring-2 focus:ring-[var(--accent)] ${
                 darkMode
                   ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
                   : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
@@ -1204,7 +1204,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                   y: parseInt(e.target.value) || 0,
                 })
               }
-              className={`w-full px-2 py-1 text-xs font-bold border rounded focus:outline-none focus:ring-2 focus:ring-blue-600 ${
+              className={`w-full px-2 py-1 text-xs font-bold border rounded focus:outline-none focus:ring-2 focus:ring-[var(--accent)] ${
                 darkMode
                   ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
                   : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
@@ -1215,7 +1215,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
       </div>
 
       {/* Actions */}
-      <div className="pt-4 border-t border-gray-300 dark:border-gray-800 space-y-2">
+      <div className="pt-4 border-t border-[var(--line-strong)] space-y-2">
         <button
           onClick={() => duplicateElement(selectedElement.id)}
           className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm font-bold bg-[var(--accent)] text-[var(--accent-ink)] rounded-lg hover:bg-[var(--accent)]/90 transition-colors shadow-sm"
@@ -1225,7 +1225,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
         </button>
         <button
           onClick={() => deleteElement(selectedElement.id)}
-          className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm font-bold bg-[var(--danger)] text-[var(--ink-strong)] rounded-lg hover:bg-[var(--danger)]/90 transition-colors shadow-sm"
+          className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm font-bold bg-[var(--danger)] text-[#fff7ec] rounded-lg hover:bg-[var(--danger)]/90 transition-colors shadow-sm"
         >
           <Trash2 size={16} />
           Delete
