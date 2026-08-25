@@ -623,7 +623,7 @@ export const Canvas: React.FC = () => {
             </div>
           )}
           {element.label && (
-            <div className="absolute top-1 left-1 text-xs font-semibold text-white dark:text-gray-900 bg-blue-900 dark:bg-blue-200 px-2 py-0.5 rounded shadow-sm border border-blue-700 dark:border-blue-400">
+            <div className="absolute top-1 left-1 text-xs font-semibold text-white bg-blue-900 px-2 py-0.5 rounded shadow-sm border border-blue-700">
               {element.label}
             </div>
           )}
@@ -836,7 +836,7 @@ export const Canvas: React.FC = () => {
     }
   };
 
-  const gridLineColor = darkMode ? '#374151' : '#BFDBFE';
+  const gridLineColor = darkMode ? '#354247' : '#C8C0B0';
 
   // Canvas background style
   const canvasBackgroundStyle = {
@@ -850,8 +850,7 @@ export const Canvas: React.FC = () => {
   return (
     <div
       ref={canvasRef}
-      className="lighting-plot-canvas"
-      className={`relative overflow-hidden transition-colors ${
+      className={`lighting-plot-canvas relative overflow-hidden transition-colors ${
         darkMode ? 'bg-gray-900' : 'bg-white'
       }`}
       style={{
@@ -1000,7 +999,7 @@ export const Canvas: React.FC = () => {
               />
             </div>
             {element.label && (
-              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 text-xs font-semibold text-white dark:text-gray-900 bg-blue-900 dark:bg-blue-200 px-2 py-0.5 rounded shadow border border-blue-700 dark:border-blue-400 whitespace-nowrap">
+              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 text-xs font-semibold text-white bg-blue-900 px-2 py-0.5 rounded shadow border border-blue-700 whitespace-nowrap">
                 {element.label}
               </div>
             )}

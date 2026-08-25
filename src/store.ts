@@ -87,7 +87,7 @@ export const useDiagramStore = create<DiagramStore>()(
       drawingMode: 'select',
       measurementUnit: 'ft',
       darkMode: false,
-      canvasBackground: '#ffffff',
+      canvasBackground: '#F5F1E7',
       canvasBackgroundImage: undefined,
 
       // Panel state
