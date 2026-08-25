@@ -1,0 +1,67 @@
+{
+  "title": "Choose Film Diagram Studio's visual world",
+  "question": "Select the operating language that should guide the full interface redesign.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "The Production Binder",
+      "kicker": "THE ROLL",
+      "lineage": "annotated camera-department binders and call-sheet inserts",
+      "thesis": "A working production document—fast to mark up, impossible to mistake for a generic design tool.",
+      "palette": ["#101515", "#F2EBDD", "#D7FF48", "#E75936"],
+      "materials": ["warm stock", "graphite ink", "fluorescent set tape"],
+      "viewport": "A clear command rail, a generous drafting stage, and a compact inspector read like one disciplined field document.",
+      "risk": "Can feel overly editorial if live controls are not visibly immediate.",
+      "raised": [
+        {"from": "Ikeda datamatics", "raise": "Use its uncompromising information density for compact metadata and time-critical controls."},
+        {"from": "tensegrity column", "raise": "Make transform, aim, and cone relationships visibly legible as a connected system."}
+      ]
+    },
+    {
+      "id": "model-pick",
+      "label": "The Lighting Plot",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "professional gaffer plots and architectural drafting sheets",
+      "thesis": "Every control earns its place on a precision plot, with the camera and light geometry as the hero.",
+      "palette": ["#0C1116", "#E6E1D7", "#3F9CFF", "#FFC84A"],
+      "materials": ["blueprint grid", "vellum", "registration marks"],
+      "viewport": "A near-black stage surrounds a pale plan sheet, with tools indexed like disciplined technical instruments.",
+      "risk": "Familiar to the category; it needs strong editing to feel owned rather than expected."
+    },
+    {
+      "id": "challenger-tensegrity",
+      "label": "The Tension Rig",
+      "verdict": "competitive",
+      "lineage": "kinetic tensegrity sculpture and engineering force diagrams",
+      "thesis": "A spatial control surface where aim, scale, and light cones read as linked forces.",
+      "palette": ["#E9E6DD", "#16191B", "#E1392D", "#7A8C8B"],
+      "materials": ["carbon rods", "signal cord", "concrete"],
+      "viewport": "An instrument-like stage makes every selected fixture feel connected to its diagrammed output.",
+      "case": "Strongly supports on-set adjustment, but loses some document-level familiarity for planning and teaching.",
+      "risk": "Could turn a practical tool into an abstract technical object."
+    },
+    {
+      "id": "challenger-ikeda",
+      "label": "Signal Index",
+      "verdict": "declined",
+      "lineage": "data-sublime barcode fields and monochrome signal displays",
+      "palette": ["#000000", "#FFFFFF"],
+      "materials": ["hairline rules", "tabular numerics"],
+      "case": "It is fast and exact but lacks filmmaking warmth and easy general-audience entry.",
+      "kept": "Density without clutter.",
+      "risk": "Would make the spatial planning work feel emotionally remote."
+    }
+  ],
+  "reroll": {"registers": ["safer", "bolder"]},
+  "buildPath": {"value": "code", "toggle": false},
+  "canon": true,
+  "canonCard": {
+    "label": "The category standard",
+    "thesis": "A polished dark technical editor with familiar sidebars and blue accents.",
+    "palette": ["#0F172A", "#FFFFFF", "#2563EB"],
+    "materials": ["clean grid", "soft panels"],
+    "viewport": "A conventional professional diagramming workspace, executed at full craft.",
+    "risk": "Easy to use, but visually interchangeable with adjacent production tools."
+  },
+  "steer": true
+}

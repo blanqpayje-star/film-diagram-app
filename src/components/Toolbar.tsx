@@ -264,7 +264,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({ collapsed = false }) => {
   };
 
   return (
-    <div className={`p-4 border-r overflow-y-auto h-full transition-all duration-300 ${
+    <div className={`tool-panel p-4 overflow-y-auto h-full transition-all duration-300 ${
       darkMode ? 'bg-gray-900 border-gray-800 text-gray-100' : 'bg-blue-50 border-blue-100 text-gray-900'
     }`}>
       <ToggleButton onClick={toggleLeftPanel} icon={<ChevronLeft size={20} />} title={leftPanelCollapsed ? 'Expand Toolbar' : 'Collapse Toolbar'} />

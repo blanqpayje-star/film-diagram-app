@@ -140,14 +140,14 @@ export const Header: React.FC = () => {
   };
 
   return (
-    <header className="bg-blue-900 text-blue-100 shadow-lg flex-shrink-0 z-10 border-b border-blue-700">
-      <div className="flex items-center justify-between px-4 py-3">
+    <header className="app-header flex-shrink-0 z-10">
+      <div className="app-header__bar flex items-center justify-between px-5 py-3">
         {/* Logo */}
-        <div className="flex items-center gap-3">
-          <Film className="text-blue-200" size={28} />
+        <div className="app-brand flex items-center gap-3">
+          <Film className="app-brand__mark" size={25} />
           <div>
-            <h1 className="text-lg font-bold tracking-wide text-white">Film Diagram Studio</h1>
-            <p className="text-xs text-blue-200 opacity-80 font-medium">Lighting & Camera Pre-viz</p>
+            <h1 className="text-lg font-bold tracking-wide">Film Diagram Studio</h1>
+            <p className="text-xs font-medium">Lighting &amp; camera pre-viz</p>
           </div>
         </div>
 

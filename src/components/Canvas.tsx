@@ -850,6 +850,7 @@ export const Canvas: React.FC = () => {
   return (
     <div
       ref={canvasRef}
+      className="lighting-plot-canvas"
       className={`relative overflow-hidden transition-colors ${
         darkMode ? 'bg-gray-900' : 'bg-white'
       }`}

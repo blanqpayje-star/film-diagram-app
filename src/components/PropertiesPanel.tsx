@@ -133,7 +133,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
 
   if (!selectedElement) {
     return (
-      <div className={`p-4 border-l h-full flex flex-col justify-center items-center ${
+      <div className={`inspector-panel p-4 h-full flex flex-col justify-center items-center ${
         darkMode ? 'bg-gray-900 border-gray-800 text-gray-400' : 'bg-blue-50 border-blue-100 text-gray-600'
       }`}>
         <div className="text-center text-sm font-medium">
@@ -144,7 +144,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
   }
 
   return (
-    <div className={`p-4 border-l h-full overflow-y-auto ${
+    <div className={`inspector-panel p-4 h-full overflow-y-auto ${
       darkMode ? 'bg-gray-900 border-gray-800 text-white' : 'bg-blue-50 border-blue-100 text-gray-900'
     }`}>
       {collapsed && (

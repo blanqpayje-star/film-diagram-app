@@ -26,26 +26,26 @@ function App() {
   }, [darkMode]);
 
   return (
-    <div className="h-screen flex flex-col bg-[#E8ECD7] dark:bg-neutral-900 overflow-hidden">
+    <div className="app-shell h-screen flex flex-col overflow-hidden">
       <Header />
 
-      <div className="flex-1 flex overflow-hidden min-h-0">
+      <div className="app-workspace flex-1 flex overflow-hidden min-h-0">
         {/* Left Toolbar */}
-        <div className={`flex-shrink-0 overflow-y-auto transition-all duration-300 ${
+        <div className={`tool-dock flex-shrink-0 overflow-y-auto transition-all duration-300 ${
           leftPanelCollapsed ? 'w-16' : 'w-64'
         }`}>
           <Toolbar collapsed={leftPanelCollapsed} />
         </div>
 
         {/* Main Canvas - Scrollable */}
-        <div className="flex-1 overflow-auto p-4 bg-neutral-100 dark:bg-neutral-800">
-          <div className="inline-block shadow-2xl canvas-container">
+        <div className="canvas-stage flex-1 overflow-auto p-5">
+          <div className="inline-block canvas-container">
             <Canvas />
           </div>
         </div>
 
         {/* Right Properties Panel */}
-        <div className={`flex-shrink-0 overflow-y-auto transition-all duration-300 ${
+        <div className={`inspector-dock flex-shrink-0 overflow-y-auto transition-all duration-300 ${
           rightPanelCollapsed ? 'w-16' : 'w-80'
         }`}>
           <PropertiesPanel collapsed={rightPanelCollapsed} />
@@ -53,7 +53,7 @@ function App() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-[#1F4529] dark:bg-black text-[#E8ECD7] dark:text-neutral-400 text-xs px-4 py-2 flex items-center justify-between flex-shrink-0 border-t border-[#47663B]">
+      <footer className="app-footer text-xs px-5 py-2.5 flex items-center justify-between flex-shrink-0">
         <div className="font-medium">
           Film Diagram Studio - Free lighting & camera pre-visualization tool
         </div>
