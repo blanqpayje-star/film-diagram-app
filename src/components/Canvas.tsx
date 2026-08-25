@@ -197,44 +197,109 @@ export const Canvas: React.FC = () => {
       const snapY = shouldSnap ? snapToGridFn(newY + localDy) : newY + localDy;
 
       if (resizeHandle.type === 'resize') {
+        let newScaleX = elementStart.scale;
+        let newScaleY = elementStart.scale;
+
+        // When linkedScale is false, independently scale X and Y
+        if (!elementStart.linkedScale) {
+          newScaleX = Math.max(0.5, elementStart.scaleX || elementStart.scale);
+          newScaleY = Math.max(0.5, elementStart.scaleY || elementStart.scale);
+        }
+
         switch (resizeHandle.position) {
           case 'se':
             newWidth = Math.max(20, elementStart.width! + localDx);
             newHeight = Math.max(20, elementStart.height! + localDy);
+            if (elementStart.linkedScale) {
+              newScaleX = Math.max(0.5, elementStart.scale! + localDx / (elementStart.width || 1));
+              newScaleY = Math.max(0.5, elementStart.scale! + localDy / (elementStart.height || 1));
+            } else {
+              newScaleX = Math.max(0.5, newScaleX! + localDx / (elementStart.width || 1));
+              newScaleY = Math.max(0.5, newScaleY! + localDy / (elementStart.height || 1));
+            }
             break;
           case 'sw':
             newWidth = Math.max(20, elementStart.width! - localDx);
             newHeight = Math.max(20, elementStart.height! + localDy);
             newX = snapX - elementStart.x * cos + elementStart.y * sin;
             newY = snapY - elementStart.x * sin - elementStart.y * cos;
+            if (elementStart.linkedScale) {
+              newScaleX = Math.max(0.5, elementStart.scale! - localDx / (elementStart.width || 1));
+              newScaleY = Math.max(0.5, elementStart.scale! + localDy / (elementStart.height || 1));
+            } else {
+              newScaleX = Math.max(0.5, newScaleX! - localDx / (elementStart.width || 1));
+              newScaleY = Math.max(0.5, newScaleY! + localDy / (elementStart.height || 1));
+            }
             break;
           case 'ne':
             newWidth = Math.max(20, elementStart.width! + localDx);
             newHeight = Math.max(20, elementStart.height! - localDy);
             newX = snapX + localDy * sin;
             newY = snapY - localDy * cos;
+            if (elementStart.linkedScale) {
+              newScaleX = Math.max(0.5, elementStart.scale! + localDx / (elementStart.width || 1));
+              newScaleY = Math.max(0.5, elementStart.scale! - localDy / (elementStart.height || 1));
+            } else {
+              newScaleX = Math.max(0.5, newScaleX! + localDx / (elementStart.width || 1));
+              newScaleY = Math.max(0.5, newScaleY! - localDy / (elementStart.height || 1));
+            }
             break;
           case 'nw':
             newWidth = Math.max(20, elementStart.width! - localDx);
             newHeight = Math.max(20, elementStart.height! - localDy);
             newX = snapX - localDx * cos + localDy * sin;
             newY = snapY + localDx * sin + localDy * cos;
+            if (elementStart.linkedScale) {
+              newScaleX = Math.max(0.5, elementStart.scale! - localDx / (elementStart.width || 1));
+              newScaleY = Math.max(0.5, elementStart.scale! - localDy / (elementStart.height || 1));
+            } else {
+              newScaleX = Math.max(0.5, newScaleX! - localDx / (elementStart.width || 1));
+              newScaleY = Math.max(0.5, newScaleY! - localDy / (elementStart.height || 1));
+            }
             break;
           case 'e':
             newWidth = Math.max(20, elementStart.width! + localDx);
+            if (elementStart.linkedScale) {
+              newScaleX = Math.max(0.5, elementStart.scale! + localDx / (elementStart.width || 1));
+              newScaleY = newScaleX;
+            } else {
+              newScaleX = Math.max(0.5, newScaleX! + localDx / (elementStart.width || 1));
+              newScaleY = Math.max(0.5, newScaleY!);
+            }
             break;
           case 'w':
             newWidth = Math.max(20, elementStart.width! - localDx);
             newX = snapX - elementStart.x * cos + elementStart.y * sin;
             newY = snapY - elementStart.x * sin - elementStart.y * cos;
+            if (elementStart.linkedScale) {
+              newScaleX = Math.max(0.5, elementStart.scale! - localDx / (elementStart.width || 1));
+              newScaleY = newScaleX;
+            } else {
+              newScaleX = Math.max(0.5, newScaleX! - localDx / (elementStart.width || 1));
+              newScaleY = Math.max(0.5, newScaleY!);
+            }
             break;
           case 's':
             newHeight = Math.max(20, elementStart.height! + localDy);
+            if (elementStart.linkedScale) {
+              newScaleY = Math.max(0.5, elementStart.scale! + localDy / (elementStart.height || 1));
+              newScaleX = newScaleY;
+            } else {
+              newScaleY = Math.max(0.5, newScaleY! + localDy / (elementStart.height || 1));
+              newScaleX = Math.max(0.5, newScaleX!);
+            }
             break;
           case 'n':
             newHeight = Math.max(20, elementStart.height! - localDy);
             newX = snapX + localDy * sin;
             newY = snapY - localDy * cos;
+            if (elementStart.linkedScale) {
+              newScaleY = Math.max(0.5, elementStart.scale! - localDy / (elementStart.height || 1));
+              newScaleX = newScaleY;
+            } else {
+              newScaleY = Math.max(0.5, newScaleY! - localDy / (elementStart.height || 1));
+              newScaleX = Math.max(0.5, newScaleX!);
+            }
             break;
         }
 
@@ -243,7 +308,9 @@ export const Canvas: React.FC = () => {
           x: constrained.x,
           y: constrained.y,
           width: newWidth,
-          height: newHeight
+          height: newHeight,
+          scaleX: newScaleX,
+          scaleY: newScaleY
         });
       } else if (resizeHandle.type === 'rotate') {
         const centerX = elementCenter?.x || elementStart.x + (elementStart.width || 60) / 2;
@@ -713,6 +780,8 @@ export const Canvas: React.FC = () => {
     const fontWeight = element.fontWeight || 'normal';
     const fontStyle = element.fontStyle || 'normal';
     const textAlign = element.textAlign || 'left';
+    const lineHeight = element.lineHeight || 1.5;
+    const letterSpacing = element.letterSpacing || 0;
 
     const textStyle: React.CSSProperties = {
       position: 'absolute',
@@ -725,6 +794,8 @@ export const Canvas: React.FC = () => {
       fontWeight,
       fontStyle,
       textAlign,
+      lineHeight,
+      letterSpacing: `${letterSpacing}px`,
       color: element.color,
       whiteSpace: 'pre-wrap',
       width: element.width || 'auto',
@@ -766,6 +837,8 @@ export const Canvas: React.FC = () => {
               fontWeight,
               fontStyle,
               textAlign,
+              lineHeight,
+              letterSpacing: `${letterSpacing}px`,
               color: element.color,
               backgroundColor: darkMode ? '#1f2937' : 'white',
               border: '2px solid #3B82F6',
@@ -999,7 +1072,7 @@ export const Canvas: React.FC = () => {
             style={{
               left: element.x,
               top: element.y,
-              transform: `scale(${element.scale})`,
+              transform: `${element.linkedScale !== false ? `scale(${element.scale})` : `scale(${element.scaleX || element.scale} ${element.scaleY || element.scale})`}`,
               transformOrigin: 'center',
               zIndex: 2,
             }}

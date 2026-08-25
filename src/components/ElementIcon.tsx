@@ -48,15 +48,20 @@ export const ElementIcon: React.FC<IconProps> = ({
       case 'camera':
         return (
           <svg viewBox="0 0 100 100" style={style}>
+            {/* Camera body - facing right towards the cone */}
             <path
-              d="M20 40 L60 40 L70 30 L80 30 L80 70 L20 70 Z"
+              d="M20 30 L50 30 L60 20 L70 20 L70 80 L20 80 Z"
               fill={color}
               stroke="#333"
               strokeWidth="2"
             />
-            <circle cx="45" cy="55" r="12" fill="none" stroke="#333" strokeWidth="2" />
-            <circle cx="45" cy="55" r="8" fill="none" stroke="#333" strokeWidth="1.5" />
-            <rect x="65" y="45" width="8" height="6" fill="#ff0000" />
+            {/* Lens - on the right side facing the cone */}
+            <circle cx="58" cy="55" r="14" fill="none" stroke="#333" strokeWidth="2" />
+            <circle cx="58" cy="55" r="10" fill="none" stroke="#333" strokeWidth="1.5" />
+            {/* Viewfinder on top left */}
+            <rect x="25" y="22" width="12" height="10" fill="#333" rx="1" />
+            {/* Red recording indicator on the right side */}
+            <circle cx="72" cy="32" r="5" fill="#ff0000" />
           </svg>
         );
 
@@ -71,7 +76,6 @@ export const ElementIcon: React.FC<IconProps> = ({
             {/* Stand */}
             <line x1="50" y1="55" x2="50" y2="75" stroke="#333" strokeWidth="3" />
             <polygon points="40,75 60,75 55,85 45,85" fill="#333" />
-            <text x="50" y="95" fontSize="9" textAnchor="middle" fill="#333" fontWeight="bold">SOFT</text>
           </svg>
         );
 
@@ -110,7 +114,6 @@ export const ElementIcon: React.FC<IconProps> = ({
             {/* Stand */}
             <line x1="50" y1="55" x2="50" y2="75" stroke="#333" strokeWidth="3" />
             <polygon points="40,75 60,75 55,85 45,85" fill="#333" />
-            <text x="50" y="95" fontSize="8" textAnchor="middle" fill="#333">FRESNEL</text>
           </svg>
         );
 
@@ -135,7 +138,6 @@ export const ElementIcon: React.FC<IconProps> = ({
             {/* Stand */}
             <line x1="50" y1="60" x2="50" y2="75" stroke="#333" strokeWidth="3" />
             <polygon points="40,75 60,75 55,85 45,85" fill="#333" />
-            <text x="50" y="95" fontSize="10" textAnchor="middle" fill="#333">LED</text>
           </svg>
         );
 
@@ -152,7 +154,6 @@ export const ElementIcon: React.FC<IconProps> = ({
             <rect x="45" y="55" width="10" height="8" fill="#333" />
             <line x1="50" y1="63" x2="50" y2="75" stroke="#333" strokeWidth="3" />
             <polygon points="40,75 60,75 55,85 45,85" fill="#333" />
-            <text x="50" y="95" fontSize="9" textAnchor="middle" fill="#333">KINO</text>
           </svg>
         );
 
@@ -162,7 +163,6 @@ export const ElementIcon: React.FC<IconProps> = ({
             <circle cx="50" cy="40" r="15" fill={color} stroke="#333" strokeWidth="2" />
             <line x1="50" y1="55" x2="50" y2="75" stroke="#333" strokeWidth="2" />
             <rect x="40" y="75" width="20" height="8" fill={color} stroke="#333" strokeWidth="2" />
-            <text x="50" y="95" fontSize="9" textAnchor="middle" fill="#333">PRAC</text>
           </svg>
         );
 
@@ -215,12 +215,106 @@ export const ElementIcon: React.FC<IconProps> = ({
           </svg>
         );
 
-      case 'furniture':
+      case 'table-dining':
         return (
           <svg viewBox="0 0 100 100" style={style}>
-            <rect x="20" y="35" width="60" height="30" rx="5" fill={color} stroke="#333" strokeWidth="2" />
-            <rect x="25" y="65" width="8" height="15" fill={color} stroke="#333" strokeWidth="1.5" />
-            <rect x="67" y="65" width="8" height="15" fill={color} stroke="#333" strokeWidth="1.5" />
+            {/* Top-down dining table with chairs */}
+            <rect x="22" y="22" width="56" height="56" rx="6" fill={color} stroke="#333" strokeWidth="2" />
+            <line x1="30" y1="30" x2="70" y2="70" stroke="#333" strokeWidth="1" opacity="0.3" />
+            <line x1="70" y1="30" x2="30" y2="70" stroke="#333" strokeWidth="1" opacity="0.3" />
+          </svg>
+        );
+
+      case 'table-coffee':
+        return (
+          <svg viewBox="0 0 100 100" style={style}>
+            {/* Low wide coffee table */}
+            <rect x="15" y="32" width="70" height="36" rx="8" fill={color} stroke="#333" strokeWidth="2" />
+            <rect x="22" y="39" width="56" height="22" rx="5" fill="none" stroke="#333" strokeWidth="1" opacity="0.4" />
+          </svg>
+        );
+
+      case 'table-side':
+        return (
+          <svg viewBox="0 0 100 100" style={style}>
+            {/* Small side table */}
+            <circle cx="50" cy="50" r="26" fill={color} stroke="#333" strokeWidth="2" />
+            <circle cx="50" cy="50" r="17" fill="none" stroke="#333" strokeWidth="1" opacity="0.4" />
+          </svg>
+        );
+
+      case 'chair-armchair':
+        return (
+          <svg viewBox="0 0 100 100" style={style}>
+            {/* Armchair, top-down */}
+            <rect x="25" y="20" width="50" height="14" rx="5" fill={color} stroke="#333" strokeWidth="2" />
+            <rect x="25" y="34" width="50" height="46" rx="8" fill={color} stroke="#333" strokeWidth="2" />
+            <rect x="16" y="38" width="12" height="34" rx="5" fill={color} stroke="#333" strokeWidth="2" />
+            <rect x="72" y="38" width="12" height="34" rx="5" fill={color} stroke="#333" strokeWidth="2" />
+          </svg>
+        );
+
+      case 'chair-dining':
+        return (
+          <svg viewBox="0 0 100 100" style={style}>
+            {/* Dining chair, top-down */}
+            <rect x="28" y="18" width="44" height="10" rx="4" fill={color} stroke="#333" strokeWidth="2" />
+            <rect x="30" y="28" width="40" height="48" rx="6" fill={color} stroke="#333" strokeWidth="2" />
+          </svg>
+        );
+
+      case 'chair-office':
+        return (
+          <svg viewBox="0 0 100 100" style={style}>
+            {/* Office chair, top-down */}
+            <circle cx="50" cy="46" r="24" fill={color} stroke="#333" strokeWidth="2" />
+            <rect x="40" y="14" width="20" height="12" rx="4" fill={color} stroke="#333" strokeWidth="2" />
+            <path d="M50 70 L50 82 M50 82 L30 92 M50 82 L70 92 M50 82 L50 94" stroke="#333" strokeWidth="2.5" fill="none" />
+          </svg>
+        );
+
+      case 'sofa':
+        return (
+          <svg viewBox="0 0 100 100" style={style}>
+            {/* Sofa, top-down */}
+            <rect x="14" y="18" width="72" height="16" rx="6" fill={color} stroke="#333" strokeWidth="2" />
+            <rect x="14" y="34" width="72" height="42" rx="7" fill={color} stroke="#333" strokeWidth="2" />
+            <line x1="50" y1="36" x2="50" y2="74" stroke="#333" strokeWidth="1.5" opacity="0.5" />
+            <rect x="8" y="34" width="10" height="38" rx="5" fill={color} stroke="#333" strokeWidth="2" />
+            <rect x="82" y="34" width="10" height="38" rx="5" fill={color} stroke="#333" strokeWidth="2" />
+          </svg>
+        );
+
+      case 'bed':
+        return (
+          <svg viewBox="0 0 100 100" style={style}>
+            {/* Bed, top-down */}
+            <rect x="18" y="10" width="64" height="80" rx="5" fill={color} stroke="#333" strokeWidth="2" />
+            <rect x="26" y="16" width="21" height="14" rx="4" fill="#fff" stroke="#333" strokeWidth="1.5" />
+            <rect x="53" y="16" width="21" height="14" rx="4" fill="#fff" stroke="#333" strokeWidth="1.5" />
+            <line x1="18" y1="38" x2="82" y2="38" stroke="#333" strokeWidth="1.5" />
+            <line x1="50" y1="38" x2="50" y2="90" stroke="#333" strokeWidth="1" opacity="0.4" />
+          </svg>
+        );
+
+      case 'nightstand':
+        return (
+          <svg viewBox="0 0 100 100" style={style}>
+            {/* Nightstand, top-down */}
+            <rect x="25" y="25" width="50" height="50" rx="4" fill={color} stroke="#333" strokeWidth="2" />
+            <line x1="25" y1="50" x2="75" y2="50" stroke="#333" strokeWidth="1.5" />
+            <circle cx="50" cy="38" r="3" fill="#333" />
+            <circle cx="50" cy="62" r="3" fill="#333" />
+          </svg>
+        );
+
+      case 'desk':
+        return (
+          <svg viewBox="0 0 100 100" style={style}>
+            {/* Desk, top-down */}
+            <rect x="12" y="30" width="76" height="40" rx="4" fill={color} stroke="#333" strokeWidth="2" />
+            <rect x="60" y="34" width="24" height="14" rx="2" fill="none" stroke="#333" strokeWidth="1" opacity="0.5" />
+            <rect x="16" y="52" width="20" height="14" rx="2" fill="none" stroke="#333" strokeWidth="1" opacity="0.5" />
           </svg>
         );
 
@@ -248,35 +342,7 @@ export const ElementIcon: React.FC<IconProps> = ({
           </svg>
         );
 
-      case 'archway':
-        return (
-          <svg viewBox="0 0 100 100" style={style}>
-            <path
-              d="M20 80 L20 40 Q50 15 80 40 L80 80 Z"
-              fill={color}
-              stroke="#333"
-              strokeWidth="2"
-            />
-            <path
-              d="M30 80 L30 45 Q50 25 70 45 L70 80 Z"
-              fill="none"
-              stroke="#333"
-              strokeWidth="1.5"
-            />
-          </svg>
-        );
-
-      case 'platform':
-        return (
-          <svg viewBox="0 0 100 100" style={style}>
-            <rect x="10" y="50" width="80" height="30" rx="3" fill={color} stroke="#333" strokeWidth="2" />
-            <line x1="30" y1="50" x2="30" y2="80" stroke="#333" strokeWidth="1" />
-            <line x1="50" y1="50" x2="50" y2="80" stroke="#333" strokeWidth="1" />
-            <line x1="70" y1="50" x2="70" y2="80" stroke="#333" strokeWidth="1" />
-            <line x1="10" y1="65" x2="90" y2="65" stroke="#333" strokeWidth="1" />
-          </svg>
-        );
-
+      
       case 'cad-rectangle':
         return (
           <svg viewBox="0 0 100 100" style={style}>

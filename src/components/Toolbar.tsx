@@ -9,7 +9,6 @@ import {
   Square,
   DoorOpen,
   Maximize,
-  Armchair,
   Ruler,
   MousePointer,
   RectangleHorizontal,
@@ -18,6 +17,9 @@ import {
   Columns,
   LayoutDashboard,
   ChevronLeft,
+  Armchair,
+  Circle,
+  Sun,
 } from 'lucide-react';
 
 const elementTypes: {
@@ -40,9 +42,16 @@ const elementTypes: {
   { type: 'window', label: 'Window', icon: <Maximize size={20} />, category: 'set' },
   { type: 'stairs', label: 'Stairs', icon: <LayoutDashboard size={20} />, category: 'set' },
   { type: 'column', label: 'Column', icon: <Columns size={20} />, category: 'set' },
-  { type: 'archway', label: 'Archway', icon: <DoorOpen size={20} />, category: 'set' },
-  { type: 'platform', label: 'Platform', icon: <LayoutDashboard size={20} />, category: 'set' },
-  { type: 'furniture', label: 'Furniture', icon: <Armchair size={20} />, category: 'set' },
+  { type: 'table-dining', label: 'Dining Table', icon: <Box size={20} />, category: 'set' },
+  { type: 'table-coffee', label: 'Coffee Table', icon: <Box size={20} />, category: 'set' },
+  { type: 'table-side', label: 'Side Table', icon: <Circle size={20} />, category: 'set' },
+  { type: 'chair-armchair', label: 'Armchair', icon: <Armchair size={20} />, category: 'set' },
+  { type: 'chair-dining', label: 'Dining Chair', icon: <User size={20} />, category: 'set' },
+  { type: 'chair-office', label: 'Office Chair', icon: <MousePointer size={20} />, category: 'set' },
+  { type: 'sofa', label: 'Sofa', icon: <Sun size={20} />, category: 'set' },
+  { type: 'bed', label: 'Bed', icon: <Maximize size={20} />, category: 'set' },
+  { type: 'nightstand', label: 'Nightstand', icon: <Square size={20} />, category: 'set' },
+  { type: 'desk', label: 'Desk', icon: <LayoutDashboard size={20} />, category: 'set' },
   { type: 'text', label: 'Text', icon: <Type size={20} />, category: 'tools' },
 ];
 
@@ -92,9 +101,12 @@ export const Toolbar: React.FC<ToolbarProps> = ({ collapsed = false }) => {
       width: type === 'text' ? 200 : undefined,
       fontFamily: type === 'text' ? 'Inter' : undefined,
       fontSize: type === 'text' ? 16 : undefined,
-      fontWeight: type === 'text' ? 'normal' : undefined,
+      fontWeight: type === 'text' ? '400' : undefined,
       fontStyle: type === 'text' ? 'normal' : undefined,
       textAlign: type === 'text' ? 'left' : undefined,
+      lineHeight: type === 'text' ? 1.5 : undefined,
+      letterSpacing: type === 'text' ? 0 : undefined,
+      linkedScale: true,
       ...(type === 'camera' && {
         cameraSettings: {
           sensorSize: 'full-frame',
@@ -112,6 +124,8 @@ export const Toolbar: React.FC<ToolbarProps> = ({ collapsed = false }) => {
           colorMode: 'kelvin' as const,
           kelvin: 5600,
           rgbColor: '#FFFFFF',
+          modifier: 'none' as const,
+          modifierIntensity: 0,
         },
       }),
     });
@@ -143,8 +157,30 @@ export const Toolbar: React.FC<ToolbarProps> = ({ collapsed = false }) => {
         return '#3B82F6';
       case 'window':
         return '#3B82F6';
-      case 'furniture':
+      case 'stairs':
         return '#1E40AF';
+      case 'column':
+        return '#1E40AF';
+      case 'table-dining':
+        return '#8B5CF6';
+      case 'table-coffee':
+        return '#8B5CF6';
+      case 'table-side':
+        return '#8B5CF6';
+      case 'chair-armchair':
+        return '#8B5CF6';
+      case 'chair-dining':
+        return '#8B5CF6';
+      case 'chair-office':
+        return '#8B5CF6';
+      case 'sofa':
+        return '#8B5CF6';
+      case 'bed':
+        return '#8B5CF6';
+      case 'nightstand':
+        return '#8B5CF6';
+      case 'desk':
+        return '#8B5CF6';
       case 'text':
         return '#1E40AF';
       default:

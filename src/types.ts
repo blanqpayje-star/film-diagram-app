@@ -13,9 +13,16 @@ export type ElementType =
   | 'window'
   | 'stairs'
   | 'column'
-  | 'archway'
-  | 'platform'
-  | 'furniture'
+  | 'table-dining'
+  | 'table-coffee'
+  | 'table-side'
+  | 'chair-armchair'
+  | 'chair-dining'
+  | 'chair-office'
+  | 'sofa'
+  | 'bed'
+  | 'nightstand'
+  | 'desk'
   | 'custom'
   | 'cad-rectangle'
   | 'cad-line'
@@ -41,6 +48,31 @@ export interface CameraSettings {
   fovOpacity: number;
 }
 
+export type LightModifierType =
+  | 'none'
+  | 'diffusion-full'
+  | 'diffusion-half'
+  | 'diffusion-quarter'
+  | 'diffusion-eighth'
+  | 'grid-10'
+  | 'grid-20'
+  | 'grid-30'
+  | 'grid-40'
+  | 'grid-60'
+  | 'barn-doors'
+  | 'negative-solid'
+  | 'negative-net'
+  | 'bounce-white'
+  | 'bounce-silver'
+  | 'bounce-gold'
+  | 'scrim-single'
+  | 'scrim-double'
+  | 'flag-solid'
+  | 'flag-cutter'
+  | 'flag-finger'
+  | 'dot'
+  | 'finger';
+
 export interface LightSettings {
   showSpread: boolean;
   spreadAngle: number; // degrees (15-120)
@@ -49,6 +81,8 @@ export interface LightSettings {
   colorMode: ColorMode;
   kelvin: number; // 2700K - 6500K
   rgbColor: string; // hex color
+  modifier: LightModifierType; // Light modifier
+  modifierIntensity: number; // 0-1 intensity of modifier effect
 }
 
 export interface DiagramElement {
@@ -58,6 +92,8 @@ export interface DiagramElement {
   y: number;
   rotation: number;
   scale: number;
+  scaleX?: number; // For unlinked scale (overrides scale when set)
+  scaleY?: number; // For unlinked scale (overrides scale when set)
   label: string;
   color: string;
   customIcon?: string;
@@ -84,6 +120,11 @@ export interface DiagramElement {
   fontWeight?: string;
   fontStyle?: string;
   textAlign?: 'left' | 'center' | 'right';
+  lineHeight?: number;
+  letterSpacing?: number;
+
+  // Transform toggle
+  linkedScale?: boolean; // When true (default), scale is uniform; when false, scaleX/scaleY are independent
 }
 
 export interface Scene {
