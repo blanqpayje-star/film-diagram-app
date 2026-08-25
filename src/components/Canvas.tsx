@@ -47,6 +47,8 @@ export const Canvas: React.FC = () => {
     gridEnabled,
     snapToGrid,
     gridSize,
+    gridColor,
+    gridOpacity,
     canvasWidth,
     canvasHeight,
     drawingMode,
@@ -836,7 +838,14 @@ export const Canvas: React.FC = () => {
     }
   };
 
-  const gridLineColor = darkMode ? '#354247' : '#C8C0B0';
+  // Grid line color: user-customizable, falls back to theme default
+  const defaultGridLineColor = darkMode ? '#354247' : '#C8C0B0';
+  const baseGridColor = /^#[0-9A-Fa-f]{6}$/.test(gridColor || '') ? gridColor! : defaultGridLineColor;
+  const opacity = typeof gridOpacity === 'number' ? Math.min(1, Math.max(0, gridOpacity)) : 1;
+  const r = parseInt(baseGridColor.slice(1, 3), 16);
+  const g = parseInt(baseGridColor.slice(3, 5), 16);
+  const b = parseInt(baseGridColor.slice(5, 7), 16);
+  const gridLineColor = `rgba(${r}, ${g}, ${b}, ${opacity})`;
 
   // Canvas background style
   const canvasBackgroundStyle = {

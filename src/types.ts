@@ -144,6 +144,8 @@ export interface AppState {
   gridEnabled: boolean;
   snapToGrid: boolean;
   gridSize: number;
+  gridColor?: string; // hex color; falls back to theme default when unset
+  gridOpacity?: number; // 0-1
   canvasWidth: number;
   canvasHeight: number;
   drawingMode: 'select' | 'cad-rectangle' | 'cad-line' | 'measurement' | 'text';

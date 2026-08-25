@@ -38,6 +38,8 @@ interface DiagramStore extends AppState {
   toggleGrid: () => void;
   toggleSnapToGrid: () => void;
   setGridSize: (size: number) => void;
+  setGridColor: (color: string) => void;
+  setGridOpacity: (opacity: number) => void;
   setCanvasSize: (width: number, height: number) => void;
   setDrawingMode: (mode: 'select' | 'cad-rectangle' | 'cad-line' | 'measurement' | 'text') => void;
   setMeasurementUnit: (unit: 'ft' | 'm' | 'in') => void;
@@ -82,6 +84,8 @@ export const useDiagramStore = create<DiagramStore>()(
       gridEnabled: true,
       snapToGrid: true,
       gridSize: 20,
+      gridColor: undefined, // falls back to theme default
+      gridOpacity: 1,
       canvasWidth: 1200,
       canvasHeight: 800,
       drawingMode: 'select',
@@ -373,6 +377,16 @@ export const useDiagramStore = create<DiagramStore>()(
         set({ gridSize: size });
       },
 
+      setGridColor: (color: string) => {
+        get().saveToHistory();
+        set({ gridColor: color });
+      },
+
+      setGridOpacity: (opacity: number) => {
+        get().saveToHistory();
+        set({ gridOpacity: Math.min(1, Math.max(0, opacity)) });
+      },
+
       setCanvasSize: (width: number, height: number) => {
         get().saveToHistory();
         set({ canvasWidth: width, canvasHeight: height });
@@ -452,6 +466,8 @@ export const useDiagramStore = create<DiagramStore>()(
         gridEnabled: state.gridEnabled,
         snapToGrid: state.snapToGrid,
         gridSize: state.gridSize,
+        gridColor: state.gridColor,
+        gridOpacity: state.gridOpacity,
         canvasWidth: state.canvasWidth,
         canvasHeight: state.canvasHeight,
         drawingMode: state.drawingMode,

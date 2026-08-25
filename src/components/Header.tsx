@@ -447,6 +447,51 @@ export const Header: React.FC = () => {
             </div>
 
             <div className="flex items-center gap-3">
+              <label className="text-sm font-semibold text-[var(--on-binder-muted)]">Grid Color:</label>
+              <input
+                type="color"
+                value={
+                  useDiagramStore.getState().gridColor ||
+                  (darkMode ? '#354247' : '#C8C0B0')
+                }
+                onChange={(e) =>
+                  useDiagramStore.getState().setGridColor(e.target.value)
+                }
+                className="w-10 h-8 rounded border border-[var(--line)] bg-transparent cursor-pointer"
+                title="Grid Color"
+              />
+              <button
+                onClick={() => {
+                  useDiagramStore.getState().setGridOpacity(1);
+                  useDiagramStore.getState().setGridColor('');
+                }}
+                className="px-2 py-1 text-xs font-semibold text-[var(--on-binder-muted)] hover:text-[var(--ink-strong)] transition-colors"
+                title="Reset grid appearance to theme default"
+              >
+                Reset
+              </button>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <label className="text-sm font-semibold text-[var(--on-binder-muted)]">Grid Opacity:</label>
+              <input
+                type="range"
+                value={useDiagramStore.getState().gridOpacity ?? 1}
+                onChange={(e) =>
+                  useDiagramStore.getState().setGridOpacity(parseFloat(e.target.value))
+                }
+                className="w-24 accent-[var(--accent)] cursor-pointer"
+                min="0"
+                max="1"
+                step="0.05"
+                title="Grid Opacity"
+              />
+              <span className="text-xs font-semibold text-[var(--ink-strong)] w-8">
+                {Math.round((useDiagramStore.getState().gridOpacity ?? 1) * 100)}%
+              </span>
+            </div>
+
+            <div className="flex items-center gap-3">
               <label className="text-sm font-semibold text-[var(--on-binder-muted)]">Measurement Unit:</label>
               <select
                 value={measurementUnit}
