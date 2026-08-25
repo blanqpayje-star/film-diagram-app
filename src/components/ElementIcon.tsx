@@ -1,5 +1,6 @@
 import React from 'react';
 import type { ElementType } from '../types';
+import { getDownloadedIconSvg } from '../assets/icons';
 
 interface IconProps {
   type: ElementType;
@@ -54,6 +55,18 @@ export const ElementIcon: React.FC<IconProps> = ({
       <div className="element-icon" style={style}>
         <img src={customIcon} alt="Custom" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
       </div>
+    );
+  }
+
+  // Use downloaded high-quality base icon when available for this type
+  const downloadedSvg = getDownloadedIconSvg(type, color);
+  if (downloadedSvg) {
+    return (
+      <div
+        className="element-icon"
+        style={style}
+        dangerouslySetInnerHTML={{ __html: downloadedSvg }}
+      />
     );
   }
 

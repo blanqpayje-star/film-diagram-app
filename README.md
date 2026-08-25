@@ -193,3 +193,7 @@ Inspired by tools like Cadrage and Shot Designer, built to be completely free an
 ---
 
 **Built with ❤️ for filmmakers, by filmmakers** **- KYLE MAGANDA**
+
+## Icon Attribution
+
+Base element icons are sourced from [game-icons.net](https://game-icons.net) and are licensed under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/). Icons in `src/assets/icons/*.svg` are by Lorc, Delapouite, and Caro Asercion, available at https://game-icons.net.
