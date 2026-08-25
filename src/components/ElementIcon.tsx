@@ -376,11 +376,11 @@ export const ElementIcon: React.FC<IconProps> = ({
       case 'measurement':
         return (
           <svg viewBox="0 0 100 100" style={style}>
-            <line x1="20" y1="50" x2="80" y2="50" stroke="#f59e0b" strokeWidth="2" />
-            <line x1="20" y1="45" x2="20" y2="55" stroke="#f59e0b" strokeWidth="2" />
-            <line x1="80" y1="45" x2="80" y2="55" stroke="#f59e0b" strokeWidth="2" />
-            <polygon points="25,50 20,47 20,53" fill="#f59e0b" />
-            <polygon points="75,50 80,47 80,53" fill="#f59e0b" />
+            <line x1="20" y1="50" x2="80" y2="50" stroke="#D21F2B" strokeWidth="2" />
+            <line x1="20" y1="45" x2="20" y2="55" stroke="#D21F2B" strokeWidth="2" />
+            <line x1="80" y1="45" x2="80" y2="55" stroke="#D21F2B" strokeWidth="2" />
+            <polygon points="25,50 20,47 20,53" fill="#D21F2B" />
+            <polygon points="75,50 80,47 80,53" fill="#D21F2B" />
           </svg>
         );
 

@@ -320,7 +320,7 @@ export const Header: React.FC = () => {
               <div>
                 <label className="block text-xs font-semibold text-[var(--on-binder-muted)] mb-1">Quick Colors</label>
                 <div className="flex flex-wrap gap-1">
-                  {['#FFFFFF', '#F8FAFC', '#E0E7FF', '#DBEAFE', '#BFDBFE', '#93C5FD', '#60A5FA', '#3B82F6', '#2563EB', '#1D4ED8', '#1E40AF', '#1E3A8A', '#000000'].map((color) => (
+                  {['#FFFFFF', '#F5F5F5', '#E5E5E5', '#D4D4D4', '#A3A3A3', '#595959', '#262626', '#000000', '#FBE3E5', '#F0A9AE', '#E0353F', '#D21F2B', '#A3121D', '#6E0B12'].map((color) => (
                     <button
                       key={color}
                       onClick={() => handleBackgroundColorChange(color)}
@@ -452,7 +452,7 @@ export const Header: React.FC = () => {
                 type="color"
                 value={
                   useDiagramStore.getState().gridColor ||
-                  (darkMode ? '#354247' : '#C8C0B0')
+                  (darkMode ? '#3A3A3A' : '#BFBFBF')
                 }
                 onChange={(e) =>
                   useDiagramStore.getState().setGridColor(e.target.value)

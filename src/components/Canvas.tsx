@@ -136,7 +136,7 @@ export const Canvas: React.FC = () => {
         rotation: 0,
         scale: 1,
         label: 'Double-click to edit',
-        color: '#1E40AF',
+        color: '#C8102E',
         fontFamily: 'Inter',
         fontSize: 16,
         fontWeight: 'normal',
@@ -251,7 +251,7 @@ export const Canvas: React.FC = () => {
             rotation: 0,
             scale: 1,
             label: '',
-            color: '#2563EB',
+            color: '#D21F2B',
           });
         } else if (drawingMode === 'cad-line') {
           store.addElement({
@@ -263,7 +263,7 @@ export const Canvas: React.FC = () => {
             rotation: 0,
             scale: 1,
             label: '',
-            color: '#1E40AF',
+            color: '#A3121D',
           });
         } else if (drawingMode === 'measurement') {
           const distance = Math.sqrt(
@@ -278,7 +278,7 @@ export const Canvas: React.FC = () => {
             rotation: 0,
             scale: 1,
             label: `${(distance / 20).toFixed(1)}${measurementUnit}`,
-            color: '#3B82F6',
+            color: '#E0353F',
             measurementUnit: measurementUnit,
           });
         }
@@ -604,7 +604,7 @@ export const Canvas: React.FC = () => {
         <div
           key={element.id}
           className={`absolute border-2 border-dashed ${
-            selectedElementId === element.id ? 'ring-2 ring-blue-600 dark:ring-blue-400' : ''
+            selectedElementId === element.id ? 'ring-2 ring-red-600 dark:ring-red-400' : ''
           }`}
           style={{
             left: element.x,
@@ -661,7 +661,7 @@ export const Canvas: React.FC = () => {
               <text
                 x={(element.x + element.endX) / 2}
                 y={(element.y + element.endY) / 2 - 5}
-                fill={darkMode ? '#93C5FD' : '#1E40AF'}
+                fill={darkMode ? '#FF6B6B' : '#C8102E'}
                 fontSize="12"
                 fontWeight="bold"
                 textAnchor="middle"
@@ -708,10 +708,10 @@ export const Canvas: React.FC = () => {
       pointerEvents: 'auto',
       userSelect: isSelected ? 'text' : 'none',
       zIndex: 2,
-      outline: isSelected ? '2px solid #3B82F6' : 'none',
+      outline: isSelected ? '2px solid #D21F2B' : 'none',
       outlineOffset: '4px',
       padding: isSelected ? '4px' : '0',
-      backgroundColor: isSelected ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
+      backgroundColor: isSelected ? 'rgba(210, 31, 43, 0.1)' : 'transparent',
       borderRadius: '2px',
     };
 
@@ -744,8 +744,8 @@ export const Canvas: React.FC = () => {
               lineHeight,
               letterSpacing: `${letterSpacing}px`,
               color: element.color,
-              backgroundColor: darkMode ? '#1f2937' : 'white',
-              border: '2px solid #3B82F6',
+              backgroundColor: darkMode ? '#1a1a1a' : '#ffffff',
+              border: '2px solid #D21F2B',
               borderRadius: '4px',
               padding: '4px 8px',
               outline: 'none',
@@ -839,7 +839,7 @@ export const Canvas: React.FC = () => {
   };
 
   // Grid line color: user-customizable, falls back to theme default
-  const defaultGridLineColor = darkMode ? '#354247' : '#C8C0B0';
+  const defaultGridLineColor = darkMode ? '#3A3A3A' : '#BFBFBF';
   const baseGridColor = /^#[0-9A-Fa-f]{6}$/.test(gridColor || '') ? gridColor! : defaultGridLineColor;
   const opacity = typeof gridOpacity === 'number' ? Math.min(1, Math.max(0, gridOpacity)) : 1;
   const r = parseInt(baseGridColor.slice(1, 3), 16);
@@ -977,7 +977,7 @@ export const Canvas: React.FC = () => {
           <div
             key={element.id}
             className={`absolute cursor-move select-none ${
-              isSelected ? 'ring-2 ring-blue-600 dark:ring-blue-400 ring-offset-2' : ''
+              isSelected ? 'ring-2 ring-red-600 dark:ring-red-400 ring-offset-2' : ''
             }`}
             style={{
               left: element.x,
@@ -1047,7 +1047,7 @@ export const Canvas: React.FC = () => {
                 top: Math.min(cadStart.y, cadPreview.y),
                 width: Math.abs(cadPreview.x - cadStart.x),
                 height: Math.abs(cadPreview.y - cadStart.y),
-                backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                backgroundColor: 'rgba(210, 31, 43, 0.2)',
                 pointerEvents: 'none',
               }}
             />
@@ -1068,7 +1068,7 @@ export const Canvas: React.FC = () => {
                 y1={cadStart.y}
                 x2={cadPreview.x}
                 y2={cadPreview.y}
-                stroke={drawingMode === 'measurement' ? '#3B82F6' : '#1E40AF'}
+                stroke={drawingMode === 'measurement' ? '#E0353F' : '#A3121D'}
                 strokeWidth="2"
                 strokeDasharray="5,5"
               />
@@ -1076,7 +1076,7 @@ export const Canvas: React.FC = () => {
               <text
                 x={(cadStart.x + cadPreview.x) / 2}
                 y={(cadStart.y + cadPreview.y) / 2 - 15}
-                fill="#3B82F6"
+                fill="#D21F2B"
                 fontSize="11"
                 fontWeight="bold"
                 textAnchor="middle"

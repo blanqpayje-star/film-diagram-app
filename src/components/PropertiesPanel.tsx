@@ -322,7 +322,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                     },
                   })
                 }
-                className="w-full accent-blue-600"
+                className="w-full accent-red-600"
               />
               <div className="flex gap-1 mt-2 flex-wrap">
                 {[24, 35, 50, 85].map((focal) => (
@@ -381,7 +381,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                         },
                       })
                     }
-                    className="w-full accent-blue-600"
+                    className="w-full accent-red-600"
                   />
                 </div>
 
@@ -403,7 +403,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                         },
                       })
                     }
-                    className="w-full accent-blue-600"
+                    className="w-full accent-red-600"
                   />
                 </div>
               </>
@@ -431,7 +431,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
               }
               className={`p-1.5 rounded transition-colors ${
                 lightSettings.showSpread
-                  ? 'bg-amber-900 text-white'
+                  ? 'bg-[var(--accent)] text-[var(--accent-ink)]'
                   : 'bg-[var(--control)] text-[var(--ink-strong)] border-[var(--line)]'
               }`}
               title={lightSettings.showSpread ? 'Hide Spread' : 'Show Spread'}
@@ -459,7 +459,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                     },
                   })
                 }
-                className="w-full accent-amber-600"
+                className="w-full accent-red-600"
               />
             </div>
 
@@ -481,7 +481,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                     },
                   })
                 }
-                className="w-full accent-amber-600"
+                className="w-full accent-red-600"
               />
             </div>
 
@@ -504,7 +504,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                     },
                   })
                 }
-                className="w-full accent-amber-600"
+                className="w-full accent-red-600"
               />
             </div>
 
@@ -577,7 +577,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                         },
                       })
                     }
-                    className="w-full accent-amber-600"
+                    className="w-full accent-red-600"
                   />
                 </div>
                 <div className="flex gap-1 flex-wrap">
@@ -852,7 +852,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                   lineHeight: parseFloat(e.target.value),
                 })
               }
-              className="w-full accent-purple-600"
+              className="w-full accent-red-600"
             />
           </div>
 
@@ -872,7 +872,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                   letterSpacing: parseFloat(e.target.value),
                 })
               }
-              className="w-full accent-purple-600"
+              className="w-full accent-red-600"
             />
           </div>
         </div>
@@ -968,7 +968,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                   },
                 })
               }
-              className="w-full accent-purple-600"
+              className="w-full accent-red-600"
             />
           </div>
         </div>
@@ -990,7 +990,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
               rotation: parseInt(e.target.value),
             })
           }
-          className="w-full accent-blue-600"
+          className="w-full accent-red-600"
         />
         <div className="flex gap-2 mt-2">
           <button
@@ -1074,7 +1074,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                   scaleY: undefined,
                 })
               }
-              className="w-full accent-blue-600"
+              className="w-full accent-red-600"
             />
             <div className="flex gap-2 mt-2">
               <button
@@ -1131,7 +1131,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                     scaleX: parseFloat(e.target.value),
                   })
                 }
-                className="w-full accent-blue-600"
+                className="w-full accent-red-600"
               />
             </div>
             <div>
@@ -1149,7 +1149,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                     scaleY: parseFloat(e.target.value),
                   })
                 }
-                className="w-full accent-blue-600"
+                className="w-full accent-red-600"
               />
             </div>
             <div className="flex gap-2">

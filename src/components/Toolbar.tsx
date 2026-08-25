@@ -135,57 +135,57 @@ export const Toolbar: React.FC<ToolbarProps> = ({ collapsed = false }) => {
   const getDefaultColor = (type: ElementType): string => {
     switch (type) {
       case 'camera':
-        return '#1E40AF';
+        return '#111111';
       case 'light-softbox':
-        return '#3B82F6';
+        return '#D21F2B';
       case 'light-umbrella':
-        return '#3B82F6';
+        return '#D21F2B';
       case 'light-fresnel':
-        return '#1E40AF';
+        return '#A3121D';
       case 'light-led-panel':
-        return '#3B82F6';
+        return '#D21F2B';
       case 'light-kino':
-        return '#1E40AF';
+        return '#A3121D';
       case 'light-practical':
-        return '#60A5FA';
+        return '#FF6B6B';
       case 'actor':
-        return '#1E40AF';
+        return '#C8102E';
       case 'prop':
-        return '#3B82F6';
+        return '#E0353F';
       case 'wall':
-        return '#1E40AF';
+        return '#262626';
       case 'door':
-        return '#3B82F6';
+        return '#404040';
       case 'window':
-        return '#3B82F6';
+        return '#404040';
       case 'stairs':
-        return '#1E40AF';
+        return '#262626';
       case 'column':
-        return '#1E40AF';
+        return '#262626';
       case 'table-dining':
-        return '#8B5CF6';
+        return '#595959';
       case 'table-coffee':
-        return '#8B5CF6';
+        return '#595959';
       case 'table-side':
-        return '#8B5CF6';
+        return '#595959';
       case 'chair-armchair':
-        return '#8B5CF6';
+        return '#595959';
       case 'chair-dining':
-        return '#8B5CF6';
+        return '#595959';
       case 'chair-office':
-        return '#8B5CF6';
+        return '#595959';
       case 'sofa':
-        return '#8B5CF6';
+        return '#595959';
       case 'bed':
-        return '#8B5CF6';
+        return '#595959';
       case 'nightstand':
-        return '#8B5CF6';
+        return '#595959';
       case 'desk':
-        return '#8B5CF6';
+        return '#595959';
       case 'text':
-        return '#1E40AF';
+        return '#C8102E';
       default:
-        return '#3B82F6';
+        return '#D21F2B';
     }
   };
 
