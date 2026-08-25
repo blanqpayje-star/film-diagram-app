@@ -827,6 +827,7 @@ export const Canvas: React.FC = () => {
       const centerY = element.y + ((element.height || 60) * scaleY) / 2;
       const angle = Math.atan2(coords.y - centerY, coords.x - centerX) * (180 / Math.PI);
 
+      setIsResizing(true);
       setResizeHandle(handle);
       setResizeStart(coords);
       setElementStart(element);
@@ -974,6 +975,9 @@ export const Canvas: React.FC = () => {
               top: element.y,
               width: frameWidth,
               height: frameHeight,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               transform: `rotate(${element.rotation}deg)`,
               transformOrigin: 'center',
               zIndex: 2,
@@ -982,10 +986,8 @@ export const Canvas: React.FC = () => {
           >
             <div
               style={{
-                position: 'absolute',
-                left: '50%',
-                top: '50%',
-                transform: `translate(-50%, -50%) scale(${scaleX}, ${scaleY})`,
+                flex: '0 0 auto',
+                transform: `scale(${scaleX}, ${scaleY})`,
                 transformOrigin: 'center',
               }}
             >
