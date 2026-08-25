@@ -163,8 +163,10 @@ export const Canvas: React.FC = () => {
       const rawY = snapToGridFn(e.clientY - rect.top - dragOffset.y);
 
       const element = scene?.elements.find((el) => el.id === selectedElementId);
-      const elWidth = element?.width || 60;
-      const elHeight = element?.height || 60;
+      const scaleX = element?.linkedScale !== false ? element?.scale || 1 : element?.scaleX || element?.scale || 1;
+      const scaleY = element?.linkedScale !== false ? element?.scale || 1 : element?.scaleY || element?.scale || 1;
+      const elWidth = (element?.width || 60) * scaleX;
+      const elHeight = (element?.height || 60) * scaleY;
 
       const constrained = constrainPosition(rawX, rawY, elWidth, elHeight);
 
@@ -174,149 +176,42 @@ export const Canvas: React.FC = () => {
       const dx = coords.x - resizeStart.x;
       const dy = coords.y - resizeStart.y;
 
-      let newX = elementStart.x;
-      let newY = elementStart.y;
-      let newWidth = elementStart.width || 60;
-      let newHeight = elementStart.height || 60;
-      let newRotation = elementStart.rotation;
-
       const angleRad = (elementStart.rotation * Math.PI) / 180;
       const cos = Math.cos(angleRad);
       const sin = Math.sin(angleRad);
-
-      // Rotate delta to element's local space
       const localDx = dx * cos + dy * sin;
       const localDy = -dx * sin + dy * cos;
 
-      // Check if Shift is held to temporarily disable grid snapping during resize/rotate
-      const shiftHeld = e.shiftKey;
-      const shouldSnap = snapToGrid && !shiftHeld;
-
-      // Apply grid snapping if enabled (and Shift not held)
-      const snapX = shouldSnap ? snapToGridFn(newX + localDx) : newX + localDx;
-      const snapY = shouldSnap ? snapToGridFn(newY + localDy) : newY + localDy;
-
       if (resizeHandle.type === 'resize') {
-        let newScaleX = elementStart.scale;
-        let newScaleY = elementStart.scale;
+        const baseWidth = elementStart.width || 60;
+        const baseHeight = elementStart.height || 60;
+        const startScaleX = elementStart.linkedScale !== false
+          ? elementStart.scale
+          : elementStart.scaleX || elementStart.scale;
+        const startScaleY = elementStart.linkedScale !== false
+          ? elementStart.scale
+          : elementStart.scaleY || elementStart.scale;
+        const affectsX = ['nw', 'ne', 'sw', 'se', 'e', 'w'].includes(resizeHandle.position);
+        const affectsY = ['nw', 'ne', 'sw', 'se', 'n', 's'].includes(resizeHandle.position);
+        const xDirection = ['nw', 'sw', 'w'].includes(resizeHandle.position) ? -1 : 1;
+        const yDirection = ['nw', 'ne', 'n'].includes(resizeHandle.position) ? -1 : 1;
+        const xDelta = affectsX ? (xDirection * localDx) / baseWidth : 0;
+        const yDelta = affectsY ? (yDirection * localDy) / baseHeight : 0;
 
-        // When linkedScale is false, independently scale X and Y
-        if (!elementStart.linkedScale) {
-          newScaleX = Math.max(0.5, elementStart.scaleX || elementStart.scale);
-          newScaleY = Math.max(0.5, elementStart.scaleY || elementStart.scale);
+        if (elementStart.linkedScale !== false) {
+          const delta = Math.abs(xDelta) >= Math.abs(yDelta) ? xDelta : yDelta;
+          updateElement(elementStart.id, { scale: Math.max(0.25, startScaleX + delta), scaleX: undefined, scaleY: undefined });
+        } else {
+          updateElement(elementStart.id, {
+            scaleX: Math.max(0.25, startScaleX + xDelta),
+            scaleY: Math.max(0.25, startScaleY + yDelta),
+          });
         }
-
-        switch (resizeHandle.position) {
-          case 'se':
-            newWidth = Math.max(20, elementStart.width! + localDx);
-            newHeight = Math.max(20, elementStart.height! + localDy);
-            if (elementStart.linkedScale) {
-              newScaleX = Math.max(0.5, elementStart.scale! + localDx / (elementStart.width || 1));
-              newScaleY = Math.max(0.5, elementStart.scale! + localDy / (elementStart.height || 1));
-            } else {
-              newScaleX = Math.max(0.5, newScaleX! + localDx / (elementStart.width || 1));
-              newScaleY = Math.max(0.5, newScaleY! + localDy / (elementStart.height || 1));
-            }
-            break;
-          case 'sw':
-            newWidth = Math.max(20, elementStart.width! - localDx);
-            newHeight = Math.max(20, elementStart.height! + localDy);
-            newX = snapX - elementStart.x * cos + elementStart.y * sin;
-            newY = snapY - elementStart.x * sin - elementStart.y * cos;
-            if (elementStart.linkedScale) {
-              newScaleX = Math.max(0.5, elementStart.scale! - localDx / (elementStart.width || 1));
-              newScaleY = Math.max(0.5, elementStart.scale! + localDy / (elementStart.height || 1));
-            } else {
-              newScaleX = Math.max(0.5, newScaleX! - localDx / (elementStart.width || 1));
-              newScaleY = Math.max(0.5, newScaleY! + localDy / (elementStart.height || 1));
-            }
-            break;
-          case 'ne':
-            newWidth = Math.max(20, elementStart.width! + localDx);
-            newHeight = Math.max(20, elementStart.height! - localDy);
-            newX = snapX + localDy * sin;
-            newY = snapY - localDy * cos;
-            if (elementStart.linkedScale) {
-              newScaleX = Math.max(0.5, elementStart.scale! + localDx / (elementStart.width || 1));
-              newScaleY = Math.max(0.5, elementStart.scale! - localDy / (elementStart.height || 1));
-            } else {
-              newScaleX = Math.max(0.5, newScaleX! + localDx / (elementStart.width || 1));
-              newScaleY = Math.max(0.5, newScaleY! - localDy / (elementStart.height || 1));
-            }
-            break;
-          case 'nw':
-            newWidth = Math.max(20, elementStart.width! - localDx);
-            newHeight = Math.max(20, elementStart.height! - localDy);
-            newX = snapX - localDx * cos + localDy * sin;
-            newY = snapY + localDx * sin + localDy * cos;
-            if (elementStart.linkedScale) {
-              newScaleX = Math.max(0.5, elementStart.scale! - localDx / (elementStart.width || 1));
-              newScaleY = Math.max(0.5, elementStart.scale! - localDy / (elementStart.height || 1));
-            } else {
-              newScaleX = Math.max(0.5, newScaleX! - localDx / (elementStart.width || 1));
-              newScaleY = Math.max(0.5, newScaleY! - localDy / (elementStart.height || 1));
-            }
-            break;
-          case 'e':
-            newWidth = Math.max(20, elementStart.width! + localDx);
-            if (elementStart.linkedScale) {
-              newScaleX = Math.max(0.5, elementStart.scale! + localDx / (elementStart.width || 1));
-              newScaleY = newScaleX;
-            } else {
-              newScaleX = Math.max(0.5, newScaleX! + localDx / (elementStart.width || 1));
-              newScaleY = Math.max(0.5, newScaleY!);
-            }
-            break;
-          case 'w':
-            newWidth = Math.max(20, elementStart.width! - localDx);
-            newX = snapX - elementStart.x * cos + elementStart.y * sin;
-            newY = snapY - elementStart.x * sin - elementStart.y * cos;
-            if (elementStart.linkedScale) {
-              newScaleX = Math.max(0.5, elementStart.scale! - localDx / (elementStart.width || 1));
-              newScaleY = newScaleX;
-            } else {
-              newScaleX = Math.max(0.5, newScaleX! - localDx / (elementStart.width || 1));
-              newScaleY = Math.max(0.5, newScaleY!);
-            }
-            break;
-          case 's':
-            newHeight = Math.max(20, elementStart.height! + localDy);
-            if (elementStart.linkedScale) {
-              newScaleY = Math.max(0.5, elementStart.scale! + localDy / (elementStart.height || 1));
-              newScaleX = newScaleY;
-            } else {
-              newScaleY = Math.max(0.5, newScaleY! + localDy / (elementStart.height || 1));
-              newScaleX = Math.max(0.5, newScaleX!);
-            }
-            break;
-          case 'n':
-            newHeight = Math.max(20, elementStart.height! - localDy);
-            newX = snapX + localDy * sin;
-            newY = snapY - localDy * cos;
-            if (elementStart.linkedScale) {
-              newScaleY = Math.max(0.5, elementStart.scale! - localDy / (elementStart.height || 1));
-              newScaleX = newScaleY;
-            } else {
-              newScaleY = Math.max(0.5, newScaleY! - localDy / (elementStart.height || 1));
-              newScaleX = Math.max(0.5, newScaleX!);
-            }
-            break;
-        }
-
-        const constrained = constrainPosition(newX, newY, newWidth, newHeight);
-        updateElement(elementStart.id, {
-          x: constrained.x,
-          y: constrained.y,
-          width: newWidth,
-          height: newHeight,
-          scaleX: newScaleX,
-          scaleY: newScaleY
-        });
       } else if (resizeHandle.type === 'rotate') {
         const centerX = elementCenter?.x || elementStart.x + (elementStart.width || 60) / 2;
         const centerY = elementCenter?.y || elementStart.y + (elementStart.height || 60) / 2;
         const angle = Math.atan2(coords.y - centerY, coords.x - centerX) * (180 / Math.PI);
-        newRotation = Math.round((angle - rotateStartAngle) / 15) * 15;
+        const newRotation = Math.round((angle - rotateStartAngle) / 15) * 15;
         updateElement(elementStart.id, { rotation: newRotation });
       }
     } else if (isDrawingCAD && cadStart) {
@@ -588,18 +483,26 @@ export const Canvas: React.FC = () => {
     return element.lightSettings.rgbColor || element.color;
   };
 
+  const getElementCenter = (element: DiagramElement): Point => {
+    const scaleX = element.linkedScale !== false ? element.scale : element.scaleX || element.scale;
+    const scaleY = element.linkedScale !== false ? element.scale : element.scaleY || element.scale;
+    return {
+      x: element.x + ((element.width || 60) * scaleX) / 2,
+      y: element.y + ((element.height || 60) * scaleY) / 2,
+    };
+  };
+
   const renderFOVCone = (element: DiagramElement) => {
     if (element.type !== 'camera' || !element.cameraSettings?.showFOV) return null;
 
     const { sensorSize, focalLength, fovOpacity = 0.4 } = element.cameraSettings;
     const fovAngle = calculateHorizontalFOV(sensorSize, focalLength);
-    const coneLength = 300;
+    const coneLength = element.cameraSettings.fovDistance ?? 300;
 
     const angleRad = (element.rotation * Math.PI) / 180;
     const halfFOV = (fovAngle / 2) * (Math.PI / 180);
 
-    const centerX = element.x + 30;
-    const centerY = element.y + 30;
+    const { x: centerX, y: centerY } = getElementCenter(element);
 
     const leftX = centerX + coneLength * Math.cos(angleRad - halfFOV);
     const leftY = centerY + coneLength * Math.sin(angleRad - halfFOV);
@@ -646,8 +549,7 @@ export const Canvas: React.FC = () => {
     const angleRad = (element.rotation * Math.PI) / 180;
     const halfSpread = (spreadAngle / 2) * (Math.PI / 180);
 
-    const centerX = element.x + 30;
-    const centerY = element.y + 30;
+    const { x: centerX, y: centerY } = getElementCenter(element);
 
     const leftX = centerX + spreadDistance * Math.cos(angleRad - halfSpread);
     const leftY = centerY + spreadDistance * Math.sin(angleRad - halfSpread);
@@ -868,18 +770,10 @@ export const Canvas: React.FC = () => {
   };
 
   const getResizeHandles = (element: DiagramElement): HandlePosition[] => {
-    if (!element.width || !element.height) return [];
-
-    const w = element.width;
-    const h = element.height;
-    const angleRad = (element.rotation * Math.PI) / 180;
-    const cos = Math.cos(angleRad);
-    const sin = Math.sin(angleRad);
-
-    const rotate = (x: number, y: number) => ({
-      x: element.x + x * cos - y * sin,
-      y: element.y + x * sin + y * cos,
-    });
+    const scaleX = element.linkedScale !== false ? element.scale : element.scaleX || element.scale;
+    const scaleY = element.linkedScale !== false ? element.scale : element.scaleY || element.scale;
+    const w = (element.width || 60) * scaleX;
+    const h = (element.height || 60) * scaleY;
 
     const corners = [
       { x: -8, y: -8, pos: 'nw' as const, cursor: 'nwse-resize' },
@@ -893,10 +787,9 @@ export const Canvas: React.FC = () => {
     ];
 
     const handles: HandlePosition[] = corners.map(c => {
-      const rotated = rotate(c.x, c.y);
       return {
-        x: rotated.x,
-        y: rotated.y,
+        x: c.x,
+        y: c.y,
         cursor: c.cursor,
         type: 'resize' as const,
         position: c.pos,
@@ -904,10 +797,9 @@ export const Canvas: React.FC = () => {
     });
 
     // Rotation handle - above the element
-    const rotateHandle = rotate(w / 2, -35);
     handles.push({
-      x: rotateHandle.x,
-      y: rotateHandle.y,
+      x: w / 2,
+      y: -35,
       cursor: 'crosshair',
       type: 'rotate',
       position: 'rotate',
@@ -929,8 +821,10 @@ export const Canvas: React.FC = () => {
       setResizeStart(coords);
       setElementStart(element);
     } else if (handle.type === 'rotate') {
-      const centerX = element.x + (element.width || 60) / 2;
-      const centerY = element.y + (element.height || 60) / 2;
+      const scaleX = element.linkedScale !== false ? element.scale : element.scaleX || element.scale;
+      const scaleY = element.linkedScale !== false ? element.scale : element.scaleY || element.scale;
+      const centerX = element.x + ((element.width || 60) * scaleX) / 2;
+      const centerY = element.y + ((element.height || 60) * scaleY) / 2;
       const angle = Math.atan2(coords.y - centerY, coords.x - centerX) * (180 / Math.PI);
 
       setResizeHandle(handle);
@@ -1061,6 +955,12 @@ export const Canvas: React.FC = () => {
         }
 
         const isSelected = selectedElementId === element.id;
+        const scaleX = element.linkedScale !== false ? element.scale : element.scaleX || element.scale;
+        const scaleY = element.linkedScale !== false ? element.scale : element.scaleY || element.scale;
+        const baseWidth = element.width || 60;
+        const baseHeight = element.height || 60;
+        const frameWidth = baseWidth * scaleX;
+        const frameHeight = baseHeight * scaleY;
         const handles = isSelected && drawingMode === 'select' ? getResizeHandles(element) : [];
 
         return (
@@ -1072,19 +972,30 @@ export const Canvas: React.FC = () => {
             style={{
               left: element.x,
               top: element.y,
-              transform: `${element.linkedScale !== false ? `scale(${element.scale})` : `scale(${element.scaleX || element.scale} ${element.scaleY || element.scale})`}`,
+              width: frameWidth,
+              height: frameHeight,
+              transform: `rotate(${element.rotation}deg)`,
               transformOrigin: 'center',
               zIndex: 2,
             }}
             onMouseDown={(e) => handleElementMouseDown(e, element)}
           >
-            <ElementIcon
-              type={element.type}
-              color={element.color}
-              rotation={element.rotation}
-              size={60}
-              customIcon={element.customIcon}
-            />
+            <div
+              style={{
+                position: 'absolute',
+                left: '50%',
+                top: '50%',
+                transform: `translate(-50%, -50%) scale(${scaleX}, ${scaleY})`,
+                transformOrigin: 'center',
+              }}
+            >
+              <ElementIcon
+                type={element.type}
+                color={element.color}
+                size={baseWidth}
+                customIcon={element.customIcon}
+              />
+            </div>
             {element.label && (
               <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 text-xs font-semibold text-white dark:text-gray-900 bg-blue-900 dark:bg-blue-200 px-2 py-0.5 rounded shadow border border-blue-700 dark:border-blue-400 whitespace-nowrap">
                 {element.label}
@@ -1097,8 +1008,8 @@ export const Canvas: React.FC = () => {
                 key={handle.position}
                 className="absolute w-4 h-4 bg-blue-600 border-2 border-white dark:border-gray-900 rounded pointer-events-auto"
                 style={{
-                  left: handle.x - 2,
-                  top: handle.y - 2,
+                  left: handle.x - 8,
+                  top: handle.y - 8,
                   cursor: handle.cursor,
                   zIndex: 10,
                   boxShadow: '0 2px 4px rgba(0,0,0,0.2)',

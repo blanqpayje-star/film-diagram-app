@@ -384,6 +384,28 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                     className="w-full accent-blue-600"
                   />
                 </div>
+
+                <div>
+                  <label className="block text-xs font-semibold mb-1">
+                    FOV Distance: {cameraSettings.fovDistance ?? 300}px
+                  </label>
+                  <input
+                    type="range"
+                    min="50"
+                    max="500"
+                    step="10"
+                    value={cameraSettings.fovDistance ?? 300}
+                    onChange={(e) =>
+                      updateElement(selectedElement.id, {
+                        cameraSettings: {
+                          ...cameraSettings,
+                          fovDistance: parseInt(e.target.value),
+                        },
+                      })
+                    }
+                    className="w-full accent-blue-600"
+                  />
+                </div>
               </>
             )}
           </div>

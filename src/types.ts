@@ -46,6 +46,7 @@ export interface CameraSettings {
   focalLength: number; // in mm
   showFOV: boolean;
   fovOpacity: number;
+  fovDistance?: number; // pixels (50-500)
 }
 
 export type LightModifierType =

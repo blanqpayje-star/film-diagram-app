@@ -113,6 +113,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({ collapsed = false }) => {
           focalLength: 50,
           showFOV: true,
           fovOpacity: 0.4,
+          fovDistance: 300,
         },
       }),
       ...(type.startsWith('light-') && {
