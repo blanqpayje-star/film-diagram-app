@@ -623,7 +623,7 @@ export const Canvas: React.FC = () => {
             </div>
           )}
           {element.label && (
-            <div className="absolute top-1 left-1 text-xs font-semibold text-white bg-blue-900 px-2 py-0.5 rounded shadow-sm border border-blue-700">
+            <div className="absolute top-1 left-1 text-xs font-semibold text-[var(--ink-strong)] bg-[var(--binder)] px-2 py-0.5 rounded shadow-sm border-[var(--line)]">
               {element.label}
             </div>
           )}
@@ -851,7 +851,7 @@ export const Canvas: React.FC = () => {
     <div
       ref={canvasRef}
       className={`lighting-plot-canvas relative overflow-hidden transition-colors ${
-        darkMode ? 'bg-gray-900' : 'bg-white'
+        darkMode ? 'bg-[var(--field)]' : 'bg-[var(--field)]'
       }`}
       style={{
         width: canvasWidth,
@@ -888,39 +888,39 @@ export const Canvas: React.FC = () => {
     >
       {/* Keyboard shortcuts hint */}
       <div className="absolute top-2 right-2 z-10 flex gap-1 opacity-50 hover:opacity-100 transition-opacity pointer-events-none">
-        <div className="bg-gray-900/80 dark:bg-gray-100/80 text-white dark:text-gray-900 px-2 py-1 rounded text-xs font-mono flex items-center gap-1">
-          <kbd className="px-1.5 py-0.5 bg-gray-700 dark:bg-gray-300 rounded">⌘</kbd>
-          <kbd className="px-1.5 py-0.5 bg-gray-700 dark:bg-gray-300 rounded">Z</kbd>
+        <div className="bg-[var(--control)]/80 dark:bg-[var(--inspector)]/80 text-[var(--ink-strong)] dark:text-[var(--ink-muted)] px-2 py-1 rounded text-xs font-mono flex items-center gap-1">
+          <kbd className="px-1.5 py-0.5 bg-[var(--control)] dark:bg-[var(--control-hover)] rounded">⌘</kbd>
+          <kbd className="px-1.5 py-0.5 bg-[var(--control)] dark:bg-[var(--control-hover)] rounded">Z</kbd>
           <span>Undo</span>
         </div>
-        <div className="bg-gray-900/80 dark:bg-gray-100/80 text-white dark:text-gray-900 px-2 py-1 rounded text-xs font-mono flex items-center gap-1">
-          <kbd className="px-1.5 py-0.5 bg-gray-700 dark:bg-gray-300 rounded">⌘</kbd>
-          <kbd className="px-1.5 py-0.5 bg-gray-700 dark:bg-gray-300 rounded">⇧</kbd>
-          <kbd className="px-1.5 py-0.5 bg-gray-700 dark:bg-gray-300 rounded">Z</kbd>
+        <div className="bg-[var(--control)]/80 dark:bg-[var(--inspector)]/80 text-[var(--ink-strong)] dark:text-[var(--ink-muted)] px-2 py-1 rounded text-xs font-mono flex items-center gap-1">
+          <kbd className="px-1.5 py-0.5 bg-[var(--control)] dark:bg-[var(--control-hover)] rounded">⌘</kbd>
+          <kbd className="px-1.5 py-0.5 bg-[var(--control)] dark:bg-[var(--control-hover)] rounded">⇧</kbd>
+          <kbd className="px-1.5 py-0.5 bg-[var(--control)] dark:bg-[var(--control-hover)] rounded">Z</kbd>
           <span>Redo</span>
         </div>
-        <div className="bg-gray-900/80 dark:bg-gray-100/80 text-white dark:text-gray-900 px-2 py-1 rounded text-xs font-mono flex items-center gap-1">
-          <kbd className="px-1.5 py-0.5 bg-gray-700 dark:bg-gray-300 rounded">⌘</kbd>
-          <kbd className="px-1.5 py-0.5 bg-gray-700 dark:bg-gray-300 rounded">C</kbd>
+        <div className="bg-[var(--control)]/80 dark:bg-[var(--inspector)]/80 text-[var(--ink-strong)] dark:text-[var(--ink-muted)] px-2 py-1 rounded text-xs font-mono flex items-center gap-1">
+          <kbd className="px-1.5 py-0.5 bg-[var(--control)] dark:bg-[var(--control-hover)] rounded">⌘</kbd>
+          <kbd className="px-1.5 py-0.5 bg-[var(--control)] dark:bg-[var(--control-hover)] rounded">C</kbd>
           <span>Copy</span>
         </div>
-        <div className="bg-gray-900/80 dark:bg-gray-100/80 text-white dark:text-gray-900 px-2 py-1 rounded text-xs font-mono flex items-center gap-1">
-          <kbd className="px-1.5 py-0.5 bg-gray-700 dark:bg-gray-300 rounded">⌘</kbd>
-          <kbd className="px-1.5 py-0.5 bg-gray-700 dark:bg-gray-300 rounded">V</kbd>
+        <div className="bg-[var(--control)]/80 dark:bg-[var(--inspector)]/80 text-[var(--ink-strong)] dark:text-[var(--ink-muted)] px-2 py-1 rounded text-xs font-mono flex items-center gap-1">
+          <kbd className="px-1.5 py-0.5 bg-[var(--control)] dark:bg-[var(--control-hover)] rounded">⌘</kbd>
+          <kbd className="px-1.5 py-0.5 bg-[var(--control)] dark:bg-[var(--control-hover)] rounded">V</kbd>
           <span>Paste</span>
         </div>
-        <div className="bg-gray-900/80 dark:bg-gray-100/80 text-white dark:text-gray-900 px-2 py-1 rounded text-xs font-mono flex items-center gap-1">
-          <kbd className="px-1.5 py-0.5 bg-gray-700 dark:bg-gray-300 rounded">⌘</kbd>
-          <kbd className="px-1.5 py-0.5 bg-gray-700 dark:bg-gray-300 rounded">D</kbd>
+        <div className="bg-[var(--control)]/80 dark:bg-[var(--inspector)]/80 text-[var(--ink-strong)] dark:text-[var(--ink-muted)] px-2 py-1 rounded text-xs font-mono flex items-center gap-1">
+          <kbd className="px-1.5 py-0.5 bg-[var(--control)] dark:bg-[var(--control-hover)] rounded">⌘</kbd>
+          <kbd className="px-1.5 py-0.5 bg-[var(--control)] dark:bg-[var(--control-hover)] rounded">D</kbd>
           <span>Duplicate</span>
         </div>
-        <div className="bg-gray-900/80 dark:bg-gray-100/80 text-white dark:text-gray-900 px-2 py-1 rounded text-xs font-mono flex items-center gap-1">
-          <kbd className="px-1.5 py-0.5 bg-gray-700 dark:bg-gray-300 rounded">Del</kbd>
+        <div className="bg-[var(--control)]/80 dark:bg-[var(--inspector)]/80 text-[var(--ink-strong)] dark:text-[var(--ink-muted)] px-2 py-1 rounded text-xs font-mono flex items-center gap-1">
+          <kbd className="px-1.5 py-0.5 bg-[var(--control)] dark:bg-[var(--control-hover)] rounded">Del</kbd>
           <span>Delete</span>
         </div>
-        <div className="bg-gray-900/80 dark:bg-gray-100/80 text-white dark:text-gray-900 px-2 py-1 rounded text-xs font-mono flex items-center gap-1">
-          <kbd className="px-1.5 py-0.5 bg-gray-700 dark:bg-gray-300 rounded">⌘</kbd>
-          <kbd className="px-1.5 py-0.5 bg-gray-700 dark:bg-gray-300 rounded">Del</kbd>
+        <div className="bg-[var(--control)]/80 dark:bg-[var(--inspector)]/80 text-[var(--ink-strong)] dark:text-[var(--ink-muted)] px-2 py-1 rounded text-xs font-mono flex items-center gap-1">
+          <kbd className="px-1.5 py-0.5 bg-[var(--control)] dark:bg-[var(--control-hover)] rounded">⌘</kbd>
+          <kbd className="px-1.5 py-0.5 bg-[var(--control)] dark:bg-[var(--control-hover)] rounded">Del</kbd>
           <span>Force Delete</span>
         </div>
       </div>
@@ -999,7 +999,7 @@ export const Canvas: React.FC = () => {
               />
             </div>
             {element.label && (
-              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 text-xs font-semibold text-white bg-blue-900 px-2 py-0.5 rounded shadow border border-blue-700 whitespace-nowrap">
+              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 text-xs font-semibold text-[var(--ink-strong)] bg-[var(--binder)] px-2 py-0.5 rounded shadow border-[var(--line)] whitespace-nowrap">
                 {element.label}
               </div>
             )}
@@ -1008,7 +1008,7 @@ export const Canvas: React.FC = () => {
             {handles.map((handle) => (
               <div
                 key={handle.position}
-                className="absolute w-4 h-4 bg-blue-600 border-2 border-white dark:border-gray-900 rounded pointer-events-auto"
+                className="absolute w-4 h-4 bg-[var(--accent)] border-2 border-[var(--ink-strong)] rounded pointer-events-auto rounded pointer-events-auto"
                 style={{
                   left: handle.x - 8,
                   top: handle.y - 8,
@@ -1032,7 +1032,7 @@ export const Canvas: React.FC = () => {
         <>
           {drawingMode === 'cad-rectangle' && (
             <div
-              className="absolute border-2 border-dashed border-blue-500"
+              className="absolute border-2 border-dashed border-[var(--line)]"
               style={{
                 left: Math.min(cadStart.x, cadPreview.x),
                 top: Math.min(cadStart.y, cadPreview.y),

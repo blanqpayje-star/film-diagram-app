@@ -71,11 +71,11 @@ const ToggleButton = ({ onClick, icon, title }: { onClick: () => void; icon: Rea
   <div className="relative group mb-4">
     <button
       onClick={onClick}
-      className="w-full flex items-center justify-center px-3 py-2 text-sm font-medium rounded-lg transition-colors border shadow-sm bg-[#222a2e] text-[#e8e5db] border-[#3a444a] hover:bg-[#2d383d]"
+      className="w-full flex items-center justify-center px-3 py-2 text-sm font-medium rounded-lg transition-colors border shadow-sm bg-[var(--control)] text-[var(--ink-strong)] border-[var(--line)] hover:bg-[var(--control-hover)]"
     >
-      <div className="text-blue-600 dark:text-blue-400">{icon}</div>
+      <div className="text-[var(--accent)]">{icon}</div>
     </button>
-    <div className="absolute left-full top-0 ml-2 px-2 py-1 text-xs font-medium bg-gray-900 text-white rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-10">
+    <div className="absolute left-full top-0 ml-2 px-2 py-1 text-xs font-medium bg-[var(--binder)] text-[var(--ink-strong)] rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-10">
       {title}
     </div>
   </div>
@@ -197,15 +197,15 @@ export const Toolbar: React.FC<ToolbarProps> = ({ collapsed = false }) => {
             onClick={onClick}
             className={`w-full flex items-center justify-center px-3 py-2.5 text-sm font-semibold rounded-lg transition-colors border shadow-sm ${
               isActive
-                ? 'bg-blue-900 text-white border-blue-900'
+                ? 'bg-[var(--binder)] text-[var(--ink-strong)] border-[var(--line)]'
                 : darkMode
-                ? 'bg-gray-800 text-gray-200 border-gray-700 hover:bg-gray-700'
-                : 'bg-white text-blue-900 border-blue-200 hover:bg-blue-50'
+                ? 'bg-[var(--control)] text-[var(--ink-strong)] border-[var(--line)] hover:bg-[var(--control-hover)]'
+                : 'bg-[var(--control)] text-[var(--ink-strong)] border-[var(--line)] hover:bg-[var(--control-hover)]'
             }`}
           >
-            <div className="text-blue-600 dark:text-blue-400">{icon}</div>
+            <div className="text-[var(--accent)]">{icon}</div>
           </button>
-          <div className="absolute left-full top-0 ml-2 px-2 py-1 text-xs font-medium bg-gray-900 text-white rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-10">
+          <div className="absolute left-full top-0 ml-2 px-2 py-1 text-xs font-medium bg-[var(--binder)] text-[var(--ink-strong)] rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-10">
             {label}
           </div>
         </div>
@@ -216,13 +216,13 @@ export const Toolbar: React.FC<ToolbarProps> = ({ collapsed = false }) => {
         onClick={onClick}
         className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm font-semibold rounded-lg transition-colors border shadow-sm ${
           isActive
-            ? 'bg-blue-900 text-white border-blue-900'
+            ? 'bg-[var(--binder)] text-[var(--ink-strong)] border-[var(--line)]'
             : darkMode
-            ? 'bg-gray-800 text-gray-200 border-gray-700 hover:bg-gray-700'
-            : 'bg-white text-blue-900 border-blue-200 hover:bg-blue-50'
+            ? 'bg-[var(--control)] text-[var(--ink-strong)] border-[var(--line)] hover:bg-[var(--control-hover)]'
+            : 'bg-[var(--control)] text-[var(--ink-strong)] border-[var(--line)] hover:bg-[var(--control-hover)]'
         }`}
       >
-        <div className="flex-shrink-0 text-blue-600 dark:text-blue-400">{icon}</div>
+        <div className="flex-shrink-0 text-[var(--accent)]">{icon}</div>
         <span className="flex-1 text-left">{label}</span>
       </button>
     );
@@ -236,13 +236,13 @@ export const Toolbar: React.FC<ToolbarProps> = ({ collapsed = false }) => {
             onClick={() => handleAddElement(type as ElementType)}
             className={`w-full flex items-center justify-center px-3 py-2 text-sm font-medium rounded-lg transition-colors border shadow-sm ${
               darkMode
-                ? 'bg-[#222a2e] text-[#e8e5db] border-[#3a444a] hover:bg-[#2d383d] hover:text-white'
-                : 'bg-[#222a2e] text-[#e8e5db] border-[#3a444a] hover:bg-[#2d383d]'
+                ? 'bg-[var(--control)] text-[var(--ink-strong)] border-[var(--line)] hover:bg-[var(--control-hover)] hover:text-[var(--ink-strong)]'
+                : 'bg-[var(--control)] text-[var(--ink-strong)] border-[var(--line)] hover:bg-[var(--control-hover)]'
             }`}
           >
-            <div className="flex-shrink-0 text-blue-600 dark:text-blue-400">{icon}</div>
+            <div className="flex-shrink-0 text-[var(--accent)]">{icon}</div>
           </button>
-          <div className="absolute left-full top-0 ml-2 px-2 py-1 text-xs font-medium bg-gray-900 text-white rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-10">
+          <div className="absolute left-full top-0 ml-2 px-2 py-1 text-xs font-medium bg-[var(--binder)] text-[var(--ink-strong)] rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-10">
             {label}
           </div>
         </div>
@@ -253,11 +253,11 @@ export const Toolbar: React.FC<ToolbarProps> = ({ collapsed = false }) => {
         onClick={() => handleAddElement(type as ElementType)}
         className={`w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors border shadow-sm ${
           darkMode
-                ? 'bg-[#222a2e] text-[#e8e5db] border-[#3a444a] hover:bg-[#2d383d] hover:text-white'
-                : 'bg-[#222a2e] text-[#e8e5db] border-[#3a444a] hover:bg-[#2d383d]'
+                ? 'bg-[var(--control)] text-[var(--ink-strong)] border-[var(--line)] hover:bg-[var(--control-hover)] hover:text-[var(--ink-strong)]'
+                : 'bg-[var(--control)] text-[var(--ink-strong)] border-[var(--line)] hover:bg-[var(--control-hover)]'
         }`}
       >
-        <div className="flex-shrink-0 text-blue-600 dark:text-blue-400">{icon}</div>
+        <div className="flex-shrink-0 text-[var(--accent)]">{icon}</div>
         <span className="flex-1 text-left">{label}</span>
       </button>
     );
@@ -265,12 +265,12 @@ export const Toolbar: React.FC<ToolbarProps> = ({ collapsed = false }) => {
 
   return (
     <div className={`tool-panel p-4 overflow-y-auto h-full transition-all duration-300 ${
-      darkMode ? 'bg-[#171d20] border-[#3a444a] text-[#e8e5db]' : 'bg-[#171d20] border-[#3a444a] text-[#e8e5db]'
+      darkMode ? 'bg-[var(--binder)] border-[var(--line)] text-[var(--ink-strong)]' : 'bg-[var(--binder)] border-[var(--line)] text-[var(--ink-strong)]'
     }`}>
       <ToggleButton onClick={toggleLeftPanel} icon={<ChevronLeft size={20} />} title={leftPanelCollapsed ? 'Expand Toolbar' : 'Collapse Toolbar'} />
 
       {/* Drawing Tools */}
-      {!collapsed && <h3 className={`text-xs font-bold mb-3 uppercase tracking-wider ${darkMode ? 'text-blue-300' : 'text-blue-900'}`}>Interactive Tools</h3>}
+      {!collapsed && <h3 className={`text-xs font-bold mb-3 uppercase tracking-wider ${darkMode ? 'text-[var(--ink-muted)]' : 'text-[var(--ink-muted)]'}`}>Interactive Tools</h3>}
       <div className="space-y-2">
         {drawingTools.map(({ mode, label, icon }) => (
           <div key={mode}>
@@ -280,7 +280,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({ collapsed = false }) => {
       </div>
 
       {/* Equipment */}
-      {!collapsed && <h3 className={`text-xs font-bold mb-3 uppercase tracking-wider ${darkMode ? 'text-blue-300' : 'text-blue-900'}`} style={{marginTop: '1.5rem'}}>Equipment</h3>}
+      {!collapsed && <h3 className={`text-xs font-bold mb-3 uppercase tracking-wider ${darkMode ? 'text-[var(--ink-muted)]' : 'text-[var(--ink-muted)]'}`} style={{marginTop: '1.5rem'}}>Equipment</h3>}
       <div className="space-y-2">
         {elementTypes
           .filter((el) => el.category === 'equipment')
@@ -292,7 +292,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({ collapsed = false }) => {
       </div>
 
       {/* Set Elements */}
-      {!collapsed && <h3 className={`text-xs font-bold mb-3 uppercase tracking-wider ${darkMode ? 'text-blue-300' : 'text-blue-900'}`} style={{marginTop: '1.5rem'}}>Set & Props</h3>}
+      {!collapsed && <h3 className={`text-xs font-bold mb-3 uppercase tracking-wider ${darkMode ? 'text-[var(--ink-muted)]' : 'text-[var(--ink-muted)]'}`} style={{marginTop: '1.5rem'}}>Set & Props</h3>}
       <div className="space-y-2">
         {elementTypes
           .filter((el) => el.category === 'set')

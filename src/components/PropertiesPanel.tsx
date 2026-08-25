@@ -35,11 +35,11 @@ const ToggleButton = ({ onClick, icon, title }: { onClick: () => void; icon: Rea
   <div className="relative group mb-4">
     <button
       onClick={onClick}
-      className="w-full flex items-center justify-center px-3 py-2 text-sm font-medium rounded-lg transition-colors border shadow-sm bg-[#222a2e] text-[#e8e5db] border-[#3a444a] hover:bg-[#2d383d]"
+      className="w-full flex items-center justify-center px-3 py-2 text-sm font-medium rounded-lg transition-colors border shadow-sm bg-[var(--control)] text-[var(--ink-strong)] border-[var(--line)] hover:bg-[var(--control-hover)]"
     >
-      <div className="text-blue-600 dark:text-blue-400">{icon}</div>
+      <div className="text-[var(--accent)]">{icon}</div>
     </button>
-    <div className="absolute left-full top-0 ml-2 px-2 py-1 text-xs font-medium bg-gray-900 text-white rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-10">
+    <div className="absolute left-full top-0 ml-2 px-2 py-1 text-xs font-medium bg-[var(--binder)] text-[var(--ink-strong)] rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-10">
       {title}
     </div>
   </div>
@@ -134,7 +134,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
   if (!selectedElement) {
     return (
       <div className={`inspector-panel p-4 h-full flex flex-col justify-center items-center ${
-        darkMode ? 'bg-[#1c2326] border-[#3a444a] text-[#d6d9d2]' : 'bg-[#1c2326] border-[#3a444a] text-[#d6d9d2]'
+        darkMode ? 'bg-[var(--inspector)] border-[var(--line)] text-[var(--ink)]' : 'bg-[var(--inspector)] border-[var(--line)] text-[var(--ink)]'
       }`}>
         <div className="text-center text-sm font-medium">
           Select an element on the canvas to edit its properties
@@ -145,7 +145,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
 
   return (
     <div className={`inspector-panel p-4 h-full overflow-y-auto ${
-      darkMode ? 'bg-[#1c2326] border-[#3a444a] text-white' : 'bg-[#1c2326] border-[#3a444a] text-white'
+      darkMode ? 'bg-[var(--inspector)] border-[var(--line)] text-[var(--ink)]' : 'bg-[var(--inspector)] border-[var(--line)] text-[var(--ink)]'
     }`}>
       {collapsed && (
         <ToggleButton
@@ -155,14 +155,14 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
         />
       )}
       {!collapsed && (
-        <h3 className={`text-xs font-bold mb-4 uppercase tracking-wider ${darkMode ? 'text-blue-300' : 'text-blue-900'}`}>
+        <h3 className={`text-xs font-bold mb-4 uppercase tracking-wider ${darkMode ? 'text-[var(--ink-muted)]' : 'text-[var(--ink-muted)]'}`}>
           Properties
         </h3>
       )}
 
       {/* Custom Icon Upload - For all element types */}
-      <div className="mb-4 p-3 bg-blue-100 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg">
-        <h4 className="text-xs font-bold text-blue-900 dark:text-blue-200 mb-2 flex items-center gap-1">
+      <div className="mb-4 p-3 bg-[var(--accent-soft)] dark:bg-[var(--accent-soft)]/30 border-[var(--accent)] rounded-lg">
+        <h4 className="text-xs font-bold text-[var(--ink-strong)] mb-2 flex items-center gap-1">
           <ImagePlus size={14} />
           Custom Icon
         </h4>
@@ -176,20 +176,20 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
         <div className="flex gap-2">
           <button
             onClick={() => customIconInputRef.current?.click()}
-            className="flex-1 py-1.5 px-3 text-xs font-bold bg-blue-900 text-white rounded hover:bg-blue-700 transition-colors"
+            className="flex-1 py-1.5 px-3 text-xs font-bold bg-[var(--accent)] text-[var(--accent-ink)] rounded hover:bg-[var(--accent)]/90 transition-colors"
           >
             Upload Custom Icon
           </button>
           {selectedElement.customIcon && (
             <button
               onClick={() => updateElement(selectedElement.id, { customIcon: undefined })}
-              className="py-1.5 px-3 text-xs font-bold bg-red-800 text-white rounded hover:bg-red-700 transition-colors"
+              className="py-1.5 px-3 text-xs font-bold bg-[var(--danger)] text-[var(--ink-strong)] rounded hover:bg-[var(--danger)]/90 transition-colors"
             >
               Remove
             </button>
           )}
         </div>
-        <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">Compressed to max 512px / 500KB</p>
+        <p className="text-xs text-[var(--ink-muted)] mt-1">Compressed to max 512px / 500KB</p>
       </div>
 
       {/* Label */}
@@ -207,16 +207,16 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
           placeholder="Add label..."
           className={`w-full px-3 py-2 text-sm font-medium border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 ${
             darkMode
-              ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-500'
-              : 'bg-white border-gray-300 text-gray-900 placeholder-gray-400'
+              ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)] placeholder-[var(--ink-strong)]'
+              : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)] placeholder-[var(--ink-strong)]'
           }`}
         />
       </div>
 
       {/* CAD Specific Icon Customization */}
       {isCAD && (
-        <div className="mb-4 p-3 bg-blue-100 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg">
-          <h4 className="text-xs font-bold text-blue-900 dark:text-blue-200 mb-2 flex items-center gap-1">
+        <div className="mb-4 p-3 bg-[var(--accent-soft)] dark:bg-[var(--accent-soft)]/30 border-[var(--accent)] rounded-lg">
+          <h4 className="text-xs font-bold text-[var(--ink-strong)] mb-2 flex items-center gap-1">
             <ImagePlus size={14} />
             CAD Icon Overlay
           </h4>
@@ -230,14 +230,14 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
           <div className="flex gap-2">
             <button
               onClick={() => cadIconInputRef.current?.click()}
-              className="flex-1 py-1.5 px-3 text-xs font-bold bg-blue-900 text-white rounded hover:bg-blue-700 transition-colors"
+              className="flex-1 py-1.5 px-3 text-xs font-bold bg-[var(--accent)] text-[var(--accent-ink)] rounded hover:bg-[var(--accent)]/90 transition-colors"
             >
               Upload Icon
             </button>
             {selectedElement.cadIcon && (
               <button
                 onClick={() => updateElement(selectedElement.id, { cadIcon: undefined })}
-                className="py-1.5 px-3 text-xs font-bold bg-red-800 text-white rounded hover:bg-red-700 transition-colors"
+                className="py-1.5 px-3 text-xs font-bold bg-[var(--danger)] text-[var(--ink-strong)] rounded hover:bg-[var(--danger)]/90 transition-colors"
               >
                 Remove
               </button>
@@ -248,9 +248,9 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
 
       {/* Camera-specific controls */}
       {isCamera && cameraSettings && (
-        <div className="mb-4 p-3 bg-blue-100 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg">
+        <div className="mb-4 p-3 bg-[var(--accent-soft)] dark:bg-[var(--accent-soft)]/30 border-[var(--accent)] rounded-lg">
           <div className="flex items-center justify-between mb-3">
-            <h4 className="text-xs font-bold text-blue-900 dark:text-blue-200 flex items-center gap-2">
+            <h4 className="text-xs font-bold text-[var(--ink-strong)] flex items-center gap-2">
               <Camera size={16} />
               Camera Settings
             </h4>
@@ -265,8 +265,8 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
               }
               className={`p-1.5 rounded transition-colors ${
                 cameraSettings.showFOV
-                  ? 'bg-blue-900 text-white'
-                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-700'
+                  ? 'bg-[var(--accent)] text-[var(--accent-ink)]'
+                  : 'bg-[var(--control)] text-[var(--ink-strong)] border-[var(--line)]'
               }`}
               title={cameraSettings.showFOV ? 'Hide FOV' : 'Show FOV'}
             >
@@ -292,12 +292,12 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                 }
                 className={`w-full px-2 py-1.5 text-xs font-medium border rounded focus:outline-none focus:ring-2 focus:ring-blue-600 ${
                   darkMode
-                    ? 'bg-gray-800 border-gray-700 text-white'
-                    : 'bg-white border-gray-300 text-gray-900'
+                    ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
+                    : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
                 }`}
               >
                 {Object.entries(SENSOR_SIZES).map(([key, { name }]) => (
-                  <option key={key} value={key} className={darkMode ? 'bg-gray-900' : 'bg-white'}>
+                  <option key={key} value={key} className={darkMode ? 'bg-[var(--inspector)]' : 'bg-[var(--control)]'}>
                     {name}
                   </option>
                 ))}
@@ -338,8 +338,8 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                     }
                     className={`px-2 py-1 text-xs font-bold rounded border ${
                       darkMode
-                        ? 'bg-gray-800 border-gray-700 text-gray-200 hover:bg-gray-700'
-                        : 'bg-white border-gray-300 text-gray-800 hover:bg-gray-100'
+                        ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-muted)] hover:bg-[var(--control-hover)]'
+                        : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)] hover:bg-[var(--control-hover)]'
                     }`}
                   >
                     {focal}mm
@@ -352,7 +352,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
             {cameraSettings.showFOV && (
               <>
                 <div className={`text-xs font-semibold p-2 rounded border ${
-                  darkMode ? 'bg-gray-800 border-gray-700 text-gray-200' : 'bg-white border-gray-300 text-gray-800'
+                  darkMode ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-muted)]' : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
                 }`}>
                   <strong>Horizontal FOV:</strong>{' '}
                   {calculateHorizontalFOV(
@@ -432,7 +432,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
               className={`p-1.5 rounded transition-colors ${
                 lightSettings.showSpread
                   ? 'bg-amber-900 text-white'
-                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-700'
+                  : 'bg-[var(--control)] text-[var(--ink-strong)] border-[var(--line)]'
               }`}
               title={lightSettings.showSpread ? 'Hide Spread' : 'Show Spread'}
             >
@@ -528,8 +528,8 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                     lightSettings.colorMode === 'kelvin'
                       ? 'bg-amber-600 text-white border-amber-600'
                       : darkMode
-                      ? 'bg-gray-800 border-gray-700 text-gray-200 hover:bg-gray-700'
-                      : 'bg-white border-gray-300 text-gray-800 hover:bg-gray-100'
+                      ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-muted)] hover:bg-[var(--control-hover)]'
+                      : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)] hover:bg-[var(--control-hover)]'
                   }`}
                 >
                   <Sun size={14} className="inline mr-1" /> Kelvin
@@ -545,10 +545,10 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                   }
                   className={`flex-1 px-3 py-2 text-xs font-bold rounded border ${
                     lightSettings.colorMode === 'rgb'
-                      ? 'bg-blue-600 text-white border-blue-600'
+                      ? 'bg-[var(--accent)] text-[var(--accent-ink)] border-[var(--accent)]'
                       : darkMode
-                      ? 'bg-gray-800 border-gray-700 text-gray-200 hover:bg-gray-700'
-                      : 'bg-white border-gray-300 text-gray-800 hover:bg-gray-100'
+                      ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-muted)] hover:bg-[var(--control-hover)]'
+                      : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)] hover:bg-[var(--control-hover)]'
                   }`}
                 >
                   <Palette size={14} className="inline mr-1" /> RGB
@@ -596,8 +596,8 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                         lightSettings.kelvin === preset.value
                           ? 'bg-amber-600 text-white border-amber-600'
                           : darkMode
-                          ? 'bg-gray-800 border-gray-700 text-gray-200 hover:bg-gray-700'
-                          : 'bg-white border-gray-300 text-gray-800 hover:bg-gray-100'
+                          ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-muted)] hover:bg-[var(--control-hover)]'
+                          : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)] hover:bg-[var(--control-hover)]'
                       }`}
                     >
                       {preset.label}
@@ -605,7 +605,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                   ))}
                 </div>
                 <div className={`text-xs p-2 rounded border ${
-                  darkMode ? 'bg-gray-800 border-gray-700 text-gray-200' : 'bg-white border-gray-300 text-gray-800'
+                  darkMode ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-muted)]' : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
                 }`}>
                   <strong>Preview Color:</strong>{' '}
                   <span
@@ -656,8 +656,8 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                     }
                     className={`w-full px-3 py-2 text-xs font-mono font-bold border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 ${
                       darkMode
-                        ? 'bg-gray-800 border-gray-700 text-white'
-                        : 'bg-white border-gray-300 text-gray-900'
+                        ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
+                        : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
                     }`}
                   />
                 </div>
@@ -689,8 +689,8 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
               }
               className={`w-full px-3 py-2 text-xs font-mono font-bold border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 ${
                 darkMode
-                  ? 'bg-gray-800 border-gray-700 text-white'
-                  : 'bg-white border-gray-300 text-gray-900'
+                  ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
+                  : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
               }`}
             />
           </div>
@@ -718,23 +718,23 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
               }
               className={`w-full px-3 py-2 text-sm font-medium border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 ${
                 darkMode
-                  ? 'bg-gray-800 border-gray-700 text-white'
-                  : 'bg-white border-gray-300 text-gray-900'
+                  ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
+                  : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
               }`}
             >
-              <option value="Inter" className={darkMode ? 'bg-gray-900' : 'bg-white'}>Inter (Default)</option>
-              <option value="Geist" className={darkMode ? 'bg-gray-900' : 'bg-white'}>Geist</option>
-              <option value="Cabinet Grotesk" className={darkMode ? 'bg-gray-900' : 'bg-white'}>Cabinet Grotesk</option>
-              <option value="Outfit" className={darkMode ? 'bg-gray-900' : 'bg-white'}>Outfit</option>
-              <option value="Satoshi" className={darkMode ? 'bg-gray-900' : 'bg-white'}>Satoshi</option>
-              <option value="Space Grotesk" className={darkMode ? 'bg-gray-900' : 'bg-white'}>Space Grotesk</option>
-              <option value="DM Sans" className={darkMode ? 'bg-gray-900' : 'bg-white'}>DM Sans</option>
-              <option value="Plus Jakarta Sans" className={darkMode ? 'bg-gray-900' : 'bg-white'}>Plus Jakarta Sans</option>
-              <option value="Work Sans" className={darkMode ? 'bg-gray-900' : 'bg-white'}>Work Sans</option>
-              <option value="Instrument Sans" className={darkMode ? 'bg-gray-900' : 'bg-white'}>Instrument Sans</option>
-              <option value="system-ui" className={darkMode ? 'bg-gray-900' : 'bg-white'}>System UI</option>
-              <option value="Georgia" className={darkMode ? 'bg-gray-900' : 'bg-white'}>Georgia (Serif)</option>
-              <option value="Times New Roman" className={darkMode ? 'bg-gray-900' : 'bg-white'}>Times New Roman (Serif)</option>
+              <option value="Inter" className={darkMode ? 'bg-[var(--inspector)]' : 'bg-[var(--control)]'}>Inter (Default)</option>
+              <option value="Geist" className={darkMode ? 'bg-[var(--inspector)]' : 'bg-[var(--control)]'}>Geist</option>
+              <option value="Cabinet Grotesk" className={darkMode ? 'bg-[var(--inspector)]' : 'bg-[var(--control)]'}>Cabinet Grotesk</option>
+              <option value="Outfit" className={darkMode ? 'bg-[var(--inspector)]' : 'bg-[var(--control)]'}>Outfit</option>
+              <option value="Satoshi" className={darkMode ? 'bg-[var(--inspector)]' : 'bg-[var(--control)]'}>Satoshi</option>
+              <option value="Space Grotesk" className={darkMode ? 'bg-[var(--inspector)]' : 'bg-[var(--control)]'}>Space Grotesk</option>
+              <option value="DM Sans" className={darkMode ? 'bg-[var(--inspector)]' : 'bg-[var(--control)]'}>DM Sans</option>
+              <option value="Plus Jakarta Sans" className={darkMode ? 'bg-[var(--inspector)]' : 'bg-[var(--control)]'}>Plus Jakarta Sans</option>
+              <option value="Work Sans" className={darkMode ? 'bg-[var(--inspector)]' : 'bg-[var(--control)]'}>Work Sans</option>
+              <option value="Instrument Sans" className={darkMode ? 'bg-[var(--inspector)]' : 'bg-[var(--control)]'}>Instrument Sans</option>
+              <option value="system-ui" className={darkMode ? 'bg-[var(--inspector)]' : 'bg-[var(--control)]'}>System UI</option>
+              <option value="Georgia" className={darkMode ? 'bg-[var(--inspector)]' : 'bg-[var(--control)]'}>Georgia (Serif)</option>
+              <option value="Times New Roman" className={darkMode ? 'bg-[var(--inspector)]' : 'bg-[var(--control)]'}>Times New Roman (Serif)</option>
             </select>
           </div>
 
@@ -764,8 +764,8 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                     selectedElement.fontWeight === weight.value
                       ? 'bg-purple-600 text-white border-purple-600'
                       : darkMode
-                      ? 'bg-gray-800 border-gray-700 text-gray-200 hover:bg-gray-700'
-                      : 'bg-white border-gray-300 text-gray-800 hover:bg-gray-100'
+                      ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-muted)] hover:bg-[var(--control-hover)]'
+                      : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)] hover:bg-[var(--control-hover)]'
                   }`}
                 >
                   {weight.label}
@@ -794,8 +794,8 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                     selectedElement.fontStyle === style.value
                       ? 'bg-purple-600 text-white border-purple-600'
                       : darkMode
-                      ? 'bg-gray-800 border-gray-700 text-gray-200 hover:bg-gray-700'
-                      : 'bg-white border-gray-300 text-gray-800 hover:bg-gray-100'
+                      ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-muted)] hover:bg-[var(--control-hover)]'
+                      : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)] hover:bg-[var(--control-hover)]'
                   }`}
                 >
                   {style.icon}
@@ -825,8 +825,8 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                     selectedElement.textAlign === align.value
                       ? 'bg-purple-600 text-white border-purple-600'
                       : darkMode
-                      ? 'bg-gray-800 border-gray-700 text-gray-200 hover:bg-gray-700'
-                      : 'bg-white border-gray-300 text-gray-800 hover:bg-gray-100'
+                      ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-muted)] hover:bg-[var(--control-hover)]'
+                      : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)] hover:bg-[var(--control-hover)]'
                   }`}
                 >
                   {align.icon}
@@ -911,8 +911,8 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
               }
               className={`w-full px-3 py-2 text-sm font-medium border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 ${
                 darkMode
-                  ? 'bg-gray-800 border-gray-700 text-white'
-                  : 'bg-white border-gray-300 text-gray-900'
+                  ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
+                  : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
               }`}
             >
               <option value="none">None</option>
@@ -1000,7 +1000,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
               })
             }
             className={`flex-1 px-2 py-1 text-xs font-semibold border rounded ${
-              darkMode ? 'bg-gray-800 border-gray-700 text-gray-200 hover:bg-gray-700' : 'bg-white border-gray-300 text-gray-800 hover:bg-gray-100'
+              darkMode ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-muted)] hover:bg-[var(--control-hover)]' : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)] hover:bg-[var(--control-hover)]'
             }`}
           >
             -15°
@@ -1010,7 +1010,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
               updateElement(selectedElement.id, { rotation: 0 })
             }
             className={`flex-1 px-2 py-1 text-xs font-semibold border rounded ${
-              darkMode ? 'bg-gray-800 border-gray-700 text-gray-200 hover:bg-gray-700' : 'bg-white border-gray-300 text-gray-800 hover:bg-gray-100'
+              darkMode ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-muted)] hover:bg-[var(--control-hover)]' : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)] hover:bg-[var(--control-hover)]'
             }`}
           >
             Reset
@@ -1022,7 +1022,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
               })
             }
             className={`flex-1 px-2 py-1 text-xs font-semibold border rounded ${
-              darkMode ? 'bg-gray-800 border-gray-700 text-gray-200 hover:bg-gray-700' : 'bg-white border-gray-300 text-gray-800 hover:bg-gray-100'
+              darkMode ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-muted)] hover:bg-[var(--control-hover)]' : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)] hover:bg-[var(--control-hover)]'
             }`}
           >
             +15°
@@ -1046,10 +1046,10 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
             }
             className={`flex items-center gap-1 px-2 py-1 text-xs font-semibold border rounded transition-colors ${
               selectedElement.linkedScale !== false
-                ? 'bg-blue-600 text-white border-blue-600'
+                ? 'bg-[var(--accent)] text-[var(--accent-ink)] border-[var(--accent)]'
                 : darkMode
-                ? 'bg-gray-800 border-gray-700 text-gray-200 hover:bg-gray-700'
-                : 'bg-white border-gray-300 text-gray-800 hover:bg-gray-100'
+                ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-muted)] hover:bg-[var(--control-hover)]'
+                : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)] hover:bg-[var(--control-hover)]'
             }`}
             title={selectedElement.linkedScale !== false ? 'Click to unlink scale (non-uniform)' : 'Click to link scale (uniform)'}
           >
@@ -1084,7 +1084,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                   })
                 }
                 className={`flex-1 px-2 py-1 text-xs font-semibold border rounded flex items-center justify-center ${
-                  darkMode ? 'bg-gray-800 border-gray-700 text-gray-200 hover:bg-gray-700' : 'bg-white border-gray-300 text-gray-800 hover:bg-gray-100'
+                  darkMode ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-muted)] hover:bg-[var(--control-hover)]' : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)] hover:bg-[var(--control-hover)]'
                 }`}
               >
                 <Minus size={12} />
@@ -1094,7 +1094,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                   updateElement(selectedElement.id, { scale: 1, scaleX: undefined, scaleY: undefined })
                 }
                 className={`flex-1 px-2 py-1 text-xs font-semibold border rounded ${
-                  darkMode ? 'bg-gray-800 border-gray-700 text-gray-200 hover:bg-gray-700' : 'bg-white border-gray-300 text-gray-800 hover:bg-gray-100'
+                  darkMode ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-muted)] hover:bg-[var(--control-hover)]' : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)] hover:bg-[var(--control-hover)]'
                 }`}
               >
                 Reset
@@ -1106,7 +1106,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                   })
                 }
                 className={`flex-1 px-2 py-1 text-xs font-semibold border rounded flex items-center justify-center ${
-                  darkMode ? 'bg-gray-800 border-gray-700 text-gray-200 hover:bg-gray-700' : 'bg-white border-gray-300 text-gray-800 hover:bg-gray-100'
+                  darkMode ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-muted)] hover:bg-[var(--control-hover)]' : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)] hover:bg-[var(--control-hover)]'
                 }`}
               >
                 <Plus size={12} />
@@ -1161,7 +1161,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
                   })
                 }
                 className={`flex-1 px-2 py-1 text-xs font-semibold border rounded ${
-                  darkMode ? 'bg-gray-800 border-gray-700 text-gray-200 hover:bg-gray-700' : 'bg-white border-gray-300 text-gray-800 hover:bg-gray-100'
+                  darkMode ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-muted)] hover:bg-[var(--control-hover)]' : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)] hover:bg-[var(--control-hover)]'
                 }`}
               >
                 Reset Both
@@ -1178,7 +1178,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
         </label>
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <label className="text-xs font-medium text-gray-500 dark:text-gray-400">X</label>
+            <label className="text-xs font-medium text-[var(--ink-muted)]">X</label>
             <input
               type="number"
               value={Math.round(selectedElement.x)}
@@ -1189,13 +1189,13 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
               }
               className={`w-full px-2 py-1 text-xs font-bold border rounded focus:outline-none focus:ring-2 focus:ring-blue-600 ${
                 darkMode
-                  ? 'bg-gray-800 border-gray-700 text-white'
-                  : 'bg-white border-gray-300 text-gray-900'
+                  ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
+                  : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
               }`}
             />
           </div>
           <div>
-            <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Y</label>
+            <label className="text-xs font-medium text-[var(--ink-muted)]">Y</label>
             <input
               type="number"
               value={Math.round(selectedElement.y)}
@@ -1206,8 +1206,8 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
               }
               className={`w-full px-2 py-1 text-xs font-bold border rounded focus:outline-none focus:ring-2 focus:ring-blue-600 ${
                 darkMode
-                  ? 'bg-gray-800 border-gray-700 text-white'
-                  : 'bg-white border-gray-300 text-gray-900'
+                  ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
+                  : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
               }`}
             />
           </div>
@@ -1218,14 +1218,14 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
       <div className="pt-4 border-t border-gray-300 dark:border-gray-800 space-y-2">
         <button
           onClick={() => duplicateElement(selectedElement.id)}
-          className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm font-bold bg-blue-900 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+          className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm font-bold bg-[var(--accent)] text-[var(--accent-ink)] rounded-lg hover:bg-[var(--accent)]/90 transition-colors shadow-sm"
         >
           <Copy size={16} />
           Duplicate
         </button>
         <button
           onClick={() => deleteElement(selectedElement.id)}
-          className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm font-bold bg-red-800 text-white rounded-lg hover:bg-red-700 transition-colors shadow-sm"
+          className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm font-bold bg-[var(--danger)] text-[var(--ink-strong)] rounded-lg hover:bg-[var(--danger)]/90 transition-colors shadow-sm"
         >
           <Trash2 size={16} />
           Delete
