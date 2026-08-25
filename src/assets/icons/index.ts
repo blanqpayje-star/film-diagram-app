@@ -1,17 +1,21 @@
 import type { ElementType } from '../../types';
 
-// High-quality base icons sourced from game-icons.net (CC BY 3.0).
+// Authentic top-down lighting-diagram icons sourced from
+// lightingdiagrams.com (camera + lighting equipment). These are fixed-color
+// artwork rendered as images.
+import cameraDiagram from './camera.png';
+import lightSoftboxDiagram from './light-softbox.png';
+import lightUmbrellaDiagram from './light-umbrella.png';
+import lightFresnelDiagram from './light-fresnel.png';
+import lightLedPanelDiagram from './light-led-panel.png';
+import lightKinoDiagram from './light-kino.png';
+import lightPracticalDiagram from './light-practical.png';
+import actorDiagram from './actor.png';
+
+// High-quality monochrome SVGs sourced from game-icons.net (CC BY 3.0).
 // Each SVG is imported as raw markup so the element color can be injected
 // at render time (the source art uses a black background path plus white
 // foreground paths, which we strip/recolor).
-import camera from './camera.svg?raw';
-import lightSoftbox from './light-softbox.svg?raw';
-import lightUmbrella from './light-umbrella.svg?raw';
-import lightFresnel from './light-fresnel.svg?raw';
-import lightLedPanel from './light-led-panel.svg?raw';
-import lightKino from './light-kino.svg?raw';
-import lightPractical from './light-practical.svg?raw';
-import actor from './actor.svg?raw';
 import prop from './prop.svg?raw';
 import wall from './wall.svg?raw';
 import door from './door.svg?raw';
@@ -30,15 +34,23 @@ import nightstand from './nightstand.svg?raw';
 import desk from './desk.svg?raw';
 import measurement from './measurement.svg?raw';
 
-export const downloadedIcons: Partial<Record<ElementType, string>> = {
-  camera,
-  'light-softbox': lightSoftbox,
-  'light-umbrella': lightUmbrella,
-  'light-fresnel': lightFresnel,
-  'light-led-panel': lightLedPanel,
-  'light-kino': lightKino,
-  'light-practical': lightPractical,
-  actor,
+/**
+ * Fixed-color diagram icons (lightingdiagrams.com style) used for camera
+ * and lighting equipment. Rendered as images, not recolored.
+ */
+export const diagramIcons: Partial<Record<ElementType, string>> = {
+  camera: cameraDiagram,
+  actor: actorDiagram,
+  'light-softbox': lightSoftboxDiagram,
+  'light-umbrella': lightUmbrellaDiagram,
+  'light-fresnel': lightFresnelDiagram,
+  'light-led-panel': lightLedPanelDiagram,
+  'light-kino': lightKinoDiagram,
+  'light-practical': lightPracticalDiagram,
+};
+
+/** Recolorable monochrome SVG icons (game-icons.net) for set pieces. */
+const downloadedIcons: Partial<Record<ElementType, string>> = {
   prop,
   wall,
   door,
@@ -74,4 +86,9 @@ export const getDownloadedIconSvg = (
     .replace(BACKGROUND_PATH, '')
     .replace(/fill="#fff"/g, `fill="${color}"`)
     .replace('<svg ', '<svg width="100%" height="100%" ');
+};
+
+/** Returns the image URL of a fixed-color diagram icon, if one exists. */
+export const getDiagramIconUrl = (type: ElementType): string | null => {
+  return diagramIcons[type] ?? null;
 };

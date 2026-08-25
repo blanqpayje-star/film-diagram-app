@@ -1,6 +1,6 @@
 import React from 'react';
 import type { ElementType } from '../types';
-import { getDownloadedIconSvg } from '../assets/icons';
+import { getDownloadedIconSvg, getDiagramIconUrl } from '../assets/icons';
 
 interface IconProps {
   type: ElementType;
@@ -54,6 +54,21 @@ export const ElementIcon: React.FC<IconProps> = ({
     return (
       <div className="element-icon" style={style}>
         <img src={customIcon} alt="Custom" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+      </div>
+    );
+  }
+
+  // Use authentic lighting-diagram icon (fixed-color artwork) when available
+  const diagramIconUrl = getDiagramIconUrl(type);
+  if (diagramIconUrl) {
+    return (
+      <div className="element-icon" style={style}>
+        <img
+          src={diagramIconUrl}
+          alt={type}
+          style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+          draggable={false}
+        />
       </div>
     );
   }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDiagramStore } from '../store';
 import type { ElementType } from '../types';
+import { getDiagramIconUrl } from '../assets/icons';
 import {
   Camera,
   Lightbulb,
@@ -22,20 +23,22 @@ import {
   Sun,
 } from 'lucide-react';
 
+type ElementCategory = 'camera' | 'lighting' | 'set';
+
 const elementTypes: {
   type: ElementType;
   label: string;
   icon?: React.ReactNode;
-  category: 'equipment' | 'set' | 'tools';
+  category: ElementCategory;
 }[] = [
-  { type: 'camera', label: 'Camera', icon: <Camera size={20} />, category: 'equipment' },
-  { type: 'light-softbox', label: 'Softbox', icon: <Lightbulb size={20} />, category: 'equipment' },
-  { type: 'light-umbrella', label: 'Umbrella', icon: <Lightbulb size={20} />, category: 'equipment' },
-  { type: 'light-fresnel', label: 'Fresnel', icon: <Lightbulb size={20} />, category: 'equipment' },
-  { type: 'light-led-panel', label: 'LED Panel', icon: <Lightbulb size={20} />, category: 'equipment' },
-  { type: 'light-kino', label: 'Kino Flo', icon: <Lightbulb size={20} />, category: 'equipment' },
-  { type: 'light-practical', label: 'Practical', icon: <Lightbulb size={20} />, category: 'equipment' },
-  { type: 'actor', label: 'Actor', icon: <User size={20} />, category: 'equipment' },
+  { type: 'camera', label: 'Camera', icon: <Camera size={20} />, category: 'camera' },
+  { type: 'actor', label: 'Actor', icon: <User size={20} />, category: 'camera' },
+  { type: 'light-softbox', label: 'Softbox', icon: <Lightbulb size={20} />, category: 'lighting' },
+  { type: 'light-umbrella', label: 'Umbrella', icon: <Lightbulb size={20} />, category: 'lighting' },
+  { type: 'light-fresnel', label: 'Fresnel', icon: <Lightbulb size={20} />, category: 'lighting' },
+  { type: 'light-led-panel', label: 'LED Panel', icon: <Lightbulb size={20} />, category: 'lighting' },
+  { type: 'light-kino', label: 'Kino Flo', icon: <Lightbulb size={20} />, category: 'lighting' },
+  { type: 'light-practical', label: 'Practical', icon: <Lightbulb size={20} />, category: 'lighting' },
   { type: 'prop', label: 'Prop', icon: <Box size={20} />, category: 'set' },
   { type: 'wall', label: 'Wall', icon: <Square size={20} />, category: 'set' },
   { type: 'door', label: 'Door', icon: <DoorOpen size={20} />, category: 'set' },
@@ -52,7 +55,7 @@ const elementTypes: {
   { type: 'bed', label: 'Bed', icon: <Maximize size={20} />, category: 'set' },
   { type: 'nightstand', label: 'Nightstand', icon: <Square size={20} />, category: 'set' },
   { type: 'desk', label: 'Desk', icon: <LayoutDashboard size={20} />, category: 'set' },
-  { type: 'text', label: 'Text', icon: <Type size={20} />, category: 'tools' },
+  { type: 'text', label: 'Text', icon: <Type size={20} />, category: 'set' },
 ];
 
 const drawingTools: {
@@ -136,6 +139,8 @@ export const Toolbar: React.FC<ToolbarProps> = ({ collapsed = false }) => {
     switch (type) {
       case 'camera':
         return '#111111';
+      case 'actor':
+        return '#C8102E';
       case 'light-softbox':
         return '#D21F2B';
       case 'light-umbrella':
@@ -148,8 +153,6 @@ export const Toolbar: React.FC<ToolbarProps> = ({ collapsed = false }) => {
         return '#A3121D';
       case 'light-practical':
         return '#FF6B6B';
-      case 'actor':
-        return '#C8102E';
       case 'prop':
         return '#E0353F';
       case 'wall':
@@ -226,7 +229,20 @@ export const Toolbar: React.FC<ToolbarProps> = ({ collapsed = false }) => {
     );
   };
 
-  const renderElementButton = ({ type, label, icon }: { type: string; label: string; icon: React.ReactNode }) => {
+  const renderElementButton = ({ type, label, icon }: { type: string; label: string; icon?: React.ReactNode }) => {
+    const diagramIconUrl = getDiagramIconUrl(type as ElementType);
+    const buttonIcon = diagramIconUrl ? (
+      <img
+        src={diagramIconUrl}
+        alt={label}
+        className="flex-shrink-0 object-contain"
+        style={{ width: 24, height: 24 }}
+        draggable={false}
+      />
+    ) : (
+      <div className="flex-shrink-0 text-[var(--accent)]">{icon}</div>
+    );
+
     if (collapsed) {
       return (
         <div className="relative group">
@@ -234,7 +250,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({ collapsed = false }) => {
             onClick={() => handleAddElement(type as ElementType)}
             className="w-full flex items-center justify-center px-3 py-2 text-sm font-medium rounded-lg transition-colors border shadow-sm bg-[var(--control)] text-[var(--ink-strong)] border-[var(--line)] hover:bg-[var(--control-hover)]"
           >
-            <div className="flex-shrink-0 text-[var(--accent)]">{icon}</div>
+            {buttonIcon}
           </button>
           <div className="absolute left-full top-0 ml-2 px-2 py-1 text-xs font-medium bg-[var(--control)] text-[var(--ink-strong)] border border-[var(--line)] rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-10">
             {label}
@@ -247,9 +263,33 @@ export const Toolbar: React.FC<ToolbarProps> = ({ collapsed = false }) => {
         onClick={() => handleAddElement(type as ElementType)}
         className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors border shadow-sm bg-[var(--control)] text-[var(--ink-strong)] border-[var(--line)] hover:bg-[var(--control-hover)]"
       >
-        <div className="flex-shrink-0 text-[var(--accent)]">{icon}</div>
+        {buttonIcon}
         <span className="flex-1 text-left">{label}</span>
       </button>
+    );
+  };
+
+  const renderSection = (category: ElementCategory, heading: string, marginTop?: boolean) => {
+    const items = elementTypes.filter((el) => el.category === category);
+    if (items.length === 0) return null;
+    return (
+      <>
+        {!collapsed && (
+          <h3
+            className={`text-xs font-bold mb-3 uppercase tracking-wider ${darkMode ? 'text-[var(--ink-muted)]' : 'text-[var(--ink-muted)]'}`}
+            style={marginTop ? { marginTop: '1.5rem' } : undefined}
+          >
+            {heading}
+          </h3>
+        )}
+        <div className="space-y-2">
+          {items.map(({ type, label, icon }) => (
+            <div key={type}>
+              {renderElementButton({ type, label, icon })}
+            </div>
+          ))}
+        </div>
+      </>
     );
   };
 
@@ -269,29 +309,14 @@ export const Toolbar: React.FC<ToolbarProps> = ({ collapsed = false }) => {
         ))}
       </div>
 
-      {/* Equipment */}
-      {!collapsed && <h3 className={`text-xs font-bold mb-3 uppercase tracking-wider ${darkMode ? 'text-[var(--ink-muted)]' : 'text-[var(--ink-muted)]'}`} style={{marginTop: '1.5rem'}}>Equipment</h3>}
-      <div className="space-y-2">
-        {elementTypes
-          .filter((el) => el.category === 'equipment')
-          .map(({ type, label, icon }) => (
-            <div key={type}>
-              {renderElementButton({ type, label, icon })}
-            </div>
-          ))}
-      </div>
+      {/* Camera Equipment */}
+      {renderSection('camera', 'Camera Equipment', true)}
+
+      {/* Lighting Equipment */}
+      {renderSection('lighting', 'Lighting Equipment', true)}
 
       {/* Set Elements */}
-      {!collapsed && <h3 className={`text-xs font-bold mb-3 uppercase tracking-wider ${darkMode ? 'text-[var(--ink-muted)]' : 'text-[var(--ink-muted)]'}`} style={{marginTop: '1.5rem'}}>Set & Props</h3>}
-      <div className="space-y-2">
-        {elementTypes
-          .filter((el) => el.category === 'set')
-          .map(({ type, label, icon }) => (
-            <div key={type}>
-              {renderElementButton({ type, label, icon })}
-            </div>
-          ))}
-      </div>
+      {renderSection('set', 'Set & Props', true)}
     </div>
   );
 };
