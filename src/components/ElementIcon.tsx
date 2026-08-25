@@ -16,6 +16,18 @@ interface IconProps {
   textAlign?: 'left' | 'center' | 'right';
 }
 
+// Cones use 0° as the direction pointing right. The light SVGs are drawn
+// upright (their emitting side points up), so shift their visual baseline to
+// the same coordinate system before applying the element's rotation.
+const LIGHT_TYPES = new Set<ElementType>([
+  'light-softbox',
+  'light-umbrella',
+  'light-fresnel',
+  'light-led-panel',
+  'light-kino',
+  'light-practical',
+]);
+
 export const ElementIcon: React.FC<IconProps> = ({
   type,
   size = 40,
@@ -28,10 +40,12 @@ export const ElementIcon: React.FC<IconProps> = ({
   fontWeight,
   fontStyle,
 }) => {
+  const iconRotation = rotation + (LIGHT_TYPES.has(type) ? -90 : 0);
   const style = {
     width: size,
     height: size,
-    transform: `rotate(${rotation}deg)`,
+    transform: `rotate(${iconRotation}deg)`,
+    transformOrigin: 'center',
   };
 
   // Use custom icon if provided
