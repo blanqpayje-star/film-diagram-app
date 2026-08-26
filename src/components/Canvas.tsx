@@ -546,11 +546,12 @@ export const Canvas: React.FC = () => {
   // rotation is 0° (same convention the cones use), so the cone origin is the
   // center projected outward to the artwork's emitting edge. Diagram icons are
   // letterboxed inside their square frame by object-fit: contain, and each
-  // artwork emits along a different local axis (cameras face +X; upright light
-  // artwork emits from its bottom edge, which the -90° icon rotation maps to
-  // +X), so the radius is derived from the icon's intrinsic size along that
-  // axis. This keeps cameras & lights visually locked to their FOV / spread
-  // cone with no gap or overlap.
+  // artwork emits along a different local axis: lights are drawn upright
+  // (emitter on their bottom edge) and the top-down camera artwork points up,
+  // so ElementIcon rotates both by 90° — which puts the artwork's HEIGHT
+  // extent along the emission axis. The radius is therefore derived from the
+  // icon's intrinsic size along that axis. This keeps cameras & lights
+  // visually locked to their FOV / spread cone with no gap or overlap.
   const getFrontEmissionPoint = (element: DiagramElement): Point => {
     const scaleX = element.linkedScale !== false ? element.scale : element.scaleX || element.scale;
     const center = getElementCenter(element);
@@ -560,7 +561,9 @@ export const Canvas: React.FC = () => {
     let frontRadius = (frameSize * scaleX) / 2;
     if (iconSize) {
       const containScale = Math.min(frameSize / iconSize.width, frameSize / iconSize.height);
-      const extentAlongFacingAxis = element.type.startsWith('light-')
+      const iconRotatedQuarterTurn =
+        element.type.startsWith('light-') || element.type === 'camera';
+      const extentAlongFacingAxis = iconRotatedQuarterTurn
         ? iconSize.height * containScale
         : iconSize.width * containScale;
       frontRadius = (extentAlongFacingAxis / 2) * scaleX;

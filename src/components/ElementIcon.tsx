@@ -34,6 +34,14 @@ const LIGHT_TYPES = new Set<ElementType>([
 // so the equipment visually faces its own FOV / spread cone.
 const FLIP_X_TYPES = new Set<ElementType>(['camera']);
 
+// Fixed-color artworks are drawn in their natural orientation. Cones emit
+// toward +X at 0° rotation, so give each type a base rotation that aligns
+// its facing with +X before applying the element's rotation: the top-down
+// camera artwork points up, so rotate it 90° clockwise (to the right).
+const BASE_ICON_ROTATION: Partial<Record<ElementType, number>> = {
+  camera: 90,
+};
+
 export const ElementIcon: React.FC<IconProps> = ({
   type,
   size = 40,
@@ -46,7 +54,8 @@ export const ElementIcon: React.FC<IconProps> = ({
   fontWeight,
   fontStyle,
 }) => {
-  const iconRotation = rotation + (LIGHT_TYPES.has(type) ? -90 : 0);
+  const iconRotation =
+    rotation + (LIGHT_TYPES.has(type) ? -90 : BASE_ICON_ROTATION[type] ?? 0);
   const style = {
     width: size,
     height: size,
