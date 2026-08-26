@@ -3,6 +3,7 @@ import { useDiagramStore } from '../store';
 import type { DiagramElement } from '../types';
 import { ElementIcon } from './ElementIcon';
 import { calculateHorizontalFOV } from '../utils/camera';
+import { diagramIconSizes } from '../assets/icons';
 import { kelvinToRGB } from '../utils/color';
 import {
   RotateCcw,
@@ -543,13 +544,27 @@ export const Canvas: React.FC = () => {
   // Anchors the cone at the device's FRONT FACE rather than its bounding-box
   // center. The icon artwork (camera lens / light emitter) faces +X when the
   // rotation is 0° (same convention the cones use), so the cone origin is the
-  // center projected outward by half the width along the facing direction.
-  // This keeps cameras & lights visually locked to their FOV / spread cone.
+  // center projected outward to the artwork's emitting edge. Diagram icons are
+  // letterboxed inside their square frame by object-fit: contain, and each
+  // artwork emits along a different local axis (cameras face +X; upright light
+  // artwork emits from its bottom edge, which the -90° icon rotation maps to
+  // +X), so the radius is derived from the icon's intrinsic size along that
+  // axis. This keeps cameras & lights visually locked to their FOV / spread
+  // cone with no gap or overlap.
   const getFrontEmissionPoint = (element: DiagramElement): Point => {
     const scaleX = element.linkedScale !== false ? element.scale : element.scaleX || element.scale;
     const center = getElementCenter(element);
     const angleRad = (element.rotation * Math.PI) / 180;
-    const frontRadius = ((element.width || 60) * scaleX) / 2;
+    const frameSize = element.width || 60;
+    const iconSize = diagramIconSizes[element.type];
+    let frontRadius = (frameSize * scaleX) / 2;
+    if (iconSize) {
+      const containScale = Math.min(frameSize / iconSize.width, frameSize / iconSize.height);
+      const extentAlongFacingAxis = element.type.startsWith('light-')
+        ? iconSize.height * containScale
+        : iconSize.width * containScale;
+      frontRadius = (extentAlongFacingAxis / 2) * scaleX;
+    }
     return {
       x: center.x + Math.cos(angleRad) * frontRadius,
       y: center.y + Math.sin(angleRad) * frontRadius,
@@ -587,7 +602,14 @@ export const Canvas: React.FC = () => {
         }}
       >
         <defs>
-          <linearGradient id={`fov-gradient-${element.id}`} x1="0%" y1="0%" x2="100%" y2="0%">
+          <linearGradient
+            id={`fov-gradient-${element.id}`}
+            gradientUnits="userSpaceOnUse"
+            x1={centerX}
+            y1={centerY}
+            x2={centerX + coneLength * Math.cos(angleRad)}
+            y2={centerY + coneLength * Math.sin(angleRad)}
+          >
             <stop offset="0%" style={{ stopColor: element.color, stopOpacity: fovOpacity }} />
             <stop offset="100%" style={{ stopColor: element.color, stopOpacity: 0 }} />
           </linearGradient>
@@ -634,7 +656,13 @@ export const Canvas: React.FC = () => {
         }}
       >
         <defs>
-          <radialGradient id={`light-spread-${element.id}`} cx="50%" cy="50%" r="50%">
+          <radialGradient
+            id={`light-spread-${element.id}`}
+            gradientUnits="userSpaceOnUse"
+            cx={centerX}
+            cy={centerY}
+            r={spreadDistance}
+          >
             <stop offset="0%" style={{ stopColor: lightColor, stopOpacity: spreadOpacity }} />
             <stop offset="70%" style={{ stopColor: lightColor, stopOpacity: spreadOpacity * 0.3 }} />
             <stop offset="100%" style={{ stopColor: lightColor, stopOpacity: 0 }} />

@@ -17,6 +17,23 @@ import actorDiagram from './actor.png';
 // recolorable top-down floor-plan art, so these legacy raw imports are unused.
 
 /**
+ * Intrinsic pixel dimensions of the fixed-color diagram icons. The icons are
+ * letterboxed inside their square frame by object-fit: contain, so the canvas
+ * uses these to anchor FOV / spread cones at the artwork's actual emitting
+ * edge instead of the frame edge.
+ */
+export const diagramIconSizes: Partial<Record<ElementType, { width: number; height: number }>> = {
+  camera: { width: 48, height: 37 },
+  actor: { width: 48, height: 23 },
+  'light-softbox': { width: 48, height: 24 },
+  'light-umbrella': { width: 48, height: 33 },
+  'light-fresnel': { width: 31, height: 48 },
+  'light-led-panel': { width: 48, height: 38 },
+  'light-kino': { width: 19, height: 48 },
+  'light-practical': { width: 48, height: 47 },
+};
+
+/**
  * Fixed-color diagram icons (lightingdiagrams.com style) used for camera
  * and lighting equipment. Rendered as images, not recolored.
  */

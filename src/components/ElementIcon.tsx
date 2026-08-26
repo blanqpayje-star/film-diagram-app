@@ -29,6 +29,11 @@ const LIGHT_TYPES = new Set<ElementType>([
   'light-practical',
 ]);
 
+// Some fixed-color artworks are drawn facing -X (the camera photo's lens
+// points left). Cones emit toward +X at 0° rotation, so mirror those icons
+// so the equipment visually faces its own FOV / spread cone.
+const FLIP_X_TYPES = new Set<ElementType>(['camera']);
+
 export const ElementIcon: React.FC<IconProps> = ({
   type,
   size = 40,
@@ -61,8 +66,11 @@ export const ElementIcon: React.FC<IconProps> = ({
   // Use authentic lighting-diagram icon (fixed-color artwork) when available
   const diagramIconUrl = getDiagramIconUrl(type);
   if (diagramIconUrl) {
+    const iconStyle = FLIP_X_TYPES.has(type)
+      ? { ...style, transform: `${style.transform} scaleX(-1)` }
+      : style;
     return (
-      <div className="element-icon" style={style}>
+      <div className="element-icon" style={iconStyle}>
         <img
           src={diagramIconUrl}
           alt={type}
