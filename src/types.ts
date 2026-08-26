@@ -111,6 +111,8 @@ export interface DiagramElement {
   endX?: number;
   endY?: number;
   cadIcon?: string;
+  thickness?: number; // CAD wall/mass thickness in px (CAD tools)
+  cadFill?: 'none' | 'solid' | 'hatch'; // CAD box fill style (like hatch in AutoCAD)
 
   // Measurement-specific
   measurementUnit?: 'ft' | 'm' | 'in';

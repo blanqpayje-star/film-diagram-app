@@ -55,6 +55,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
     darkMode,
     toggleRightPanel,
     rightPanelCollapsed,
+    measurementUnit,
   } = useDiagramStore();
 
   const customIconInputRef = useRef<HTMLInputElement>(null);
@@ -243,6 +244,83 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ collapsed = fa
               </button>
             )}
           </div>
+        </div>
+      )}
+
+      {/* CAD geometry: wall thickness + box fill */}
+      {isCAD && (
+        <div className="mb-4 p-3 bg-[var(--accent-soft)] dark:bg-[var(--accent-soft)]/30 border-[var(--accent)] rounded-lg">
+          {selectedElement.type === 'cad-line' && (
+            <>
+              <h4 className="text-xs font-bold text-[var(--ink-strong)] mb-2">
+                Wall Settings
+              </h4>
+              <label className="block text-xs font-semibold mb-1">
+                Wall Thickness: {(selectedElement.thickness ?? 10)} px
+              </label>
+              <input
+                type="range"
+                min="1"
+                max="40"
+                value={selectedElement.thickness ?? 10}
+                onChange={(e) =>
+                  updateElement(selectedElement.id, { thickness: parseInt(e.target.value) })
+                }
+                className="w-full accent-red-600"
+              />
+              <p className="mt-2 text-[11px] leading-snug text-[var(--ink-muted)]">
+                Walls are drawn as true architectural masses (two parallel faces + fill), like
+                AutoCAD&apos;s MLINE. Hold Shift while drawing to lock to a straight axis; each wall
+                continues from the previous endpoint to chain a polyline.
+              </p>
+            </>
+          )}
+          {selectedElement.type === 'cad-rectangle' && (
+            <>
+              <h4 className="text-xs font-bold text-[var(--ink-strong)] mb-2">
+                Box / Room Fill
+              </h4>
+              <select
+                value={selectedElement.cadFill ?? 'solid'}
+                onChange={(e) =>
+                  updateElement(selectedElement.id, { cadFill: e.target.value as 'none' | 'solid' | 'hatch' })
+                }
+                className={`w-full px-2 py-1.5 text-xs font-bold border rounded focus:outline-none focus:ring-2 focus:ring-[var(--accent)] ${
+                  darkMode
+                    ? 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
+                    : 'bg-[var(--control)] border-[var(--line)] text-[var(--ink-strong)]'
+                }`}
+              >
+                <option value="solid">Solid</option>
+                <option value="hatch">Hatch (Construction)</option>
+                <option value="none">None (Outline)</option>
+              </select>
+              <p className="mt-2 text-[11px] leading-snug text-[var(--ink-muted)]">
+                Hatch emulates AutoCAD material/plan hatching. Use a box to block out rooms or
+                footprint masses before adding walls.
+              </p>
+            </>
+          )}
+          {(() => {
+            if (!selectedElement.endX) return null;
+            const d = Math.hypot(
+              (selectedElement.endX ?? 0) - selectedElement.x,
+              (selectedElement.endY ?? 0) - selectedElement.y
+            );
+            const val =
+              measurementUnit === 'ft'
+                ? (d / 20).toFixed(1)
+                : measurementUnit === 'in'
+                ? (d * (12 / 20)).toFixed(0)
+                : (d / 20).toFixed(1);
+            return (
+              <div className="mt-2 pt-2 border-t border-[var(--accent)]/30">
+                <label className="text-[11px] font-semibold text-[var(--ink-muted)]">
+                  Length: <span className="text-[var(--ink-strong)] font-bold">{val} {measurementUnit}</span>
+                </label>
+              </div>
+            );
+          })()}
         </div>
       )}
 

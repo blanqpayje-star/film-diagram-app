@@ -64,8 +64,8 @@ const drawingTools: {
   icon: React.ReactNode;
 }[] = [
   { mode: 'select', label: 'Select', icon: <MousePointer size={20} /> },
-  { mode: 'cad-rectangle', label: 'Draw CAD Box', icon: <RectangleHorizontal size={20} /> },
-  { mode: 'cad-line', label: 'Draw CAD Wall', icon: <Minus size={20} /> },
+  { mode: 'cad-rectangle', label: 'Box / Rectangle', icon: <RectangleHorizontal size={20} /> },
+  { mode: 'cad-line', label: 'Wall (Thick Line)', icon: <Minus size={20} /> },
   { mode: 'measurement', label: 'Measure Line', icon: <Ruler size={20} /> },
   { mode: 'text', label: 'Add Text', icon: <Type size={20} /> },
 ];

@@ -13,26 +13,8 @@ import lightPracticalDiagram from './light-practical.png';
 import actorDiagram from './actor.png';
 
 // High-quality monochrome SVGs sourced from game-icons.net (CC BY 3.0).
-// Each SVG is imported as raw markup so the element color can be injected
-// at render time (the source art uses a black background path plus white
-// foreground paths, which we strip/recolor).
-import prop from './prop.svg?raw';
-import wall from './wall.svg?raw';
-import door from './door.svg?raw';
-import windowIcon from './window.svg?raw';
-import stairs from './stairs.svg?raw';
-import column from './column.svg?raw';
-import tableDining from './table-dining.svg?raw';
-import tableCoffee from './table-coffee.svg?raw';
-import tableSide from './table-side.svg?raw';
-import chairArmchair from './chair-armchair.svg?raw';
-import chairDining from './chair-dining.svg?raw';
-import chairOffice from './chair-office.svg?raw';
-import sofa from './sofa.svg?raw';
-import bed from './bed.svg?raw';
-import nightstand from './nightstand.svg?raw';
-import desk from './desk.svg?raw';
-import measurement from './measurement.svg?raw';
+// Set & prop icons are now authored directly in ElementIcon.tsx as detailed,
+// recolorable top-down floor-plan art, so these legacy raw imports are unused.
 
 /**
  * Fixed-color diagram icons (lightingdiagrams.com style) used for camera
@@ -49,26 +31,12 @@ export const diagramIcons: Partial<Record<ElementType, string>> = {
   'light-practical': lightPracticalDiagram,
 };
 
-/** Recolorable monochrome SVG icons (game-icons.net) for set pieces. */
-const downloadedIcons: Partial<Record<ElementType, string>> = {
-  prop,
-  wall,
-  door,
-  window: windowIcon,
-  stairs,
-  column,
-  'table-dining': tableDining,
-  'table-coffee': tableCoffee,
-  'table-side': tableSide,
-  'chair-armchair': chairArmchair,
-  'chair-dining': chairDining,
-  'chair-office': chairOffice,
-  sofa,
-  bed,
-  nightstand,
-  desk,
-  measurement,
-};
+/**
+ * Recolorable monochrome SVG icons.
+ * Set & props now render as detailed top-down floor-plan artwork inside
+ * ElementIcon.tsx, so this map is intentionally empty (returns null → fallback).
+ */
+const downloadedIcons: Partial<Record<ElementType, string>> = {};
 
 const BACKGROUND_PATH = /<path d="M0 0h512v512H0z"\s*\/>/;
 

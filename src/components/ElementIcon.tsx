@@ -223,127 +223,201 @@ export const ElementIcon: React.FC<IconProps> = ({
       case 'prop':
         return (
           <svg viewBox="0 0 100 100" style={style}>
-            <rect x="30" y="30" width="40" height="40" fill={color} stroke="#333" strokeWidth="2" />
-            <line x1="30" y1="30" x2="70" y2="70" stroke="#333" strokeWidth="1" />
-            <line x1="70" y1="30" x2="30" y2="70" stroke="#333" strokeWidth="1" />
+            {/* Shipping/production crate, top-down */}
+            <rect x="24" y="24" width="52" height="52" rx="4" fill={color} stroke="#333" strokeWidth="2" />
+            <rect x="31" y="31" width="38" height="38" rx="2" fill="none" stroke="#333" strokeOpacity="0.45" strokeWidth="1.2" />
+            <line x1="31" y1="31" x2="69" y2="69" stroke="#333" strokeOpacity="0.35" strokeWidth="1" />
+            <line x1="69" y1="31" x2="31" y2="69" stroke="#333" strokeOpacity="0.35" strokeWidth="1" />
+            {/* Handling cleats on the top */}
+            <rect x="46" y="24" width="8" height="6" rx="1.5" fill={color} stroke="#333" strokeWidth="1" />
+            <rect x="46" y="70" width="8" height="6" rx="1.5" fill={color} stroke="#333" strokeWidth="1" />
+            <circle cx="50" cy="34" r="2.5" fill="#333" />
+            <circle cx="50" cy="66" r="2.5" fill="#333" />
           </svg>
         );
 
       case 'wall':
         return (
           <svg viewBox="0 0 100 100" style={style}>
-            <rect x="10" y="40" width="80" height="20" fill={color} stroke="#333" strokeWidth="2" />
-            <line x1="30" y1="40" x2="30" y2="60" stroke="#333" strokeWidth="1" />
-            <line x1="50" y1="40" x2="50" y2="60" stroke="#333" strokeWidth="1" />
-            <line x1="70" y1="40" x2="70" y2="60" stroke="#333" strokeWidth="1" />
+            <defs>
+              <pattern id="wallHatch" width="7" height="7" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+                <line x1="0" y1="0" x2="0" y2="7" stroke="#ffffff" strokeOpacity="0.6" strokeWidth="1" />
+              </pattern>
+            </defs>
+            {/* Wall mass with section hatching (like a plan section hatched in CAD) */}
+            <rect x="6" y="36" width="88" height="28" fill={color} stroke="#333" strokeWidth="2" />
+            <rect x="6" y="36" width="88" height="28" fill="url(#wallHatch)" stroke="none" />
+            {/* face lines */}
+            <line x1="6" y1="40" x2="94" y2="40" stroke="#fff" strokeOpacity="0.35" strokeWidth="1" />
+            <line x1="6" y1="60" x2="94" y2="60" stroke="#fff" strokeOpacity="0.35" strokeWidth="1" />
           </svg>
         );
 
       case 'door':
         return (
           <svg viewBox="0 0 100 100" style={style}>
-            <rect x="40" y="20" width="20" height="60" fill={color} stroke="#333" strokeWidth="2" />
-            <circle cx="54" cy="50" r="2" fill="#333" />
-            <path d="M40 80 Q20 60 40 20" fill="none" stroke="#333" strokeWidth="1.5" strokeDasharray="3,3" />
+            {/* Wall runs horizontally with a door opening */}
+            <rect x="8" y="42" width="22" height="16" fill={color} stroke="#333" strokeWidth="2" />
+            <rect x="70" y="42" width="22" height="16" fill={color} stroke="#333" strokeWidth="2" />
+            {/* Door jambs */}
+            <line x1="30" y1="42" x2="30" y2="58" stroke="#333" strokeWidth="2" />
+            <line x1="70" y1="42" x2="70" y2="58" stroke="#333" strokeWidth="2" />
+            {/* Closed leaf across the opening */}
+            <rect x="30" y="47" width="40" height="6" rx="1" fill={color} stroke="#333" strokeWidth="1.5" />
+            {/* Swing arc (radius = leaf length) */}
+            <path d="M32 50 A40 40 0 0 0 66 16" fill="none" stroke="#333" strokeWidth="1.5" strokeDasharray="4,3" />
+            {/* Hinge */}
+            <circle cx="30" cy="51" r="2.5" fill="#333" />
           </svg>
         );
 
       case 'window':
         return (
           <svg viewBox="0 0 100 100" style={style}>
-            <rect x="25" y="30" width="50" height="40" fill={color} stroke="#333" strokeWidth="2" />
-            <line x1="50" y1="30" x2="50" y2="70" stroke="#333" strokeWidth="2" />
-            <line x1="25" y1="50" x2="75" y2="50" stroke="#333" strokeWidth="2" />
+            {/* Wall with an in-wall glazing reveal */}
+            <rect x="8" y="36" width="84" height="28" fill={color} stroke="#333" strokeWidth="2" />
+            <rect x="8" y="43" width="84" height="14" fill="rgba(255,255,255,0.12)" stroke="none" />
+            {/* Glass plane lines */}
+            <line x1="10" y1="47" x2="90" y2="47" stroke="#ffffff" strokeWidth="1.6" />
+            <line x1="10" y1="53" x2="90" y2="53" stroke="#ffffff" strokeWidth="1.6" />
+            {/* Mullions / vertical sections */}
+            <line x1="34" y1="40" x2="34" y2="60" stroke="#ffffff" strokeWidth="1.6" />
+            <line x1="50" y1="40" x2="50" y2="60" stroke="#ffffff" strokeWidth="1.6" />
+            <line x1="66" y1="40" x2="66" y2="60" stroke="#ffffff" strokeWidth="1.6" />
           </svg>
         );
 
       case 'table-dining':
         return (
           <svg viewBox="0 0 100 100" style={style}>
-            {/* Top-down dining table with chairs */}
-            <rect x="22" y="22" width="56" height="56" rx="6" fill={color} stroke="#333" strokeWidth="2" />
-            <line x1="30" y1="30" x2="70" y2="70" stroke="#333" strokeWidth="1" opacity="0.3" />
-            <line x1="70" y1="30" x2="30" y2="70" stroke="#333" strokeWidth="1" opacity="0.3" />
+            {/* Round dining table with 4 chairs, top-down */}
+            <circle cx="50" cy="50" r="26" fill={color} stroke="#333" strokeWidth="2" />
+            <circle cx="50" cy="50" r="19" fill="none" stroke="#333" strokeWidth="1" opacity="0.5" />
+            <circle cx="50" cy="50" r="4" fill="#333" />
+            {/* Chairs around the table */}
+            <rect x="43" y="8" width="14" height="12" rx="3" fill={color} stroke="#333" strokeWidth="1.6" />
+            <rect x="43" y="80" width="14" height="12" rx="3" fill={color} stroke="#333" strokeWidth="1.6" />
+            <rect x="8" y="44" width="12" height="12" rx="3" fill={color} stroke="#333" strokeWidth="1.6" />
+            <rect x="80" y="44" width="12" height="12" rx="3" fill={color} stroke="#333" strokeWidth="1.6" />
           </svg>
         );
 
       case 'table-coffee':
         return (
           <svg viewBox="0 0 100 100" style={style}>
-            {/* Low wide coffee table */}
-            <rect x="15" y="32" width="70" height="36" rx="8" fill={color} stroke="#333" strokeWidth="2" />
-            <rect x="22" y="39" width="56" height="22" rx="5" fill="none" stroke="#333" strokeWidth="1" opacity="0.4" />
+            {/* Long low coffee table, top-down */}
+            <rect x="14" y="32" width="72" height="36" rx="10" fill={color} stroke="#333" strokeWidth="2" />
+            <line x1="26" y1="50" x2="74" y2="50" stroke="#333" strokeWidth="1" opacity="0.35" />
+            <line x1="50" y1="36" x2="50" y2="64" stroke="#333" strokeWidth="1" opacity="0.35" />
+            {/* Legs */}
+            <circle cx="26" cy="42" r="3" fill="#333" />
+            <circle cx="74" cy="42" r="3" fill="#333" />
+            <circle cx="26" cy="58" r="3" fill="#333" />
+            <circle cx="74" cy="58" r="3" fill="#333" />
           </svg>
         );
 
       case 'table-side':
         return (
           <svg viewBox="0 0 100 100" style={style}>
-            {/* Small side table */}
-            <circle cx="50" cy="50" r="26" fill={color} stroke="#333" strokeWidth="2" />
-            <circle cx="50" cy="50" r="17" fill="none" stroke="#333" strokeWidth="1" opacity="0.4" />
+            {/* Round side table, top-down */}
+            <circle cx="50" cy="50" r="24" fill={color} stroke="#333" strokeWidth="2" />
+            <circle cx="50" cy="50" r="16" fill="none" stroke="#333" strokeWidth="1" opacity="0.5" />
+            <line x1="30" y1="34" x2="70" y2="66" stroke="#333" strokeWidth="1" opacity="0.3" />
+            <circle cx="50" cy="50" r="3.5" fill="#333" />
           </svg>
         );
 
       case 'chair-armchair':
         return (
           <svg viewBox="0 0 100 100" style={style}>
-            {/* Armchair, top-down */}
-            <rect x="25" y="20" width="50" height="14" rx="5" fill={color} stroke="#333" strokeWidth="2" />
-            <rect x="25" y="34" width="50" height="46" rx="8" fill={color} stroke="#333" strokeWidth="2" />
-            <rect x="16" y="38" width="12" height="34" rx="5" fill={color} stroke="#333" strokeWidth="2" />
-            <rect x="72" y="38" width="12" height="34" rx="5" fill={color} stroke="#333" strokeWidth="2" />
+            {/* Armchair, top-down: back, seat, two arms */}
+            <rect x="24" y="14" width="52" height="12" rx="5" fill={color} stroke="#333" strokeWidth="2" />
+            <rect x="24" y="26" width="52" height="34" rx="7" fill={color} stroke="#333" strokeWidth="2" />
+            <rect x="14" y="28" width="12" height="30" rx="5" fill={color} stroke="#333" strokeWidth="2" />
+            <rect x="74" y="28" width="12" height="30" rx="5" fill={color} stroke="#333" strokeWidth="2" />
+            <rect x="30" y="31" width="40" height="23" rx="5" fill="rgba(255,255,255,0.28)" stroke="#333" strokeOpacity="0.45" strokeWidth="1" />
+            <line x1="50" y1="31" x2="50" y2="54" stroke="#333" strokeWidth="1" opacity="0.4" />
           </svg>
         );
 
       case 'chair-dining':
         return (
           <svg viewBox="0 0 100 100" style={style}>
-            {/* Dining chair, top-down */}
-            <rect x="28" y="18" width="44" height="10" rx="4" fill={color} stroke="#333" strokeWidth="2" />
-            <rect x="30" y="28" width="40" height="48" rx="6" fill={color} stroke="#333" strokeWidth="2" />
+            {/* Dining chair, top-down: seat + 4 legs */}
+            <rect x="28" y="28" width="44" height="44" rx="7" fill={color} stroke="#333" strokeWidth="2" />
+            <rect x="34" y="34" width="32" height="32" rx="3" fill="none" stroke="#333" strokeWidth="1" opacity="0.45" />
+            <circle cx="28" cy="28" r="3" fill="#333" />
+            <circle cx="72" cy="28" r="3" fill="#333" />
+            <circle cx="28" cy="72" r="3" fill="#333" />
+            <circle cx="72" cy="72" r="3" fill="#333" />
           </svg>
         );
 
       case 'chair-office':
         return (
           <svg viewBox="0 0 100 100" style={style}>
-            {/* Office chair, top-down */}
-            <circle cx="50" cy="46" r="24" fill={color} stroke="#333" strokeWidth="2" />
-            <rect x="40" y="14" width="20" height="12" rx="4" fill={color} stroke="#333" strokeWidth="2" />
-            <path d="M50 70 L50 82 M50 82 L30 92 M50 82 L70 92 M50 82 L50 94" stroke="#333" strokeWidth="2.5" fill="none" />
+            {/* Office chair, top-down: swivel base + casters */}
+            {[
+              [50, 18],
+              [80, 40],
+              [69, 76],
+              [31, 76],
+              [20, 40],
+            ].map(([x, y], i) => (
+              <g key={i}>
+                <line x1="50" y1="50" x2={x} y2={y} stroke="#333" strokeWidth="2" />
+                <circle cx={x} cy={y} r="3" fill="#333" />
+              </g>
+            ))}
+            {/* Seat cushion */}
+            <circle cx="50" cy="50" r="14" fill={color} stroke="#333" strokeWidth="2" />
+            <circle cx="50" cy="50" r="6" fill="#333" />
           </svg>
         );
 
       case 'sofa':
         return (
           <svg viewBox="0 0 100 100" style={style}>
-            {/* Sofa, top-down */}
-            <rect x="14" y="18" width="72" height="16" rx="6" fill={color} stroke="#333" strokeWidth="2" />
-            <rect x="14" y="34" width="72" height="42" rx="7" fill={color} stroke="#333" strokeWidth="2" />
-            <line x1="50" y1="36" x2="50" y2="74" stroke="#333" strokeWidth="1.5" opacity="0.5" />
-            <rect x="8" y="34" width="10" height="38" rx="5" fill={color} stroke="#333" strokeWidth="2" />
-            <rect x="82" y="34" width="10" height="38" rx="5" fill={color} stroke="#333" strokeWidth="2" />
+            {/* Sofa, top-down: back, arms, cushions + throw pillows */}
+            <rect x="16" y="16" width="68" height="14" rx="6" fill={color} stroke="#333" strokeWidth="2" />
+            <rect x="16" y="30" width="68" height="34" rx="7" fill={color} stroke="#333" strokeWidth="2" />
+            <rect x="8" y="30" width="11" height="30" rx="5" fill={color} stroke="#333" strokeWidth="2" />
+            <rect x="81" y="30" width="11" height="30" rx="5" fill={color} stroke="#333" strokeWidth="2" />
+            {/* Seat cushions */}
+            <rect x="23" y="34" width="30" height="24" rx="5" fill="rgba(255,255,255,0.26)" stroke="#333" strokeWidth="1" strokeOpacity="0.45" />
+            <rect x="55" y="34" width="22" height="24" rx="5" fill="rgba(255,255,255,0.22)" stroke="#333" strokeWidth="1" strokeOpacity="0.45" />
+            <line x1="51" y1="34" x2="51" y2="58" stroke="#333" strokeWidth="1" opacity="0.3" />
+            {/* Throw pillows */}
+            <rect x="23" y="33" width="11" height="7" rx="3" fill="#ffffff" stroke="#333" strokeOpacity="0.5" strokeWidth="1" />
+            <rect x="58" y="33" width="11" height="7" rx="3" fill="#ffffff" stroke="#333" strokeOpacity="0.5" strokeWidth="1" />
           </svg>
         );
 
       case 'bed':
         return (
           <svg viewBox="0 0 100 100" style={style}>
-            {/* Bed, top-down */}
-            <rect x="18" y="10" width="64" height="80" rx="5" fill={color} stroke="#333" strokeWidth="2" />
-            <rect x="26" y="16" width="21" height="14" rx="4" fill="#fff" stroke="#333" strokeWidth="1.5" />
-            <rect x="53" y="16" width="21" height="14" rx="4" fill="#fff" stroke="#333" strokeWidth="1.5" />
-            <line x1="18" y1="38" x2="82" y2="38" stroke="#333" strokeWidth="1.5" />
-            <line x1="50" y1="38" x2="50" y2="90" stroke="#333" strokeWidth="1" opacity="0.4" />
+            {/* King bed, top-down */}
+            <rect x="16" y="8" width="68" height="84" rx="6" fill={color} stroke="#333" strokeWidth="2" />
+            {/* Headboard */}
+            <rect x="16" y="8" width="68" height="6" fill={color} stroke="#333" strokeWidth="1.5" />
+            {/* Mattress inset */}
+            <rect x="23" y="16" width="54" height="68" rx="4" fill="#ffffff" fillOpacity="0.4" stroke="#333" strokeOpacity="0.4" strokeWidth="1" />
+            {/* Pillows */}
+            <rect x="26" y="19" width="22" height="12" rx="4" fill="#ffffff" stroke="#333" strokeWidth="1.5" />
+            <rect x="52" y="19" width="22" height="12" rx="4" fill="#ffffff" stroke="#333" strokeWidth="1.5" />
+            {/* Duvet fold */}
+            <line x1="23" y1="46" x2="77" y2="46" stroke="#333" strokeWidth="1" opacity="0.3" />
+            <line x1="50" y1="16" x2="50" y2="84" stroke="#333" strokeWidth="1" opacity="0.15" />
           </svg>
         );
 
       case 'nightstand':
         return (
           <svg viewBox="0 0 100 100" style={style}>
-            {/* Nightstand, top-down */}
-            <rect x="25" y="25" width="50" height="50" rx="4" fill={color} stroke="#333" strokeWidth="2" />
+            {/* Nightstand, top-down: top + drawers/knots */}
+            <rect x="25" y="25" width="50" height="50" rx="5" fill={color} stroke="#333" strokeWidth="2" />
+            <rect x="31" y="31" width="38" height="38" rx="3" fill="none" stroke="#333" strokeWidth="1" opacity="0.45" />
             <line x1="25" y1="50" x2="75" y2="50" stroke="#333" strokeWidth="1.5" />
             <circle cx="50" cy="38" r="3" fill="#333" />
             <circle cx="50" cy="62" r="3" fill="#333" />
@@ -353,34 +427,51 @@ export const ElementIcon: React.FC<IconProps> = ({
       case 'desk':
         return (
           <svg viewBox="0 0 100 100" style={style}>
-            {/* Desk, top-down */}
-            <rect x="12" y="30" width="76" height="40" rx="4" fill={color} stroke="#333" strokeWidth="2" />
-            <rect x="60" y="34" width="24" height="14" rx="2" fill="none" stroke="#333" strokeWidth="1" opacity="0.5" />
-            <rect x="16" y="52" width="20" height="14" rx="2" fill="none" stroke="#333" strokeWidth="1" opacity="0.5" />
+            {/* Desk, top-down: surface + monitor + keyboard + legs */}
+            <rect x="10" y="28" width="80" height="44" rx="4" fill={color} stroke="#333" strokeWidth="2" />
+            <rect x="16" y="34" width="68" height="32" rx="2" fill="none" stroke="#333" strokeWidth="1" opacity="0.4" />
+            {/* Monitor */}
+            <rect x="40" y="32" width="20" height="10" rx="2" fill="#ffffff" stroke="#333" strokeWidth="1.5" />
+            {/* Keyboard */}
+            <rect x="40" y="48" width="20" height="8" rx="2" fill="none" stroke="#333" strokeWidth="1" opacity="0.7" />
+            {/* Legs */}
+            <circle cx="18" cy="34" r="3" fill="#333" />
+            <circle cx="82" cy="34" r="3" fill="#333" />
+            <circle cx="18" cy="66" r="3" fill="#333" />
+            <circle cx="82" cy="66" r="3" fill="#333" />
           </svg>
         );
 
       case 'stairs':
         return (
           <svg viewBox="0 0 100 100" style={style}>
-            <polygon points="15,80 85,80 85,20 15,20" fill={color} stroke="#333" strokeWidth="2" />
-            <line x1="15" y1="70" x2="85" y2="70" stroke="#333" strokeWidth="1" />
-            <line x1="15" y1="60" x2="85" y2="60" stroke="#333" strokeWidth="1" />
-            <line x1="15" y1="50" x2="85" y2="50" stroke="#333" strokeWidth="1" />
-            <line x1="15" y1="40" x2="85" y2="40" stroke="#333" strokeWidth="1" />
-            <line x1="15" y1="30" x2="85" y2="30" stroke="#333" strokeWidth="1" />
+            {/* Stair flight, plan: treads + up direction arrow */}
+            <rect x="14" y="10" width="72" height="80" rx="3" fill={color} stroke="#333" strokeWidth="2" />
+            {/* Treads */}
+            <g stroke="#ffffff" strokeWidth="1" strokeOpacity="0.55">
+              <line x1="14" y1="25" x2="86" y2="25" />
+              <line x1="14" y1="40" x2="86" y2="40" />
+              <line x1="14" y1="55" x2="86" y2="55" />
+              <line x1="14" y1="70" x2="86" y2="70" />
+            </g>
+            {/* Up direction arrow */}
+            <path d="M66 80 L66 30 M54 46 L66 30 L78 46" stroke="#ffffff" strokeWidth="2.5" strokeLinejoin="round" fill="none" />
+            {/* Stringers */}
+            <line x1="14" y1="10" x2="14" y2="90" stroke="#333" strokeWidth="1.5" />
+            <line x1="86" y1="10" x2="86" y2="90" stroke="#333" strokeWidth="1.5" />
           </svg>
         );
 
       case 'column':
         return (
           <svg viewBox="0 0 100 100" style={style}>
-            <ellipse cx="50" cy="25" rx="20" ry="8" fill={color} stroke="#333" strokeWidth="2" />
-            <rect x="30" y="25" width="40" height="50" fill={color} stroke="#333" strokeWidth="2" />
-            <ellipse cx="50" cy="75" rx="20" ry="8" fill={color} stroke="#333" strokeWidth="2" />
-            <ellipse cx="50" cy="33" rx="15" ry="6" fill="none" stroke="#333" strokeWidth="1" opacity="0.4" />
-            <ellipse cx="50" cy="50" rx="15" ry="6" fill="none" stroke="#333" strokeWidth="1" opacity="0.4" />
-            <ellipse cx="50" cy="67" rx="15" ry="6" fill="none" stroke="#333" strokeWidth="1" opacity="0.4" />
+            {/* Round column / structure in plan */}
+            <circle cx="50" cy="50" r="22" fill={color} stroke="#333" strokeWidth="2" />
+            <circle cx="50" cy="50" r="16" fill="none" stroke="#333" strokeWidth="1" opacity="0.5" />
+            {/* Center axes */}
+            <line x1="50" y1="20" x2="50" y2="80" stroke="#333" strokeWidth="1" opacity="0.4" strokeDasharray="4,3" />
+            <line x1="20" y1="50" x2="80" y2="50" stroke="#333" strokeWidth="1" opacity="0.4" strokeDasharray="4,3" />
+            <circle cx="50" cy="50" r="3" fill="#333" />
           </svg>
         );
 

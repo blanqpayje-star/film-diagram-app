@@ -22,6 +22,8 @@ interface HandlePosition {
   handleType?: 'resize' | 'rotate';
 }
 
+const CAD_ORTHO_HINT = '⇧ Shift = Ortho · Keep drawing to chain walls · Esc to stop';
+
 export const Canvas: React.FC = () => {
   const canvasRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -29,6 +31,9 @@ export const Canvas: React.FC = () => {
   const [isDrawingCAD, setIsDrawingCAD] = useState(false);
   const [cadStart, setCadStart] = useState<Point | null>(null);
   const [cadPreview, setCadPreview] = useState<Point | null>(null);
+  // CAD polyline chaining: remembers the last vertex so the wall tool can
+  // continue a connected polyline (like AutoCAD's LINE / PLINE flow).
+  const [chainVertex, setChainVertex] = useState<Point | null>(null);
   const [isResizing, setIsResizing] = useState(false);
   const [resizeHandle, setResizeHandle] = useState<HandlePosition | null>(null);
   const [resizeStart, setResizeStart] = useState<Point | null>(null);
@@ -74,6 +79,23 @@ export const Canvas: React.FC = () => {
   const snapToGridFn = (value: number) => {
     if (!snapToGrid) return value;
     return Math.round(value / gridSize) * gridSize;
+  };
+
+  // AutoCAD-style Ortho / Polar tracking: when Shift is held, constrain the
+  // new point to the dominant axis (horizontal or vertical) relative to start.
+  const applyOrtho = (start: Point, p: Point, enabled: boolean): Point => {
+    if (!enabled) return p;
+    const dx = Math.abs(p.x - start.x);
+    const dy = Math.abs(p.y - start.y);
+    if (dx >= dy) return { x: p.x, y: start.y };
+    return { x: start.x, y: p.y };
+  };
+
+  // Formats a distance in px as a readable length using the active unit.
+  const formatCADLength = (px: number): string => {
+    if (measurementUnit === 'ft') return (px / 20).toFixed(1) + ' ft';
+    if (measurementUnit === 'in') return (px * (12 / 20)).toFixed(0) + ' in';
+    return (px / 20).toFixed(1) + ' m';
   };
 
   // Constrain position within canvas boundaries
@@ -151,8 +173,15 @@ export const Canvas: React.FC = () => {
       setIsDrawingCAD(true);
       const clampedX = Math.min(Math.max(coords.x, 0), canvasWidth);
       const clampedY = Math.min(Math.max(coords.y, 0), canvasHeight);
-      setCadStart({ x: snapToGridFn(clampedX), y: snapToGridFn(clampedY) });
-      setCadPreview({ x: snapToGridFn(clampedX), y: snapToGridFn(clampedY) });
+      const snapped = { x: snapToGridFn(clampedX), y: snapToGridFn(clampedY) };
+      // The wall tool continues from the previous vertex (polyline chain).
+      if (drawingMode === 'cad-line' && chainVertex) {
+        setCadStart(chainVertex);
+        setCadPreview(chainVertex);
+      } else {
+        setCadStart(snapped);
+        setCadPreview(e.shiftKey ? applyOrtho(snapped, snapped, true) : snapped);
+      }
     }
   };
 
@@ -220,12 +249,11 @@ export const Canvas: React.FC = () => {
       const coords = getCanvasCoords(e);
       const clampedX = Math.min(Math.max(coords.x, 0), canvasWidth);
       const clampedY = Math.min(Math.max(coords.y, 0), canvasHeight);
-      // Check if Shift is held for grid snapping
-      const shiftHeld = e.shiftKey;
-      setCadPreview({
-        x: shiftHeld ? snapToGridFn(clampedX) : clampedX,
-        y: shiftHeld ? snapToGridFn(clampedY) : clampedY
-      });
+      // Grid snap by default; holding Shift locks the axis (AutoCAD Ortho).
+      const snapX = snapToGridFn(clampedX);
+      const snapY = snapToGridFn(clampedY);
+      const ortho = applyOrtho(cadStart, { x: snapX, y: snapY }, e.shiftKey);
+      setCadPreview({ x: ortho.x, y: ortho.y });
     }
   };
 
@@ -234,11 +262,14 @@ export const Canvas: React.FC = () => {
       const coords = getCanvasCoords(e);
       const clampedX = Math.min(Math.max(coords.x, 0), canvasWidth);
       const clampedY = Math.min(Math.max(coords.y, 0), canvasHeight);
-      const endX = snapToGridFn(clampedX);
-      const endY = snapToGridFn(clampedY);
+      const snapX = snapToGridFn(clampedX);
+      const snapY = snapToGridFn(clampedY);
+      const ortho = applyOrtho(cadStart, { x: snapX, y: snapY }, e.shiftKey);
+      const endX = ortho.x;
+      const endY = ortho.y;
 
       // Don't create if too small
-      if (Math.abs(endX - cadStart.x) > 5 || Math.abs(endY - cadStart.y) > 5) {
+      if (Math.abs(endX - cadStart.x) > 1 || Math.abs(endY - cadStart.y) > 1) {
         const store = useDiagramStore.getState();
 
         if (drawingMode === 'cad-rectangle') {
@@ -252,8 +283,11 @@ export const Canvas: React.FC = () => {
             scale: 1,
             label: '',
             color: '#D21F2B',
+            // Skip the tiny <1px box for a pure click
+            cadFill: Math.abs(endX - cadStart.x) < 2 || Math.abs(endY - cadStart.y) < 2 ? 'none' : 'solid',
           });
         } else if (drawingMode === 'cad-line') {
+          const dist = Math.sqrt((endX - cadStart.x) ** 2 + (endY - cadStart.y) ** 2);
           store.addElement({
             type: 'cad-line',
             x: cadStart.x,
@@ -262,9 +296,12 @@ export const Canvas: React.FC = () => {
             endY: endY,
             rotation: 0,
             scale: 1,
-            label: '',
+            label: dist > 1.5 ? formatCADLength(dist) : '',
             color: '#A3121D',
+            thickness: 10,
           });
+          // Continue the polyline from the endpoint (chain).
+          if (dist > 1.5) setChainVertex({ x: endX, y: endY });
         } else if (drawingMode === 'measurement') {
           const distance = Math.sqrt(
             Math.pow(endX - cadStart.x, 2) + Math.pow(endY - cadStart.y, 2)
@@ -281,6 +318,7 @@ export const Canvas: React.FC = () => {
             color: '#E0353F',
             measurementUnit: measurementUnit,
           });
+          setChainVertex(null);
         }
       }
 
@@ -469,6 +507,14 @@ export const Canvas: React.FC = () => {
     showTextInput,
   ]);
 
+  // Reset the CAD polyline chain whenever the active tool changes.
+  useEffect(() => {
+    setChainVertex(null);
+    setIsDrawingCAD(false);
+    setCadStart(null);
+    setCadPreview(null);
+  }, [drawingMode]);
+
   if (!scene) {
     return (
       <div className="flex items-center justify-center h-full text-neutral-500">
@@ -494,6 +540,22 @@ export const Canvas: React.FC = () => {
     };
   };
 
+  // Anchors the cone at the device's FRONT FACE rather than its bounding-box
+  // center. The icon artwork (camera lens / light emitter) faces +X when the
+  // rotation is 0° (same convention the cones use), so the cone origin is the
+  // center projected outward by half the width along the facing direction.
+  // This keeps cameras & lights visually locked to their FOV / spread cone.
+  const getFrontEmissionPoint = (element: DiagramElement): Point => {
+    const scaleX = element.linkedScale !== false ? element.scale : element.scaleX || element.scale;
+    const center = getElementCenter(element);
+    const angleRad = (element.rotation * Math.PI) / 180;
+    const frontRadius = ((element.width || 60) * scaleX) / 2;
+    return {
+      x: center.x + Math.cos(angleRad) * frontRadius,
+      y: center.y + Math.sin(angleRad) * frontRadius,
+    };
+  };
+
   const renderFOVCone = (element: DiagramElement) => {
     if (element.type !== 'camera' || !element.cameraSettings?.showFOV) return null;
 
@@ -504,7 +566,7 @@ export const Canvas: React.FC = () => {
     const angleRad = (element.rotation * Math.PI) / 180;
     const halfFOV = (fovAngle / 2) * (Math.PI / 180);
 
-    const { x: centerX, y: centerY } = getElementCenter(element);
+    const { x: centerX, y: centerY } = getFrontEmissionPoint(element);
 
     const leftX = centerX + coneLength * Math.cos(angleRad - halfFOV);
     const leftY = centerY + coneLength * Math.sin(angleRad - halfFOV);
@@ -551,7 +613,7 @@ export const Canvas: React.FC = () => {
     const angleRad = (element.rotation * Math.PI) / 180;
     const halfSpread = (spreadAngle / 2) * (Math.PI / 180);
 
-    const { x: centerX, y: centerY } = getElementCenter(element);
+    const { x: centerX, y: centerY } = getFrontEmissionPoint(element);
 
     const leftX = centerX + spreadDistance * Math.cos(angleRad - halfSpread);
     const leftY = centerY + spreadDistance * Math.sin(angleRad - halfSpread);
@@ -600,10 +662,17 @@ export const Canvas: React.FC = () => {
 
   const renderCADElement = (element: DiagramElement) => {
     if (element.type === 'cad-rectangle' && element.width && element.height) {
+      const fill = element.cadFill ?? 'solid';
+      const background =
+        fill === 'solid'
+          ? `${element.color}22`
+          : fill === 'hatch'
+          ? `repeating-linear-gradient(45deg, ${element.color}30 0 4px, transparent 4px 8px)`
+          : 'rgba(210, 31, 43, 0.06)';
       return (
         <div
           key={element.id}
-          className={`absolute border-2 border-dashed ${
+          className={`absolute border-2 ${
             selectedElementId === element.id ? 'ring-2 ring-red-600 dark:ring-red-400' : ''
           }`}
           style={{
@@ -611,9 +680,10 @@ export const Canvas: React.FC = () => {
             top: element.y,
             width: element.width,
             height: element.height,
-            backgroundColor: element.color,
-            opacity: 0.4,
+            backgroundColor: fill === 'solid' ? background : fill === 'hatch' ? 'rgba(210,31,43,0.05)' : 'transparent',
+            backgroundImage: fill === 'hatch' ? background : undefined,
             borderColor: element.color,
+            borderStyle: 'solid',
             pointerEvents: 'auto',
             cursor: 'move',
           }}
@@ -632,6 +702,58 @@ export const Canvas: React.FC = () => {
         </div>
       );
     } else if ((element.type === 'cad-line' || element.type === 'measurement') && element.endX !== undefined && element.endY !== undefined) {
+      const x1 = element.x;
+      const y1 = element.y;
+      const x2 = element.endX;
+      const y2 = element.endY;
+      const dx = x2 - x1;
+      const dy = y2 - y1;
+      const len = Math.hypot(dx, dy);
+
+      if (element.type === 'measurement') {
+        return (
+          <svg
+            key={element.id}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              pointerEvents: 'none',
+              zIndex: 1,
+            }}
+          >
+            <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={element.color} strokeWidth="2" />
+            <line x1={x1} y1={y1 - 5} x2={x1} y2={y1 + 5} stroke={element.color} strokeWidth="2" />
+            <line x1={x2} y1={y2 - 5} x2={x2} y2={y2 + 5} stroke={element.color} strokeWidth="2" />
+            <text
+              x={(x1 + x2) / 2}
+              y={(y1 + y2) / 2 - 6}
+              fill={darkMode ? '#FF6B6B' : '#C8102E'}
+              fontSize="12"
+              fontWeight="bold"
+              textAnchor="middle"
+              style={{ pointerEvents: 'none' }}
+            >
+              {element.label}
+            </text>
+          </svg>
+        );
+      }
+
+      // Wall slab: a real architectural wall with thickness (filled mass
+      // between two parallel faces + square end caps), like AutoCAD's MLINE.
+      const thickness = element.thickness ?? 10;
+      const color = element.color;
+      // Unit perpendicular for the wall offset.
+      const hw = thickness / 2;
+      const nx = len > 0 ? -dy / len : 0;
+      const ny = len > 0 ? dx / len : 0;
+      const p1 = `${x1 + nx * hw},${y1 + ny * hw}`;
+      const p2 = `${x2 + nx * hw},${y2 + ny * hw}`;
+      const p3 = `${x2 - nx * hw},${y2 - ny * hw}`;
+      const p4 = `${x1 - nx * hw},${y1 - ny * hw}`;
       return (
         <svg
           key={element.id}
@@ -643,34 +765,57 @@ export const Canvas: React.FC = () => {
             height: '100%',
             pointerEvents: 'none',
             zIndex: 1,
+            overflow: 'visible',
           }}
         >
-          <line
-            x1={element.x}
-            y1={element.y}
-            x2={element.endX}
-            y2={element.endY}
-            stroke={element.color}
-            strokeWidth={element.type === 'measurement' ? 2 : 3}
-            strokeDasharray={element.type === 'measurement' ? '0' : '5,5'}
-          />
-          {element.type === 'measurement' && (
-            <>
-              <line x1={element.x} y1={element.y - 5} x2={element.x} y2={element.y + 5} stroke={element.color} strokeWidth="2" />
-              <line x1={element.endX} y1={element.endY - 5} x2={element.endX} y2={element.endY + 5} stroke={element.color} strokeWidth="2" />
+          <g className="cad-wall" pointerEvents="auto" cursor="move" onMouseDown={(e) => handleElementMouseDown(e, element)}>
+            <polygon
+              points={`${p1} ${p2} ${p3} ${p4}`}
+              fill={color}
+              fillOpacity="0.85"
+              stroke={darkMode ? '#7f1d1d' : '#7a1015'}
+              strokeWidth="1.5"
+              strokeLinejoin="round"
+            />
+            {/* subtle interior centerline, common on construction drawings */}
+            <line
+              x1={x1}
+              y1={y1}
+              x2={x2}
+              y2={y2}
+              stroke="rgba(255,255,255,0.35)"
+              strokeWidth="1"
+              strokeDasharray="4,4"
+            />
+            {selectedElementId === element.id && (
+              <rect
+                x={Math.min(x1, x2) - 8}
+                y={Math.min(y1, y2) - 8}
+                width={Math.abs(x2 - x1) + 16}
+                height={Math.abs(y2 - y1) + 16}
+                fill="none"
+                stroke="#D21F2B"
+                strokeWidth="1.5"
+                strokeDasharray="4,4"
+                rx="3"
+                pointerEvents="none"
+              />
+            )}
+            {element.label && len > 0 && (
               <text
-                x={(element.x + element.endX) / 2}
-                y={(element.y + element.endY) / 2 - 5}
-                fill={darkMode ? '#FF6B6B' : '#C8102E'}
-                fontSize="12"
+                x={(x1 + x2) / 2 + nx * 16}
+                y={(y1 + y2) / 2 + ny * 16}
+                fill={darkMode ? '#ff6b6b' : '#a3121d'}
+                fontSize="11"
                 fontWeight="bold"
                 textAnchor="middle"
-                style={{ pointerEvents: 'none' }}
+                stroke="none"
+                style={{ pointerEvents: 'none', fontFamily: 'ui-monospace, monospace' }}
               >
                 {element.label}
               </text>
-            </>
-          )}
+            )}
+          </g>
         </svg>
       );
     }
@@ -1069,20 +1214,39 @@ export const Canvas: React.FC = () => {
                 x2={cadPreview.x}
                 y2={cadPreview.y}
                 stroke={drawingMode === 'measurement' ? '#E0353F' : '#A3121D'}
-                strokeWidth="2"
-                strokeDasharray="5,5"
+                strokeWidth={drawingMode === 'cad-line' ? 8 : 2}
+                strokeOpacity={drawingMode === 'cad-line' ? 0.85 : 1}
+                strokeLinecap="round"
+                strokeDasharray={drawingMode === 'cad-line' ? '0' : '5,5'}
               />
-              {/* Shift hint */}
+              {(() => {
+                const d = Math.hypot(cadPreview.x - cadStart.x, cadPreview.y - cadStart.y);
+                if (d < 1) return null;
+                const ang = (Math.atan2(cadPreview.y - cadStart.y, cadPreview.x - cadStart.x) * 180) / Math.PI;
+                const live = `${formatCADLength(d)}  •  ${Math.abs(ang % 180).toFixed(1)}°`;
+                return (
+                  <text
+                    x={(cadStart.x + cadPreview.x) / 2}
+                    y={(cadStart.y + cadPreview.y) / 2 - 16}
+                    fill="#D21F2B"
+                    fontSize="12"
+                    fontWeight="bold"
+                    textAnchor="middle"
+                    style={{ pointerEvents: 'none', fontFamily: 'ui-monospace, monospace' }}
+                  >
+                    {live}
+                  </text>
+                );
+              })()}
               <text
                 x={(cadStart.x + cadPreview.x) / 2}
-                y={(cadStart.y + cadPreview.y) / 2 - 15}
-                fill="#D21F2B"
-                fontSize="11"
-                fontWeight="bold"
+                y={(cadStart.y + cadPreview.y) / 2 - 34}
+                fill="#8a8a8a"
+                fontSize="10"
                 textAnchor="middle"
-                style={{ pointerEvents: 'none', fontFamily: 'monospace' }}
+                style={{ pointerEvents: 'none', fontFamily: 'ui-monospace, monospace' }}
               >
-                Hold Shift to snap
+                {CAD_ORTHO_HINT}
               </text>
             </svg>
           )}
